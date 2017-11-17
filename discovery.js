@@ -30,10 +30,10 @@ async function findFriends(networkDeviceList) {
     
         try {
             let res = await request(options);
-            console.log(response.statusCode);
-            console.log(response.headers['content-type']);
-            console.log(body);
-            return {ip: ip, initTimeStamp: 'initTimeStamp' }
+            console.log(res);
+            return {ip: ip, 
+                id: res.id,
+                initTimeStamp: res.initTimeStamp};
         } catch(e) {
             console.log('no friend at ' + networkDevice.ip);
             return null;
