@@ -1,10 +1,10 @@
 const arpScanner = require('arpscan/promise');
 const request = require('request-promise');
-const output = {
+const me= {
     arpScanner: arpScanner,
     
 }
-output.search = search.bind(output);
+me.search = search.bind(me);
 
 async function search (interface) {
 
@@ -27,23 +27,50 @@ async function findFriends(networkDeviceList) {
             uri: 'http://' + networkDevice.ip + ':3000/discovery',
             json: true
         };
-    
+        
         try {
             let res = await request(options);
-            console.log(res);
-            return {ip: ip, 
+            
+            console.log('   friend at ' + networkDevice.ip);
+
+            return   {
+                ip: networkDevice.ip, 
                 id: res.id,
-                initTimeStamp: res.initTimeStamp};
+                initTimeStamp: res.initTimeStamp
+            };
         } catch(e) {
             console.log('no friend at ' + networkDevice.ip);
             return null;
         }
     }
 
+
     let friendsList = await Promise .all(networkDeviceList.map(callNetworkDevice));
 
     return friendsList;
 };
 
+this.findServer= function (networkDeviceList) {
 
-module.exports = output;
+    var output = {};
+
+    var oldestNetworkDevice = null;
+
+    for (var i = 0, len = networkDeviceList.length; i < len; i++) {
+        var device =  networkDeviceList [i];
+        if( oldestNetworkDevice == null){
+            oldestNetworkDevice =  device ;
+            continue;  
+        }
+        if(oldestNetworkDevice.initTimeStamp <  device.initTimeStamp){
+            oldestNetworkDevice =  device ;
+        }
+
+    }    
+
+    return output
+}
+
+
+
+module.exports = me
