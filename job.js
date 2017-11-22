@@ -20,3 +20,14 @@ me.start = () => {
 
 
 module.exports = me;
+
+var ee = require('event-emitter');
+
+var MyClass = function () { /* .. */ };
+ee(MyClass.prototype); // All instances of MyClass will expose event-emitter interface 
+
+var emitter = new MyClass(), listener;
+
+emitter.on('test', listener = function (args) {
+ // … react to 'test' event 
+});

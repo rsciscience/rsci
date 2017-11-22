@@ -46,17 +46,28 @@ async function findFriends(networkDeviceList) {
 
     let friendsList = await Promise .all(networkDeviceList.map(callNetworkDevice));
 
-    return friendsList;
+    function cleanFriendLIst(actual) {
+        var newArray = new Array();
+        for (var i = 0; i < actual.length; i++) {
+          if (actual[i]) {
+            newArray.push(actual[i]);
+          }
+        }
+        return newArray;
+      }
+
+      return cleanFriendLIst(friendsList);  
 };
 
 this.findServer= function (networkDeviceList) {
-
+    console.log('findServer');
     var output = {};
 
     var oldestNetworkDevice = null;
 
     for (var i = 0, len = networkDeviceList.length; i < len; i++) {
         var device =  networkDeviceList [i];
+        console.log('deviceID', device.id);
         if( oldestNetworkDevice == null){
             oldestNetworkDevice =  device ;
             continue;  
@@ -66,8 +77,8 @@ this.findServer= function (networkDeviceList) {
         }
 
     }    
-
-    return output
+    output = oldestNetworkDevice;
+    return output;
 }
 
 

@@ -61,18 +61,33 @@ webApp.init(3000, state, onUpdateState);
 
 var cpuInterface = 'en0';
 
-discovery.search(cpuInterface).then((res) => {
-  
-    console.log('Received friend list');
-    console.log(res);
-    state.discoveylist = res; 
-    webApp.setProps(state);
+function start(res) {
     
-    state.server = discovery.findServer(state.discoveylist );
+      console.log('Received friend list');
+      console.log(res);
+      state.discoveylist = res; 
+      state.discoveylist.push({
+          ip: '',
+          id: state.id,
+          initTimeStamp: state.initTimeStamp,
+          me: true
+      });
+      webApp.setProps(state);
+      
+      state.server = discovery.findServer(state.discoveylist);
+      console.log('server', state.server);
+      startJob();
+  
+  
+  }
 
-    startJob();
+//discovery.search(cpuInterface).then(start);
+var fakeDiscoveryLIst = [ 
+    { ip: '192.168.100.105',
+        id: '266799123',
+initTimeStamp: '2017-11-22T05:00:42.975Z' } ];
+start(fakeDiscoveryLIst);
 
 
-});
 
 
