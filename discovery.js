@@ -67,7 +67,6 @@ this.findServer= function (networkDeviceList) {
 
     for (var i = 0, len = networkDeviceList.length; i < len; i++) {
         var device =  networkDeviceList [i];
-        console.log('deviceID', device.id);
         if( oldestNetworkDevice == null){
             oldestNetworkDevice =  device ;
             continue;  
