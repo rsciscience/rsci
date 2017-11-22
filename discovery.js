@@ -1,10 +1,9 @@
 const arpScanner = require('arpscan/promise');
 const request = require('request-promise');
-const me= {
-    arpScanner: arpScanner,
-    
-}
-me.search = search.bind(me);
+
+this.arpScanner = arpScanner;
+
+this.search = search.bind(this);
 
 async function search (interface) {
 
@@ -73,4 +72,4 @@ this.findServer= function (networkDeviceList) {
 
 
 
-module.exports = me
+module.exports = this;

@@ -6,15 +6,12 @@ const express = require('express')
 this.app= express();
 this.Objectstate = {};
 
-
-
-
-
 this.app.get('/discovery',discovery.bind(this));
 this.app.get('/discovery/list',discovery_list.bind(this));
 this.app.post('/client/job/:id/start',client_job_start.bind(this));
 this.app.post('/client/job/:id/stop/start',client_job_start.bind(this));
 this.app.post('/server/job/:id/clientEvent',server_job_clinetEvent.bind(this));
+
 
 this.init = function(port, props , onUpdateParrentState ) {
     this.state = props;
@@ -47,6 +44,7 @@ function discovery (req, res)  {
         console.log(ex);
         res.status(500).send('Something broke!')
         return ;
+
     }
 
     res.send(clientResponse);
@@ -79,18 +77,21 @@ function discovery_list (req, res)  {
 }
 
 function client_job_start(req, res)  {
-    res.send().status(500);
+    res.status(500).send();
 }
 
 function client_job_stop(req, res) {
-    res.send().status(500);
+    res.status(500).send();
 }
 
 function server_job_clinetEvent(req, res)  {
-    res.send().status(200);
+    res.status(500).send();
 }
 
 module.exports = this;
+
+
+
 
 
 
