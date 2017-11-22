@@ -68,7 +68,7 @@ discovery.search(cpuInterface).then((res) => {
     state.discoveylist = res; 
     webApp.setProps(state);
     
-    state.server = discovery.findServer(istate.discoveylist );
+    state.server = discovery.findServer(state.discoveylist );
 
     startJob();
 

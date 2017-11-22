@@ -3,51 +3,50 @@
 const express = require('express')
 
 
-const me = {
-    app: express(),
-    state: {}
-}
+this.app= express();
+this.Objectstate = {};
 
 
 
 
 
-me.app.get('/discovery',discovery.bind(me));
-me.app.get('/discovery/list',discovery_list.bind(me));
-me.app.post('/client/job/:id/start',client_job_start.bind(me));
-me.app.post('/client/job/:id/stop/start',client_job_start.bind(me));
-me.app.post('/server/job/:id/clientEvent',server_job_clinetEvent.bind(me));
+this.app.get('/discovery',discovery.bind(this));
+this.app.get('/discovery/list',discovery_list.bind(this));
+this.app.post('/client/job/:id/start',client_job_start.bind(this));
+this.app.post('/client/job/:id/stop/start',client_job_start.bind(this));
+this.app.post('/server/job/:id/clientEvent',server_job_clinetEvent.bind(this));
 
-me.init = function(port, props , onUpdateParrentState ) {
+this.init = function(port, props , onUpdateParrentState ) {
     this.state = props;
     this.onUpdateParrentState = onUpdateParrentState;
     this.app.listen(3000, () => console.log('Example app listening on port 3000!'));
-}.bind(me);
+};
 
-me.setProps = function(props) {
+this.setProps = function(props) {
     console.log('WebApp - setProps ');
     this.state.discoveryList = props.discoveryList;
     
-}.bind(me);
+};
 
 
 function discovery (req, res)  {
-
+    console.log('discovery');
     function doWork(){
-
         var output =    {
-            id: me.state.id,
+            id: this.state.id,
             initTimeStamp: this.state.initTimeStamp
         };
         return  JSON.stringify( output);
-    }
+    };
     
     var clientResponse = {}
 
     try{
-       clientResponse =  doWork(req.body);
+       clientResponse =  doWork.bind(this)();
     }catch (ex) {
-        res.send().status(500)
+        console.log(ex);
+        res.status(500).send('Something broke!')
+        return ;
     }
 
     res.send(clientResponse);
@@ -55,6 +54,7 @@ function discovery (req, res)  {
 
 function discovery_list (req, res)  {
     
+    console.log('discovery_list');
    function doWork(){
 
         var output =    {
@@ -68,9 +68,11 @@ function discovery_list (req, res)  {
     var clientResponse = {}
 
     try{
-       clientResponse =  doWork(req.body);
+       clientResponse =  doWork.bind(this)();
     }catch (ex) {
-        res.send().status(500)
+        console.log(ex);
+        res.status(500).send('Something broke!')
+        return;
     }
 
     res.send(clientResponse);
@@ -88,13 +90,7 @@ function server_job_clinetEvent(req, res)  {
     res.send().status(200);
 }
 
-
-
-
-
-
-console.log(this);
-module.exports = me;
+module.exports = this;
 
 
 
