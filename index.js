@@ -129,6 +129,8 @@ this.start = function (discoveryList) {
     console.log('server', this.state.server.id);
     if (this.state.server.me ){
         console.log('I\'m the server');
+    }else{
+    lastSearchResults();
     }
 
 
@@ -145,11 +147,10 @@ this.init = function(){
             id: '266799123',
             initTimeStamp: '2017-11-22T05:00:42.975Z' } ];
 
-    //this.start(fakeDiscoveryLIst);
-    //startJob();
+//this.start(fakeDiscoveryLIst);
     
     discovery.search(this.state.cpuInterface).then(this.start);
-
+    
     console.log(this.state.jobs);
     setInterval(dumpJobs.bind(this,this.state.jobs),15000);
 
