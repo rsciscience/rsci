@@ -40,7 +40,9 @@ function leftPadWithZeros(number, length)
 };
 
 
-function startJob(){
+this.startJob = function(){
+    debug('startJob');
+    debug(this);
     this.state.job= {
         id:'JB_' + generateId()
     };
@@ -56,7 +58,7 @@ function startJob(){
     j.on('Light', watchJobEvents.bind(this));
 
     j.start();
-}
+}.bind(this);
 
 
 
@@ -118,7 +120,7 @@ this.start = function (discoveryList) {
     
     debug('start');
     debug('Received friend list');
-    this.debug('Discovery List has ' +  discoveryList.length);
+    debug('Discovery List has ' +  discoveryList.length);
     this.state.discoveylist = discoveryList; 
     this.state.discoveylist.push({
         ip: '',
@@ -129,11 +131,13 @@ this.start = function (discoveryList) {
     webApp.setProps(this.state);
 
     this.state.server = discovery.findServer(this.state.discoveylist);
-    debug('server', this.state.server.id);
-    if (this.state.server.me ){
+    debug('server' , this.state.server);
+    debug('server' , this.state.server.id);
+    debug('server me ' , this.state.server.me);
+    if (this.state.server.me == true ){
         debug('I\'m the server');
     }else{
-        lastSearchResults();
+        this.startJob();
     }
 
 
