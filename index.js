@@ -1,10 +1,13 @@
 "use strict";
 
+const debug = require('debug')('index.');
+
+
 var webApp  = require('./webApp');
-console.log('Init Web server');
+debug('Init Web server');
 
 var discovery = require('./discovery');
-console.log('Init Discovery');
+debug('Init Discovery');
 
 const request = require('request-promise');
 
@@ -44,7 +47,7 @@ function startJob(){
     var j = new job();
 
     function watchJobEvents (args){
-        console.log('CLIENT:Calling home');
+       debug('CLIENT:Calling home');
         sendServerJobEvent(args,this.state.server.ip, this.state.listeningPort, this.state.id ,this.state.job.id)
     }
 
@@ -69,7 +72,7 @@ async function sendServerJobEvent(data, serverip, port,clientId,  jobId){
     try {
         let res = await request(options);
     } catch(e) {
-        console.log('Error sending job event');
+        debug('Error sending job event');
     }
 
 }
@@ -78,29 +81,28 @@ async function sendServerJobEvent(data, serverip, port,clientId,  jobId){
 
 this.onUpdateState= function (data){
     this.state = data;
-
-    //console.log('Index - State Change');
+    //debug('Index - State Change');
 };
 
 
 function dumpJobs(jobs) {
-    console.log('FriendlyJobStatusDump');
-    console.log(jobs.length) ;
+    debug('FriendlyJobStatusDump');
+    debug("Job Count:" + jobs.length) ;
 
     for (var i = 0, len = jobs.length ; i < len; i++) {
         var job = this.state.jobs[i];
-        console.log("Job:" + job.id);
-        console.log(job.clients.length) ;
+        debug("Job:" + job.id);
+        debug(job.clients.length) ;
 
         for (var j = 0, lenj = job.clients.length  ; j < lenj; j++) {
 
             var client  = job.clients[j];
-            console.log('  Client:' + client.id);
-            console.log(client.actions.length) ;
+            debug('  Client:' + client.id);
+            debug(client.actions.length) ;
 
             for (var k = 0, lenk = client.actions.length-1 ; k < lenk; k++) {
                 var action = client.actions[k]
-                console.log('    ' + action.eventType);
+                debug('    ' + action.eventType);
 
             }
 
@@ -110,12 +112,13 @@ function dumpJobs(jobs) {
 
 }
 
-
+    
 
 this.start = function (discoveryList) {
-
-    console.log('Received friend list');
-    console.log('Discovery List has ' +  discoveryList.length);
+    
+    debug('start');
+    debug('Received friend list');
+    this.debug('Discovery List has ' +  discoveryList.length);
     this.state.discoveylist = discoveryList; 
     this.state.discoveylist.push({
         ip: '',
@@ -126,11 +129,11 @@ this.start = function (discoveryList) {
     webApp.setProps(this.state);
 
     this.state.server = discovery.findServer(this.state.discoveylist);
-    console.log('server', this.state.server.id);
+    debug('server', this.state.server.id);
     if (this.state.server.me ){
-        console.log('I\'m the server');
+        debug('I\'m the server');
     }else{
-    lastSearchResults();
+        lastSearchResults();
     }
 
 
@@ -138,6 +141,7 @@ this.start = function (discoveryList) {
 
 
 this.init = function(){
+    debug('init');
 
     webApp.init(this.state.listeningPort, this.state, this.onUpdateState);
 
@@ -147,11 +151,10 @@ this.init = function(){
             id: '266799123',
             initTimeStamp: '2017-11-22T05:00:42.975Z' } ];
 
-//this.start(fakeDiscoveryLIst);
-    
+
     discovery.search(this.state.cpuInterface).then(this.start);
-    
-    console.log(this.state.jobs);
+
+
     setInterval(dumpJobs.bind(this,this.state.jobs),15000);
 
 

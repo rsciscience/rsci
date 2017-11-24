@@ -1,3 +1,4 @@
+const debug = require('debug')('discovery.');
 const arpScanner = require('arpscan/promise');
 const request = require('request-promise');
 
@@ -11,15 +12,15 @@ async function search (interfaces,port) {
 
     for (var i = 0, len = interfaces.length; i < len; i++) {
         var interface  = interfaces[i];
-        console.log('  Trying Interface: ' + interface);
+        debug('  Trying Interface: ' + interface);
         var partResults = [];
         try {
             partResults = await this.arpScanner({ interface: interface, sudo: true });
         }  catch(e) {
             partResults = [];
-            console.log(e);
+            debug('error',e);
+        
         }
-
         res = res.concat(partResults);
     }
 
@@ -40,7 +41,7 @@ async function findFriends(networkDeviceList,port) {
         try {
             let res = await request(options);
 
-            console.log('   friend at ' + networkDevice.ip);
+            debug('   friend at ' + networkDevice.ip);
 
             return   {
                 ip: networkDevice.ip, 
@@ -48,7 +49,7 @@ async function findFriends(networkDeviceList,port) {
                 initTimeStamp: res.initTimeStamp
             };
         } catch(e) {
-            console.log('no friend at ' + networkDevice.ip);
+            debug('no friend at ' + networkDevice.ip);
             return null;
         }
     }
@@ -70,7 +71,7 @@ async function findFriends(networkDeviceList,port) {
 };
 
 this.findServer= function (networkDeviceList) {
-    console.log('findServer');
+    debug('findServer');
     var output = {};
 
     var oldestNetworkDevice = null;

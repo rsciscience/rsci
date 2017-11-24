@@ -1,5 +1,6 @@
 "use strict";
 
+const debug = require('debug')('webApp.');
 const express = require('express')
 var bodyParser = require('body-parser')
 
@@ -20,18 +21,18 @@ this.app.post('/server/job/:id/:clientId/event',server_job_id_event.bind(this));
 this.init = function(port, props , onUpdateParrentState ) {
     this.state = props;
     this.onUpdateParrentState = onUpdateParrentState;
-    this.app.listen(port, () => console.log('Web Api up on port ' + port));
+    this.app.listen(port, () => debug('Web Api up on port ' + port));
 };
 
 this.setProps = function(props) {
-    console.log('WebApp - setProps ');
+    debug('setProps ');
     this.state.discoveryList = props.discoveryList;
 
 };
 
 
 function discovery (req, res)  {
-    console.log('API:discovery');
+    debug('API:discovery');
     function doWork(){
         var output =    {
             id: this.state.id,
@@ -45,7 +46,7 @@ function discovery (req, res)  {
     try{
         clientResponse =  doWork.bind(this)();
     }catch (ex) {
-        console.log(ex);
+        debug(ex);
         res.status(500).send('Something broke!')
         return ;
 
@@ -56,7 +57,7 @@ function discovery (req, res)  {
 
 function discovery_list (req, res)  {
 
-    console.log('API:discovery_list');
+    debug('API:discovery_list');
     function doWork(){
 
         var output =    {
@@ -72,7 +73,7 @@ function discovery_list (req, res)  {
     try{
         clientResponse =  doWork.bind(this)();
     }catch (ex) {
-        console.log(ex);
+        debug(ex);
         res.status(500).send('Something broke!')
         return;
     }
@@ -89,7 +90,7 @@ function client_job_stop(req, res) {
 }
 
 function server_job_id_event(req, res)  {
-    console.log('API:server_job_id_event');
+    debug('API:server_job_id_event');
 
     var job = {
         id: req.params.id,
