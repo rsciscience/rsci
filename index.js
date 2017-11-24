@@ -147,6 +147,7 @@ this.init = function(){
 
     //this.start(fakeDiscoveryLIst);
     //startJob();
+    
     discovery.search(this.state.cpuInterface).then(this.start);
 
     console.log(this.state.jobs);
