@@ -30,9 +30,9 @@ async function search (interfaces,port) {
 };
 
 async function findFriends(networkDeviceList,port) {
-
+    debug('findFriends');
     debug('Port',port);
-    async function callNetworkDevice(networkDevice,port) {
+    async function callNetworkDevice(networkDevice) {
         var options = {
             uri: 'http://' + networkDevice.ip + ':'+port+'/discovery',
             json: true
