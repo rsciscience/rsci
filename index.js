@@ -49,7 +49,6 @@ this.startJob = function(){
     var j = new job();
 
     function watchJobEvents (args){
-       debug('CLIENT:Calling home');
         sendServerJobEvent(args,this.state.server.ip, this.state.listeningPort, this.state.id ,this.state.job.id)
     }
 
@@ -63,7 +62,7 @@ this.startJob = function(){
 
 
 async function sendServerJobEvent(data, serverip, port,clientId,  jobId){
-    serverip = '192.168.100.105';
+    debug('sendServerJobEvent');
     var options = {
         uri: 'http://' + serverip + ':'+port+'/server/job/'+jobId +'/'+clientId +'/event',
         json: true,
@@ -136,6 +135,7 @@ this.start = function (discoveryList) {
     debug('server me ' , this.state.server.me);
     if (this.state.server.me == true ){
         debug('I\'m the server');
+        setInterval(dumpJobs.bind(this,this.state.jobs),15000);
     }else{
         this.startJob();
     }
@@ -159,7 +159,6 @@ this.init = function(){
     discovery.search(this.state.cpuInterface,this.state.listeningPort).then(this.start);
 
 
-    setInterval(dumpJobs.bind(this,this.state.jobs),15000);
 
 
 }.bind(this);

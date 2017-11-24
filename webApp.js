@@ -49,7 +49,6 @@ function discovery (req, res)  {
         debug(ex);
         res.status(500).send('Something broke!')
         return ;
-
     }
 
     res.send(clientResponse);
