@@ -5,15 +5,25 @@ this.arpScanner = arpScanner;
 
 this.search = search.bind(this);
 
-async function search (interface,port) {
+async function search (interfaces,port) {
 
-    var res;
-    try {
-        res = await this.arpScanner({ interface: interface, sudo: true });
-    }  catch(e) {
-        res = [];
-        console.log(e);
+    var res= [];
+
+    for (var i = 0, len = interfaces.length; i < len; i++) {
+        var interface  = interfaces[i];
+        console.log('  Trying Interface: ' + interface);
+        var partResults = [];
+        try {
+            partResults = await this.arpScanner({ interface: interface, sudo: true });
+        }  catch(e) {
+            partResults = [];
+            console.log(e);
+        }
+
+        res = res.concat(partResults);
     }
+
+
     var results =  await findFriends(res,port);
     this.lastSearchResults = results;
     return results;
@@ -26,10 +36,10 @@ async function findFriends(networkDeviceList,port) {
             uri: 'http://' + networkDevice.ip + ':'+port+'/discovery',
             json: true
         };
-        
+
         try {
             let res = await request(options);
-            
+
             console.log('   friend at ' + networkDevice.ip);
 
             return   {
@@ -49,14 +59,14 @@ async function findFriends(networkDeviceList,port) {
     function cleanFriendLIst(actual) {
         var newArray = new Array();
         for (var i = 0; i < actual.length; i++) {
-          if (actual[i]) {
-            newArray.push(actual[i]);
-          }
+            if (actual[i]) {
+                newArray.push(actual[i]);
+            }
         }
         return newArray;
-      }
+    }
 
-      return cleanFriendLIst(friendsList);  
+    return cleanFriendLIst(friendsList);  
 };
 
 this.findServer= function (networkDeviceList) {

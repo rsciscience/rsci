@@ -17,7 +17,7 @@ this.state = {
     discoveryList: [],
     jobs:[],
     listeningPort: 3003,
-    cpuInterface : 'en0',
+    cpuInterface : ['en0','wlan0' ],
     server:{
     }
 };
