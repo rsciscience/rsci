@@ -5,7 +5,7 @@ this.arpScanner = arpScanner;
 
 this.search = search.bind(this);
 
-async function search (interface) {
+async function search (interface,port) {
 
     var res;
     try {
@@ -14,16 +14,16 @@ async function search (interface) {
         res = [];
         console.log(e);
     }
-    var results =  await findFriends(res);
+    var results =  await findFriends(res,port);
     this.lastSearchResults = results;
     return results;
 };
 
-async function findFriends(networkDeviceList) {
+async function findFriends(networkDeviceList,port) {
 
     async function callNetworkDevice(networkDevice) {
         var options = {
-            uri: 'http://' + networkDevice.ip + ':3000/discovery',
+            uri: 'http://' + networkDevice.ip + ':'+port+'/discovery',
             json: true
         };
         
