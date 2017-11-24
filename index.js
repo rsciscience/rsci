@@ -152,7 +152,7 @@ this.init = function(){
             initTimeStamp: '2017-11-22T05:00:42.975Z' } ];
 
 
-    discovery.search(this.state.cpuInterface).then(this.start);
+    discovery.search(this.state.cpuInterface,this.state.listeningPort).then(this.start);
 
 
     setInterval(dumpJobs.bind(this,this.state.jobs),15000);
