@@ -254,9 +254,9 @@ this.init = function(){
 
     var fakeDiscoveryLIst = [
         {
-            "ip": "192.168.100.137",
+            "ip": "192.168.100.105",
             "id": "229449991",
-            "initTimeStamp": "2018-11-29T03:08:43.158Z"
+            "initTimeStamp": "2016-11-29T03:08:43.158Z"
         }
     ];
 
