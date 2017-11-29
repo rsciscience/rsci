@@ -4,7 +4,7 @@
   "description": "Rat Server Client Interface",
   "main": "index.js",
   "scripts": {
-    "start": "DEBUG=RSCI* node index.js",
+    "start": "concurrently --kill-others \"DEBUG=RSCI* node index.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "David McColgan",
@@ -12,6 +12,7 @@
   "dependencies": {
     "arpscan": "^0.6.0",
     "body-parser": "^1.18.2",
+    "concurrently": "^3.5.1",
     "debug": "^3.1.0",
     "event-emitter": "^0.3.5",
     "express": "^4.16.2",

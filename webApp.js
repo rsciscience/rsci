@@ -1,8 +1,10 @@
 "use strict";
 
 const debug = require('debug')('RSCI.webApp.');
-const express = require('express')
-var bodyParser = require('body-parser')
+const express = require('express');
+var bodyParser = require('body-parser');
+var path = require('path');
+
 
 this.app= express();
 this.app.use(bodyParser.urlencoded({
@@ -10,6 +12,10 @@ this.app.use(bodyParser.urlencoded({
 }));
 this.app.use(bodyParser.json())
 this.Objectstate = {};
+
+this.app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname + '/index.html'));
+});
 
 this.app.get('/discovery',discovery.bind(this));
 this.app.get('/discovery/list',discovery_list.bind(this));
