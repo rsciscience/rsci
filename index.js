@@ -1,6 +1,6 @@
 "use strict";
 
-const debug = require('debug')('index.');
+const debug = require('debug')('RSCI.index.');
 
 
 var webApp  = require('./webApp');
@@ -40,11 +40,11 @@ function leftPadWithZeros(number, length)
 };
 
 
-this.startJob = function(){
+this.startJob = function(jobId) {
     debug('startJob');
     debug(this);
     this.state.job= {
-        id:'JB_' + generateId()
+        id: jobId
     };
     var j = new job();
 
@@ -55,6 +55,7 @@ this.startJob = function(){
     j.on('Start',watchJobEvents.bind(this));
     j.on('ButtonPress', watchJobEvents.bind(this));
     j.on('Light', watchJobEvents.bind(this));
+    j.on('theFerg', watchJobEvents.bind(this));
 
     j.start();
 }.bind(this);
@@ -137,7 +138,7 @@ this.start = function (discoveryList) {
         debug('I\'m the server');
         setInterval(dumpJobs.bind(this,this.state.jobs),15000);
     }else{
-        this.startJob();
+        debug('I\'m the client');
     }
 
 
@@ -147,16 +148,24 @@ this.start = function (discoveryList) {
 this.init = function(){
     debug('init');
 
-    webApp.init(this.state.listeningPort, this.state, this.onUpdateState);
+    webApp.init(this.state.listeningPort, this.state, this.onUpdateState, this.startJob);
 
 
-    var fakeDiscoveryLIst = [ 
-        { ip: '192.168.100.105',
-            id: '266799123',
-            initTimeStamp: '2017-11-22T05:00:42.975Z' } ];
+    var fakeDiscoveryLIst = [
+        {
+          "ip": "192.168.100.121",
+          "id": "129193541",
+          "initTimeStamp": "2017-11-29T03:04:38.817Z"
+        },
+        {
+          "ip": "192.168.100.105",
+          "id": "229449991",
+          "initTimeStamp": "2017-11-29T03:08:43.158Z"
+        }
+      ];
 
-
-    discovery.search(this.state.cpuInterface,this.state.listeningPort).then(this.start);
+      this.start(fakeDiscoveryLIst);
+    //discovery.search(this.state.cpuInterface,this.state.listeningPort).then(this.start);
 
 
 

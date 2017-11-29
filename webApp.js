@@ -1,6 +1,6 @@
 "use strict";
 
-const debug = require('debug')('webApp.');
+const debug = require('debug')('RSCI.webApp.');
 const express = require('express')
 var bodyParser = require('body-parser')
 
@@ -12,15 +12,17 @@ this.app.use(bodyParser.json())
 this.Objectstate = {};
 
 this.app.get('/discovery',discovery.bind(this));
+this.app.get('/client/state',client_state.bind(this));
 this.app.get('/discovery/list',discovery_list.bind(this));
-this.app.post('/client/job/:id/start',client_job_start.bind(this));
+this.app.post('/client/job/start',client_job_start.bind(this));
 this.app.post('/client/job/:id/stop/start',client_job_start.bind(this));
 this.app.post('/server/job/:id/:clientId/event',server_job_id_event.bind(this));
 
 
-this.init = function(port, props , onUpdateParrentState ) {
+this.init = function(port, props , onUpdateParrentState, startJob ) {
     this.state = props;
     this.onUpdateParrentState = onUpdateParrentState;
+    this.startJob = startJob;
     this.app.listen(port, () => debug('Web Api up on port ' + port));
 };
 
@@ -30,6 +32,25 @@ this.setProps = function(props) {
 
 };
 
+function client_state (req, res)  {
+    debug('API:client_state');
+    function doWork(){
+        var output = this.state;
+        return  JSON.stringify( output);
+    };
+
+    var clientResponse = {}
+
+    try{
+        clientResponse =  doWork.bind(this)();
+    }catch (ex) {
+        debug(ex);
+        res.status(500).send('Something broke!')
+        return ;
+    }
+
+    res.send(clientResponse);
+}
 
 function discovery (req, res)  {
     debug('API:discovery');
@@ -81,7 +102,8 @@ function discovery_list (req, res)  {
 }
 
 function client_job_start(req, res)  {
-    res.status(500).send();
+    debug('API:client_job_start_event');
+    this.startJob();
 }
 
 function client_job_stop(req, res) {

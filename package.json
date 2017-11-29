@@ -4,7 +4,7 @@
   "description": "Rat Server Client Interface",
   "main": "index.js",
   "scripts": {
-    "start": "DEBUG=* node index.js",
+    "start": "DEBUG=RSCI* node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "David McColgan",
