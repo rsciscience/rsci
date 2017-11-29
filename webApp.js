@@ -12,17 +12,20 @@ this.app.use(bodyParser.json())
 this.Objectstate = {};
 
 this.app.get('/discovery',discovery.bind(this));
-this.app.get('/client/state',client_state.bind(this));
 this.app.get('/discovery/list',discovery_list.bind(this));
+this.app.get('/client/state',client_state.bind(this));
 this.app.post('/client/job/start',client_job_start.bind(this));
-this.app.post('/client/job/:id/stop/start',client_job_start.bind(this));
+this.app.post('/client/job/:id/stop',client_job_stop.bind(this));
+this.app.post('/server/job/start',server_job_start.bind(this));
 this.app.post('/server/job/:id/:clientId/event',server_job_id_event.bind(this));
 
 
-this.init = function(port, props , onUpdateParrentState, startJob ) {
+
+this.init = function(port, props , onUpdateParrentState, clientFunctions, serverFunctions ) {
     this.state = props;
     this.onUpdateParrentState = onUpdateParrentState;
-    this.startJob = startJob;
+    this.clientFunctions = clientFunctions;
+    this.serverFunctions = serverFunctions;
     this.app.listen(port, () => debug('Web Api up on port ' + port));
 };
 
@@ -103,8 +106,47 @@ function discovery_list (req, res)  {
 
 function client_job_start(req, res)  {
     debug('API:client_job_start_event');
-    this.startJob();
-}
+
+    function doWork(input){
+        
+        var output = this.clientFunctions.startJob(input.jobId);
+            return  JSON.stringify( output);
+        }
+    
+        var clientResponse = {}
+    
+        try{
+            clientResponse =  doWork.bind(this, req.body)();
+        }catch (ex) {
+            debug(ex);
+            res.status(500).send('Something broke!')
+            return;
+        }
+    
+        res.send(clientResponse);
+    }
+    
+function server_job_start(req, res)  {
+    debug('API:server_job_start_event');
+
+    function doWork(input){
+        
+        var output = this.serverFunctions.startJob(input.jobId);
+            return  JSON.stringify( output);
+        }
+    
+        var clientResponse = {}
+    
+        try{
+            clientResponse =  doWork.bind(this, req.body)();
+        }catch (ex) {
+            debug(ex);
+            res.status(500).send('Something broke!')
+            return;
+        }
+    
+        res.send(clientResponse);
+    }
 
 function client_job_stop(req, res) {
     res.status(500).send();

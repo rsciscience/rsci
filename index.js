@@ -12,7 +12,8 @@ debug('Init Discovery');
 const request = require('request-promise');
 
 var job = require('./job');
-
+this.client = {};
+this.server = {};
 
 this.state = {
     id : generateId(),
@@ -40,8 +41,8 @@ function leftPadWithZeros(number, length)
 };
 
 
-this.startJob = function(jobId) {
-    debug('startJob');
+this.client.startJob = function(jobId) {
+    debug('client.startJob');
     debug(this);
     this.state.job= {
         id: jobId
@@ -58,6 +59,48 @@ this.startJob = function(jobId) {
     j.on('theFerg', watchJobEvents.bind(this));
 
     j.start();
+    return {
+        clientId: this.state.id,
+        jobStartDate: new Date(),
+        jobId: jobId
+    };
+}.bind(this);
+
+this.server.startJob = async function(jobId) {
+    debug('server.startJob');
+
+        var payload = {
+            jobId: generateId()
+        };
+
+        var port = this.state.listeningPort;
+    
+    async function sendClientJobStart(client){
+        debug('sendClientJobStart');
+        
+        var options = {
+            uri: 'http://' + client.ip + ':'+ port +'/server/job/start',
+            json: true,
+            method:'POST',
+            body: payload
+        };
+    
+        try {
+            let res = await request(options);
+        } catch(e) {
+            debug('Error sending job event');
+        }
+        return res;
+    }
+
+    let calledClients = await Promise.all(this.state.discoveryList.map(sendClientJobStart));
+
+    return {
+        clientList: calledClients,
+        jobStartDate: new Date(),
+        jobId: jobId
+    };
+
 }.bind(this);
 
 
@@ -148,15 +191,10 @@ this.start = function (discoveryList) {
 this.init = function(){
     debug('init');
 
-    webApp.init(this.state.listeningPort, this.state, this.onUpdateState, this.startJob);
+    webApp.init(this.state.listeningPort, this.state, this.onUpdateState, this.client, this.server);
 
 
     var fakeDiscoveryLIst = [
-        {
-          "ip": "192.168.100.121",
-          "id": "129193541",
-          "initTimeStamp": "2017-11-29T03:04:38.817Z"
-        },
         {
           "ip": "192.168.100.105",
           "id": "229449991",
