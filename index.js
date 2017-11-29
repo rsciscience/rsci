@@ -1,5 +1,5 @@
 "use strict";
-
+var ip = require('ip');
 const debug = require('debug')('RSCI.index.');
 
 
@@ -67,6 +67,24 @@ this.client.startJob = function(jobId) {
     };
 }.bind(this);
 
+this.client.registerWithServer = async function(payload, serverip, port) {
+    debug('client.registerWithServer');
+
+        var options = {
+            uri: 'http://' + serverip + ':'+port+'/server/client/add',
+            json: true,
+            method:'POST',
+            body: payload
+        };
+    
+        try {
+            let res = await request(options);
+        } catch(e) {
+            debug('Error registering client');
+        }
+    
+}.bind(this);
+
 
 
 this.server.startJob = async function(jobId) {
@@ -107,6 +125,25 @@ this.server.startJob = async function(jobId) {
         jobStartDate: new Date(),
         jobId: jobId
     };
+
+}.bind(this);
+
+
+this.server.addClient = function(client) {
+    debug('server.addClient');
+
+    var isNewClient = true;
+
+   for (var i = 0; i < this.state.clientList.length; i++) {
+        if (this.state.clientList[i].ip === client.ip) {
+            isNewClient = false;
+        }
+   }
+
+   if (isNewClient) {
+    this.state.clientList.push(client);
+   }
+   return this.state.clientList;
 
 }.bind(this);
 
@@ -172,12 +209,13 @@ this.start = function (discoveryList) {
     debug('Received friend list');
     debug('Discovery List has ' +  discoveryList.length);
     this.state.discoveryList = discoveryList; 
-    this.state.discoveryList.push({
-        ip: '',
+    let me = {
+        ip: ip.address(),
         id: this.state.id,
         initTimeStamp: this.state.initTimeStamp,
         me: true
-    });
+    };
+    this.state.discoveryList.push(me);
     webApp.setProps(this.state);
 
     this.state.server = discovery.findServer(this.state.discoveryList);
@@ -189,6 +227,8 @@ this.start = function (discoveryList) {
         setInterval(dumpJobs.bind(this,this.state.jobs),15000);
     }else{
         debug('I\'m the client');
+        var payload = { ip: me.ip, id: me.id, initTimeStamp: me.initTimeStamp }
+        this.client.registerWithServer( payload, this.state.server.ip, this.state.listeningPort);
     }
 
     this.state.clientList =  [];
@@ -202,6 +242,8 @@ this.start = function (discoveryList) {
 
 
 }.bind(this);
+
+
 
 
 this.init = function(){

@@ -16,6 +16,7 @@ this.app.get('/discovery/list',discovery_list.bind(this));
 this.app.get('/client/state',client_state.bind(this));
 this.app.post('/client/job/start',client_job_start.bind(this));
 this.app.post('/client/job/:id/stop',client_job_stop.bind(this));
+this.app.post('/server/client/add',server_client_add.bind(this));
 this.app.post('/server/job/start',server_job_start.bind(this));
 this.app.post('/server/job/:id/:clientId/event',server_job_id_event.bind(this));
 
@@ -151,6 +152,28 @@ function server_job_start(req, res)  {
 function client_job_stop(req, res) {
     res.status(500).send();
 }
+
+function server_client_add(req, res)  {
+    debug('API:server_client_add');
+
+    function doWork(input){
+        
+        var output = this.serverFunctions.addClient(input);
+            return  JSON.stringify(output);
+        }
+    
+        var clientResponse = {}
+    
+        try{
+            clientResponse =  doWork.bind(this, req.body)();
+        }catch (ex) {
+            debug(ex);
+            res.status(500).send('Something broke!')
+            return;
+        }
+    
+        res.send(clientResponse);
+    }
 
 function server_job_id_event(req, res)  {
     debug('API:server_job_id_event');
