@@ -19,6 +19,7 @@ this.state = {
     id : generateId(),
     initTimeStamp: new Date(),
     discoveryList: [],
+    clientList: [],
     jobs:[],
     listeningPort: 3003,
     cpuInterface : ['en0','wlan0' ],
@@ -66,34 +67,40 @@ this.client.startJob = function(jobId) {
     };
 }.bind(this);
 
+
+
 this.server.startJob = async function(jobId) {
     debug('server.startJob');
 
-        var payload = {
-            jobId: generateId()
-        };
+    var payload = {
+        jobId: generateId()
+    };
 
-        var port = this.state.listeningPort;
-    
+    var port = this.state.listeningPort;
+
     async function sendClientJobStart(client){
         debug('sendClientJobStart');
-        
+
         var options = {
-            uri: 'http://' + client.ip + ':'+ port +'/server/job/start',
+            uri: 'http://' + client.ip + ':'+ port +'/client/job/start',
             json: true,
             method:'POST',
             body: payload
-        };
-    
+        }
+        
+        ;
+
         try {
             let res = await request(options);
+        return res;
+
         } catch(e) {
             debug('Error sending job event');
         }
-        return res;
+        return null;
     }
 
-    let calledClients = await Promise.all(this.state.discoveryList.map(sendClientJobStart));
+    let calledClients = await Promise.all(this.state.clientList.map(sendClientJobStart));
 
     return {
         clientList: calledClients,
@@ -157,15 +164,15 @@ function dumpJobs(jobs) {
 
 }
 
-    
+
 
 this.start = function (discoveryList) {
-    
+
     debug('start');
     debug('Received friend list');
     debug('Discovery List has ' +  discoveryList.length);
-    this.state.discoveylist = discoveryList; 
-    this.state.discoveylist.push({
+    this.state.discoveryList = discoveryList; 
+    this.state.discoveryList.push({
         ip: '',
         id: this.state.id,
         initTimeStamp: this.state.initTimeStamp,
@@ -173,7 +180,7 @@ this.start = function (discoveryList) {
     });
     webApp.setProps(this.state);
 
-    this.state.server = discovery.findServer(this.state.discoveylist);
+    this.state.server = discovery.findServer(this.state.discoveryList);
     debug('server' , this.state.server);
     debug('server' , this.state.server.id);
     debug('server me ' , this.state.server.me);
@@ -182,6 +189,15 @@ this.start = function (discoveryList) {
         setInterval(dumpJobs.bind(this,this.state.jobs),15000);
     }else{
         debug('I\'m the client');
+    }
+
+    this.state.clientList =  [];
+
+    for (var i = 0, len = this.state.discoveryList; i < len; i++) {
+        var client = this.state.discoveryList[i];
+        if(client.ip != this.state.server.ip ){
+            this.state.clientList.push(client);
+        } 
     }
 
 
@@ -196,13 +212,13 @@ this.init = function(){
 
     var fakeDiscoveryLIst = [
         {
-          "ip": "192.168.100.105",
-          "id": "229449991",
-          "initTimeStamp": "2017-11-29T03:08:43.158Z"
+            "ip": "192.168.100.137",
+            "id": "229449991",
+            "initTimeStamp": "2018-11-29T03:08:43.158Z"
         }
-      ];
+    ];
 
-      this.start(fakeDiscoveryLIst);
+    this.start(fakeDiscoveryLIst);
     //discovery.search(this.state.cpuInterface,this.state.listeningPort).then(this.start);
 
 
