@@ -14,12 +14,12 @@ export default new Router({
       component: job
     },
     {
-      path: '/',
+      path: '/admin',
       name: 'admin',
       component: admin
     },
     {
-      path: '/',
+      path: '/client',
       name: 'client',
       component: client
     }

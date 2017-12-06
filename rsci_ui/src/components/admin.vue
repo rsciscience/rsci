@@ -10,9 +10,10 @@
 export default {
   name: 'Admin',
   data () {
-    return {
-      msg: 'This is the admin page'
-    }
+    debugger
+    axios.get('http://localhost:3003/client/state').then((response) => {
+      console.log(response.data)
+    })
   }
 }
 </script>
