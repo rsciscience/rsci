@@ -4,7 +4,9 @@
   "description": "Rat Server Client Interface",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently --kill-others \"DEBUG=RSCI* node index.js\"",
+    "start": "concurrently \"npm run rsci_service\" \"npm run rsci_ui\"",
+    "rsci_ui": "npm run start --prefix rsci_ui",
+    "rsci_service": "DEBUG=RSCI* node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "David McColgan",
