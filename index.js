@@ -22,7 +22,7 @@ this.state = {
     clientList: [],
     jobs:[],
     listeningPort: 3003,
-    cpuInterface : ['en0','wlan0' ],
+    cpuInterface : ['eth0','en0','wlan0' ],
     server:{
     }
 };
@@ -220,11 +220,9 @@ this.start = function (discoveryList) {
 
     this.state.server = discovery.findServer(this.state.discoveryList);
     debug('server' , this.state.server);
-    debug('server' , this.state.server.id);
-    debug('server me ' , this.state.server.me);
+    debug('server' , this.state.server.ip);
     if (this.state.server.me == true ){
         debug('I\'m the server');
-        setInterval(dumpJobs.bind(this,this.state.jobs),15000);
     }else{
         debug('I\'m the client');
         var payload = { ip: me.ip, id: me.id, initTimeStamp: me.initTimeStamp }
