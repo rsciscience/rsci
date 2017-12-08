@@ -2,7 +2,7 @@
   <div class="job">
     <h1>{{ msg }}</h1>
     <h2>Job</h2>
-
+hi
   </div>
 </template>
 

@@ -1,19 +1,50 @@
 <template>
   <div class="admin">
-    <h1>{{ msg }}</h1>
-    <h2>Admin</h2>
+    <h1>Admin dbord for {{ id }}</h1>
+
+
+    <ul id="discoveryList">
+      <li v-for="item in discoveryList">
+        {{ item.ip }}
+        {{ item.me }}
+      </li>
+    </ul>
+
+    <ul id="jobs">
+      <li v-for="item in jobs">
+        {{ item.ip }}
+      </li>
+    </ul>
+
 
   </div>
 </template>
 
 <script>
+import {HTTP} from '../http-common'
+
 export default {
   name: 'Admin',
   data () {
-    debugger
-    axios.get('http://localhost:3003/client/state').then((response) => {
-      console.log(response.data)
-    })
+    return {
+      id: '',
+      discoveryList: [],
+      jobs: []
+    }
+  },
+  mounted () {
+    function err (e) {
+      this.errors.push(e)
+    }
+
+    function success (response) {
+      console.log(response)
+      this.id = response.data.id
+      this.discoveryList = response.data.discoveryList
+      this.jobs = response.data.jobs
+    }
+
+    HTTP.get('client/state').then(success.bind(this)).catch(err.bind(this))
   }
 }
 </script>

@@ -16,6 +16,12 @@ this.Objectstate = {};
 this.app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 });
+  
+this.app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 this.app.get('/discovery',discovery.bind(this));
 this.app.get('/discovery/list',discovery_list.bind(this));
