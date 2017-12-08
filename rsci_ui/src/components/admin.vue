@@ -11,17 +11,34 @@
     </ul>
 
     <ul id="jobs">
-      <li v-for="item in jobs">
-        {{ item.ip }}
+      <li v-for="(job, index) in jobs" :key='index'>
+        'JobId'
+        {{ job.id }}
+          <ul id="clients">
+          <li v-for="(client, index) in job.clients" :key='index'>
+            'ClientId'
+            {{ client.id }}
+              <ul id="actions">
+              <li v-for="(action, index) in client.actions" :key='index'>
+                'ActionId'
+                {{ action.eventType }}
+                {{ action.eventTimeStamp }}
+              </li>
+    </ul>
+          </li>
+    </ul>
       </li>
     </ul>
 
+    <button v-on:click="startJob">Start Rat Job</button>
 
   </div>
 </template>
 
 <script>
 import {HTTP} from '../http-common'
+// import {io} from '../socket.io.js'
+// const io = require('socket.io-client')
 
 export default {
   name: 'Admin',
@@ -29,10 +46,16 @@ export default {
     return {
       id: '',
       discoveryList: [],
-      jobs: []
+      jobs: [{ip: '1231244'}]
     }
   },
   mounted () {
+    var socket = io.connect('http://localhost:3003')
+    socket.on('news', function (data) {
+      console.log(data)
+      socket.emit('my other event', { my: 'data' })
+    })
+
     function err (e) {
       this.errors.push(e)
     }
@@ -45,6 +68,19 @@ export default {
     }
 
     HTTP.get('client/state').then(success.bind(this)).catch(err.bind(this))
+  },
+  methods: {
+    startJob: function () {
+      function err (e) {
+        this.errors.push(e)
+      }
+
+      function success (response) {
+        console.log('Job Started!')
+      }
+
+      HTTP.post('server/job/start', { jobId: '1234' }).then(success.bind(this)).catch(err.bind(this))
+    }
   }
 }
 </script>

@@ -4,9 +4,19 @@ const debug = require('debug')('RSCI.webApp.');
 const express = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');
-
-
+      
 this.app= express();
+
+this.server = require('http').Server(this.app);
+this.io = require('socket.io')(this.server);
+
+this.io.on('connection', function (socket) {
+    socket.emit('news', { hello: 'world' });
+    socket.on('my other event', function (data) {
+      console.log(data);
+    });
+  });
+
 this.app.use(bodyParser.urlencoded({
   extended: true
 }));
