@@ -44,8 +44,8 @@ export default {
     connect: function () {
       console.log('socket connected')
     },
-    onnews: function (val) {
-      console.log('news', val)
+    server_job_id_event: function (val) {
+      console.log('server_job_id_event', val)
     }
   },
   data () {
@@ -56,7 +56,7 @@ export default {
     }
   },
   mounted () {
-    this.$socket.emit('onevent', {})
+   // this.$socket.emit('onevent', {})
 
     function err (e) {
       this.errors.push(e)
