@@ -240,7 +240,7 @@ function server_job_id_event(req, res)  {
   actions.push(req.body);
 
   this.onUpdateParrentState(this.state);
-  this.io.emit(('server_job_id_event', req.body);
+  this.io.emit('server_job_id_event', req.body);
 
   res.status(200).send();
 }
