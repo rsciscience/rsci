@@ -8,11 +8,11 @@ var path = require('path');
 this.app= express();
 
 this.server = require('http').Server(this.app);
-this.io = require('socket.io')(this.server);
+this.io = require('socket.io')(this.server,{transports: ['polling', 'websocket']});
 
 this.io.on('connection', function (socket) {
-    socket.emit('news', { hello: 'world' });
-    socket.on('my other event', function (data) {
+    
+  socket.on('onevent', function (data) {
       console.log(data);
     });
   });
@@ -28,9 +28,13 @@ this.app.get('/', function(req, res) {
 });
   
 this.app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
+        res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+        res.header("Access-Control-Allow-Credentials", "true");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        res.header("Access-Control-Allow-Headers", "Content-Type");
+        res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+        next();
+
 });
 
 this.app.get('/discovery',discovery.bind(this));
@@ -49,7 +53,9 @@ this.init = function(port, props , onUpdateParrentState, clientFunctions, server
     this.onUpdateParrentState = onUpdateParrentState;
     this.clientFunctions = clientFunctions;
     this.serverFunctions = serverFunctions;
-    this.app.listen(port, () => debug('Web Api up on port ' + port));
+    this.server.listen(port,  'localhost', function() {
+      debug("... Web App up");
+    });
 };
 
 this.setProps = function(props) {
@@ -206,7 +212,6 @@ function server_job_id_event(req, res)  {
     }
     var knownJob = false;
     for (var i = 0, len = this.state.jobs.length; i < len; i++) {
-        
         if(req.params.id == this.state.jobs[i].id){
             job = this.state.jobs[i];
             knownJob = true;
@@ -217,7 +222,6 @@ function server_job_id_event(req, res)  {
     if(!knownJob){
         this.state.jobs.push(job);
     }
-
 
     var clients = job.clients;
 
@@ -236,7 +240,8 @@ function server_job_id_event(req, res)  {
     var actions = client.actions;
     actions.push(req.body);
 
-    this.onUpdateParrentState(this.state);
+  this.onUpdateParrentState(this.state);
+  socket.emit('server_job_id_event', req.body);
 
     res.status(200).send();
 }

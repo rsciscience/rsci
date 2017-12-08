@@ -14,19 +14,19 @@
       <li v-for="(job, index) in jobs" :key='index'>
         'JobId'
         {{ job.id }}
-          <ul id="clients">
+        <ul id="clients">
           <li v-for="(client, index) in job.clients" :key='index'>
             'ClientId'
             {{ client.id }}
-              <ul id="actions">
+            <ul id="actions">
               <li v-for="(action, index) in client.actions" :key='index'>
                 'ActionId'
                 {{ action.eventType }}
                 {{ action.eventTimeStamp }}
               </li>
-    </ul>
+            </ul>
           </li>
-    </ul>
+        </ul>
       </li>
     </ul>
 
@@ -37,11 +37,17 @@
 
 <script>
 import {HTTP} from '../http-common'
-// import {io} from '../socket.io.js'
-// const io = require('socket.io-client')
 
 export default {
   name: 'Admin',
+  sockets: {
+    connect: function () {
+      console.log('socket connected')
+    },
+    onnews: function (val) {
+      console.log('news', val)
+    }
+  },
   data () {
     return {
       id: '',
@@ -50,11 +56,7 @@ export default {
     }
   },
   mounted () {
-    var socket = io.connect('http://localhost:3003')
-    socket.on('news', function (data) {
-      console.log(data)
-      socket.emit('my other event', { my: 'data' })
-    })
+    this.$socket.emit('onevent', {})
 
     function err (e) {
       this.errors.push(e)

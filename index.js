@@ -260,7 +260,7 @@ this.init = function(){
         }
     ];
 
-    //this.start(fakeDiscoveryLIst);
+  //this.start(fakeDiscoveryLIst);
     discovery.search(this.state.cpuInterface,this.state.listeningPort).then(this.start);
 
 
