@@ -23,7 +23,7 @@ this.io.on('connection', function (socket) {
 
 
 this.getClientCommunicationFunctions = function (listen) {
-  debug.log('getClientCommunicationFunctions');
+  debug('getClientCommunicationFunctions');
   this.externalJobListen = listen;
   return {
     start: (job) => { this.io.emit('client_job_start', job)},

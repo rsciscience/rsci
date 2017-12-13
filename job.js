@@ -6,7 +6,8 @@ var base  = class base {
     constructor(jobId) {
         this.id = jobId;
         this.start = function(clientCommunicationFunctions) {
-            this.uiCalls = clientCommunicationFunctions;
+          this.uiCalls = clientCommunicationFunctions;
+          this.state = {};
             this.emit('Start', {eventTimeStamp:new Date(), eventType:'Start' } );
             this.uiCalls.start({ id: this.id });
 
@@ -18,12 +19,15 @@ var base  = class base {
 
         this.listen = function(event) {
             this.emit(event.type, {eventTimeStamp:new Date(), eventType: event.type }  ); 
-
+            this.state[event.type]++;
+        
             if (event.type === 'btn_blue_onClick') {
                 this.emit('Action', {eventTimeStamp:new Date(), eventType:'Flash' } );
 
                 this.uiCalls.emitAction({ type: 'Flash' });
             }
+
+
         }.bind(this);
     };
 
