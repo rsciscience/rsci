@@ -1,6 +1,6 @@
 <template>
   <div class="admin">
-    <h1>Admin dbord for {{ id }}</h1>
+    <h1>Admin {{ id }}</h1>
 
 
     <ul id="discoveryList">
@@ -10,19 +10,20 @@
       </li>
     </ul>
 
+
+    <h1> {{ lastAction.eventType }}  {{ lastAction.eventTimeStamp }} </h1>
+
+
+
     <ul id="jobs">
       <li v-for="(job, index) in jobs" :key='index'>
-        'JobId'
-        {{ job.id }}
+        Job: {{ job.id }}
         <ul id="clients">
           <li v-for="(client, index) in job.clients" :key='index'>
-            'ClientId'
-            {{ client.id }}
+            ClientId: {{ client.id }}
             <ul id="actions">
               <li v-for="(action, index) in client.actions" :key='index'>
-                'ActionId'
-                {{ action.eventType }}
-                {{ action.eventTimeStamp }}
+                {{ action.eventType }} {{ action.eventTimeStamp }}
               </li>
             </ul>
           </li>
@@ -45,6 +46,7 @@ export default {
       console.log('socket connected')
     },
     server_job_id_event: function (val) {
+      this.lastAction = val
       console.log('server_job_id_event', val)
     }
   },
@@ -52,7 +54,8 @@ export default {
     return {
       id: '',
       discoveryList: [],
-      jobs: [{ip: '1231244'}]
+      jobs: [{ip: '1231244'}],
+      lastAction: {}
     }
   },
   mounted () {
@@ -97,7 +100,6 @@ ul {
   padding: 0;
 }
 li {
-  display: inline-block;
   margin: 0 10px;
 }
 a {
