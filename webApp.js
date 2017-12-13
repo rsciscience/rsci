@@ -10,11 +10,27 @@ this.app= express();
 this.server = require('http').Server(this.app);
 this.io = require('socket.io')(this.server,{transports: ['polling', 'websocket']});
 
+
 this.io.on('connection', function (socket) {
-  socket.on('onevent', function (data) {
+  socket.on('client_job_onevent', function (data) {
     console.log(data);
-  });
+    if (this.externalJobListen) {
+      this.externalJobListen(data);
+    } else {
+      throw ( 'No externalJobListen' );
+    }
+  }.bind(this));
 });
+
+
+this.getClientCommunicationFunctions = (listen) => {
+  this.externalJobListen = listen;
+  return {
+    start: (job) => { this.io.emit('client_job_start', job)},
+    stop: (job) => { this.io.emit('client_job_stop', job)},
+    emitAction: (action) => { this.io.emit('client_job_action', action)},
+  }
+};
 
 this.app.use(bodyParser.urlencoded({
   extended: true
@@ -25,7 +41,6 @@ this.Objectstate = {};
 this.app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname + '/index.html'));
 });
-
 this.app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Credentials", "true");

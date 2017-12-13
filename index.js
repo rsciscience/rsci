@@ -48,18 +48,17 @@ this.client.startJob = function(jobId) {
     this.state.job= {
         id: jobId
     };
-    var j = new job();
-
     function watchJobEvents (args){
         sendServerJobEvent(args,this.state.server.ip, this.state.listeningPort, this.state.id ,this.state.job.id)
     }
+    var j = new job(jobId);
 
     j.on('Start',watchJobEvents.bind(this));
-    j.on('ButtonPress', watchJobEvents.bind(this));
-    j.on('Light', watchJobEvents.bind(this));
-    j.on('theFerg', watchJobEvents.bind(this));
+    j.on('Stop',watchJobEvents.bind(this));
+    j.on('Event',watchJobEvents.bind(this));
+    j.on('Action',watchJobEvents.bind(this));
 
-    j.start();
+    j.start(this.state.clientCommunicationFunctions(j.listen));
     return {
         clientId: this.state.id,
         jobStartDate: new Date(),
@@ -248,7 +247,7 @@ this.init = function(){
     debug('init');
 
     webApp.init(this.state.listeningPort, this.state, this.onUpdateState, this.client, this.server);
-
+    this.state.clientCommunicationFunctions = webApp.getClientCommunicationFunctions();
 
     var fakeDiscoveryLIst = [
         {
