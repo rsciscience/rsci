@@ -13,18 +13,18 @@ var base  = class base {
             setTimeout(() => {
                 this.emit('Stop', {eventTimeStamp:new Date(), eventType:'Stop' } );
                 this.uiCalls.stop({ id: this.id });
-            }, 10000);
+            }, 30000);
         };
 
-        this.listen = (event) => {
+        this.listen = function(event) {
             this.emit(event.type, {eventTimeStamp:new Date(), eventType: event.type }  ); 
 
-            if (event.type === btnBlueOnClick) {
-                this.emit('Action', {eventTimeStamp:new Date(), eventType:'Flash' } );
+            if (event.type === 'btn_blue_onClick') {
+                this.emit('Action', {eventTimeStamp:new Date(), type:'Flash' } );
 
                 this.uiCalls.emitAction({ type: 'Flash' });
             }
-        };
+        }.bind(this);
     };
 
 };

@@ -15,15 +15,18 @@ this.io.on('connection', function (socket) {
   socket.on('client_job_onevent', function (data) {
     console.log(data);
     if (this.externalJobListen) {
+      console.log(this.externalJobListen);
       this.externalJobListen(data);
     } else {
       throw ( 'No externalJobListen' );
     }
   }.bind(this));
-});
+}.bind(this));
 
 
-this.getClientCommunicationFunctions = (listen) => {
+this.getClientCommunicationFunctions = function (listen) {
+  console.log('getClientCommunicationFunctions');
+  console.log(listen);
   this.externalJobListen = listen;
   return {
     start: (job) => { this.io.emit('client_job_start', job)},

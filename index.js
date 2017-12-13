@@ -58,7 +58,7 @@ this.client.startJob = function(jobId) {
     j.on('Event',watchJobEvents.bind(this));
     j.on('Action',watchJobEvents.bind(this));
 
-    j.start(this.state.clientCommunicationFunctions(j.listen));
+    j.start(webApp.getClientCommunicationFunctions(j.listen));
     return {
         clientId: this.state.id,
         jobStartDate: new Date(),
@@ -247,7 +247,6 @@ this.init = function(){
     debug('init');
 
     webApp.init(this.state.listeningPort, this.state, this.onUpdateState, this.client, this.server);
-    this.state.clientCommunicationFunctions = webApp.getClientCommunicationFunctions();
 
     var fakeDiscoveryLIst = [
         {

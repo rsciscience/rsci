@@ -2,7 +2,7 @@
   <div class="job">
     <div>Job {{ job.id }}</div>
 
-    <div id="scene_1" v-if="jobRunning" class="scene">
+    <div id="scene_1" v-if="jobRunning" v-bind:class="{flashing: isFlashing}"  class="scene">
 
       <button v-on:click="btnBlueOnClick" class="rat-btn btn-blue"></button>
       <button v-on:click="btnRedOnClick" class="rat-btn btn-red"></button>
@@ -33,6 +33,19 @@ export default {
       this.job = val
       this.jobRunning = false
       console.log('client_job_stop', val)
+    },
+    client_job_action: function (action) {
+      console.log('client_job_action', action)
+      this.isFlashing = true
+      setTimeout(() => {
+        this.isFlashing = !this.isFlashing
+        setTimeout(() => {
+          this.isFlashing = !this.isFlashing
+          setTimeout(() => {
+            this.isFlashing = !this.isFlashing
+          }, 100)
+        }, 100)
+      }, 100)
     }
   },
   data () {
@@ -41,7 +54,8 @@ export default {
         id: 'No Job'
 
       },
-      jobRunning: false
+      jobRunning: false,
+      isFlashing: false
     }
   },
   mounted () {
@@ -50,11 +64,11 @@ export default {
   methods: {
     btnRedOnClick: function () {
       console.log('Btn Red Clicked!')
-      this.$socket.emit('client_job_onevent', {type: 'btn red'})
+      this.$socket.emit('client_job_onevent', {type: 'btn_red_onClick'})
     },
     btnBlueOnClick: function () {
       console.log('Btn Blue Clicked!')
-      this.$socket.emit('client_job_onevent', {type: 'btn blue'})
+      this.$socket.emit('client_job_onevent', {type: 'btn_blue_onClick'})
     }
   }
 }
@@ -95,6 +109,9 @@ a {
 }
 .btn-red {
   background-color: red;
+}
+.flashing {
+  background-color: white;
 }
 </style>
 
