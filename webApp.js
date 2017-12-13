@@ -13,9 +13,7 @@ this.io = require('socket.io')(this.server,{transports: ['polling', 'websocket']
 
 this.io.on('connection', function (socket) {
   socket.on('client_job_onevent', function (data) {
-    console.log(data);
     if (this.externalJobListen) {
-      console.log(this.externalJobListen);
       this.externalJobListen(data);
     } else {
       throw ( 'No externalJobListen' );
@@ -25,8 +23,7 @@ this.io.on('connection', function (socket) {
 
 
 this.getClientCommunicationFunctions = function (listen) {
-  console.log('getClientCommunicationFunctions');
-  console.log(listen);
+  debug.log('getClientCommunicationFunctions');
   this.externalJobListen = listen;
   return {
     start: (job) => { this.io.emit('client_job_start', job)},

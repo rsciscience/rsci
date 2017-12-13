@@ -44,7 +44,6 @@ function leftPadWithZeros(number, length)
 
 this.client.startJob = function(jobId) {
     debug('client.startJob');
-    debug(this);
     this.state.job= {
         id: jobId
     };
@@ -133,70 +132,70 @@ this.server.addClient = function(client) {
 
     var isNewClient = true;
 
-   for (var i = 0; i < this.state.clientList.length; i++) {
-        if (this.state.clientList[i].ip === client.ip) {
-            isNewClient = false;
-        }
-   }
+  for (var i = 0; i < this.state.clientList.length; i++) {
+    if (this.state.clientList[i].ip === client.ip) {
+      isNewClient = false;
+    }
+  }
 
-   if (isNewClient) {
+  if (isNewClient) {
     this.state.clientList.push(client);
-   }
-   return this.state.clientList;
+  }
+  return this.state.clientList;
 
 }.bind(this);
 
 
 
 async function sendServerJobEvent(data, serverip, port,clientId,  jobId){
-    debug('sendServerJobEvent');
-    var options = {
-        uri: 'http://' + serverip + ':'+port+'/server/job/'+jobId +'/'+clientId +'/event',
-        json: true,
-        method:'POST',
-        body:data
-    };
+  debug('sendServerJobEvent');
+  var options = {
+    uri: 'http://' + serverip + ':'+port+'/server/job/'+jobId +'/'+clientId +'/event',
+    json: true,
+    method:'POST',
+    body:data
+  };
 
-    try {
-        let res = await request(options);
-    } catch(e) {
-        debug('Error sending job event');
-    }
+  try {
+    let res = await request(options);
+  } catch(e) {
+    debug('Error sending job event');
+  }
 
 }
 
 
 
 this.onUpdateState= function (data){
-    this.state = data;
-    //debug('Index - State Change');
+  this.state = data;
+  //debug('Index - State Change');
 };
 
 
 function dumpJobs(jobs) {
-    debug('FriendlyJobStatusDump');
-    debug("Job Count:" + jobs.length) ;
+  debug('FriendlyJobStatusDump');
+  debug("Job Count:" + jobs.length) ;
 
-    for (var i = 0, len = jobs.length ; i < len; i++) {
-        var job = this.state.jobs[i];
-        debug("Job:" + job.id);
-        debug(job.clients.length) ;
+  for (var i = 0, len = jobs.length ; i < len; i++) {
+    var job = this.state.jobs[i];
+    debug("Job:" + job.id);
+    debug(job.clients.length) ;
 
-        for (var j = 0, lenj = job.clients.length  ; j < lenj; j++) {
+    for (var j = 0, lenj = job.clients.length  ; j < lenj; j++) {
 
-            var client  = job.clients[j];
-            debug('  Client:' + client.id);
-            debug(client.actions.length) ;
+      var client  = job.clients[j];
+      debug('  Client:' + client.id);
+      debug(client.actions.length) ;
 
-            for (var k = 0, lenk = client.actions.length-1 ; k < lenk; k++) {
-                var action = client.actions[k]
-                debug('    ' + action.eventType);
+      for (var k = 0, lenk = client.actions.length-1 ; k < lenk; k++) {
+        var action = client.actions[k]
+        debug('    ' + action.eventType);
 
-            }
-
-        }
+      }
 
     }
+
+  }
 
 }
 
@@ -204,38 +203,38 @@ function dumpJobs(jobs) {
 
 this.start = function (discoveryList) {
 
-    debug('start');
-    debug('Received friend list');
-    debug('Discovery List has ' +  discoveryList.length);
-    this.state.discoveryList = discoveryList; 
-    let me = {
-        ip: ip.address(),
-        id: this.state.id,
-        initTimeStamp: this.state.initTimeStamp,
-        me: true
-    };
-    this.state.discoveryList.push(me);
-    webApp.setProps(this.state);
+  debug('start');
+  debug('Received friend list');
+  debug('Discovery List has ' +  discoveryList.length);
+  this.state.discoveryList = discoveryList; 
+  let me = {
+    ip: ip.address(),
+    id: this.state.id,
+    initTimeStamp: this.state.initTimeStamp,
+    me: true
+  };
+  this.state.discoveryList.push(me);
+  webApp.setProps(this.state);
 
-    this.state.server = discovery.findServer(this.state.discoveryList);
-    debug('server' , this.state.server);
-    debug('server' , this.state.server.ip);
-    if (this.state.server.me == true ){
-        debug('I\'m the server');
-    }else{
-        debug('I\'m the client');
-        var payload = { ip: me.ip, id: me.id, initTimeStamp: me.initTimeStamp }
-        this.client.registerWithServer( payload, this.state.server.ip, this.state.listeningPort);
-    }
+  this.state.server = discovery.findServer(this.state.discoveryList);
+  debug('server' , this.state.server);
+  debug('server' , this.state.server.ip);
+  if (this.state.server.me == true ){
+    debug('I\'m the server');
+  }else{
+    debug('I\'m the client');
+    var payload = { ip: me.ip, id: me.id, initTimeStamp: me.initTimeStamp }
+    this.client.registerWithServer( payload, this.state.server.ip, this.state.listeningPort);
+  }
 
-    this.state.clientList =  [];
+  this.state.clientList =  [];
 
-    for (var i = 0, len = this.state.discoveryList; i < len; i++) {
-        var client = this.state.discoveryList[i];
-        if(client.ip != this.state.server.ip ){
-            this.state.clientList.push(client);
-        } 
-    }
+  for (var i = 0, len = this.state.discoveryList; i < len; i++) {
+    var client = this.state.discoveryList[i];
+    if(client.ip != this.state.server.ip ){
+      this.state.clientList.push(client);
+    } 
+  }
 
 
 }.bind(this);
@@ -244,20 +243,20 @@ this.start = function (discoveryList) {
 
 
 this.init = function(){
-    debug('init');
+  debug('init');
 
-    webApp.init(this.state.listeningPort, this.state, this.onUpdateState, this.client, this.server);
+  webApp.init(this.state.listeningPort, this.state, this.onUpdateState, this.client, this.server);
 
-    var fakeDiscoveryLIst = [
-        {
-            "ip": "192.168.100.105",
-            "id": "229449991",
-            "initTimeStamp": "2016-11-29T03:08:43.158Z"
-        }
-    ];
+  var fakeDiscoveryLIst = [
+    {
+      "ip": "192.168.100.105",
+      "id": "229449991",
+      "initTimeStamp": "2016-11-29T03:08:43.158Z"
+    }
+  ];
 
   //this.start(fakeDiscoveryLIst);
-    discovery.search(this.state.cpuInterface,this.state.listeningPort).then(this.start);
+  discovery.search(this.state.cpuInterface,this.state.listeningPort).then(this.start);
 
 
 

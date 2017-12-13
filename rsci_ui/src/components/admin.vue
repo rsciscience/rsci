@@ -2,19 +2,28 @@
   <div class="admin">
     <h1>Admin {{ id }}</h1>
 
+    <h2>Clients</h2>
+    <ul id="clientlist">
+      <li v-for="item in clientList">
+        {{ item.ip }} ({{ item.id }})
+      </li>
+    </ul>
 
-    <ul id="discoveryList">
+    <h2>Discovery Results</h2>
+    <ul id="discoverylist">
       <li v-for="item in discoveryList">
-        {{ item.ip }}
-        {{ item.me }}
+        {{ item.ip }} 
+        <span  v-if="item.me" >Me</span>
       </li>
     </ul>
 
 
+    <h2>Last Action</h2>
     <h1> {{ lastAction.eventType }}  {{ lastAction.eventTimeStamp }} </h1>
 
 
 
+    <h2>Job Details</h2>
     <ul id="jobs">
       <li v-for="(job, index) in jobs" :key='index'>
         Job: {{ job.id }}
@@ -54,6 +63,7 @@ export default {
     return {
       id: '',
       discoveryList: [],
+      clientList: [],
       jobs: [{ip: '1231244'}],
       lastAction: {}
     }
@@ -69,6 +79,7 @@ export default {
       console.log(response)
       this.id = response.data.id
       this.discoveryList = response.data.discoveryList
+      this.clientList = response.data.clientList
       this.jobs = response.data.jobs
     }
 

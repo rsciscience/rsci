@@ -20,7 +20,7 @@ var base  = class base {
             this.emit(event.type, {eventTimeStamp:new Date(), eventType: event.type }  ); 
 
             if (event.type === 'btn_blue_onClick') {
-                this.emit('Action', {eventTimeStamp:new Date(), type:'Flash' } );
+                this.emit('Action', {eventTimeStamp:new Date(), eventType:'Flash' } );
 
                 this.uiCalls.emitAction({ type: 'Flash' });
             }

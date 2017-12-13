@@ -27,7 +27,7 @@ export default {
     client_job_start: function (val) {
       this.job = val
       this.jobRunning = true
-      console.log('client_job_start', val)
+      console.log('client_job_start')
     },
     client_job_stop: function (val) {
       this.job = val
@@ -35,7 +35,7 @@ export default {
       console.log('client_job_stop', val)
     },
     client_job_action: function (action) {
-      console.log('client_job_action', action)
+      console.log('client_job_action')
       this.isFlashing = true
       setTimeout(() => {
         this.isFlashing = !this.isFlashing
