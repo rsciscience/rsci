@@ -17,8 +17,8 @@ var base  = class base {
             }, 30000);
         };
 
-        this.listen = function(event) {
-            this.emit(event.type, {eventTimeStamp:new Date(), eventType: event.type }  ); 
+      this.listen = function(event) {
+            this.emit('Action', {eventTimeStamp:new Date(), eventType: event.type }  ); 
             this.state[event.type]++;
         
             if (event.type === 'btn_blue_onClick') {
