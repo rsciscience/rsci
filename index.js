@@ -22,7 +22,7 @@ this.state = {
   clientList: [],
   jobs: [],
   listeningPort: 3003,
-  cpuInterface: ['eth0', 'en0', 'wlan0','enp0s3'],
+  cpuInterface: ['eth0', 'en0', 'wlan0', 'enp0s3'],
   server: {
   }
 };
@@ -85,6 +85,12 @@ this.client.registerWithServer = async function (payload, serverip, port) {
 this.client.registerServer = function (payload) {
   debug('client.registerServer');
   this.state.server = payload;
+
+
+  var payload = { ip: this.state.me.ip, id: this.state.me.id, initTimeStamp: this.state.me.initTimeStamp }
+  this.client.registerWithServer(payload, this.state.server.ip, this.state.listeningPort);
+
+
   return { success: true };
 }.bind(this);
 
@@ -151,11 +157,11 @@ this.server.addClient = function (client) {
 
 this.server.register = function () {
   debug('server.register');
-    
+
   this.state.server = this.state.me;
 
   function gotDiscoveryList(discoveryList) {
-  debug('gotDiscoveryList');
+    debug('gotDiscoveryList');
 
     this.state.discoveryList = discoveryList;
 
@@ -167,8 +173,8 @@ this.server.register = function () {
 
     this.server.sendDiscoveryListNewServer(payload);
   }
-  function err (e){
-    debug('error getting discovery list',e);
+  function err(e) {
+    debug('error getting discovery list', e);
   }
 
 
