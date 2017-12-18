@@ -1,6 +1,8 @@
 import axios from 'axios'
+import url from 'url'
 
+var location = url.parse(window.location.href)
 export const HTTP = axios.create({
-  baseURL: 'http://localhost:3003/'
+  baseURL: 'http://' + location.hostname + ':3003/'
 
 })

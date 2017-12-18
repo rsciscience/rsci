@@ -4,8 +4,11 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import VueSocketio from 'vue-socket.io'
+import url from 'url'
 
-Vue.use(VueSocketio, 'http://localhost:3003')
+var location = url.parse(window.location.href)
+
+Vue.use(VueSocketio, 'http://' + location.hostname + ':3003')
 
 Vue.config.productionTip = false
 /* eslint-disable no-new */
