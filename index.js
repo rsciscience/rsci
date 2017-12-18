@@ -155,6 +155,7 @@ this.server.register = function () {
   this.state.server = this.state.me;
 
   function gotDiscoveryList(discoveryList) {
+  debug('gotDiscoveryList');
 
     this.state.discoveryList = discoveryList;
 
@@ -166,10 +167,12 @@ this.server.register = function () {
 
     this.server.sendDiscoveryListNewServer(payload);
   }
+  function err (e){
+    debug('error getting discovery list',e);
+  }
 
 
-
-  discovery.search(this.state.cpuInterface, this.state.listeningPort).then(gotList.bind(this));
+  discovery.search(this.state.cpuInterface, this.state.listeningPort).then(gotDiscoveryList.bind(this));
 
 
 }.bind(this);

@@ -175,7 +175,7 @@ function client_server_register(req, res)  {
   debug('API:client_server_register');
 
   function doWork(input){
-    var output = this.clientFunctions.serverRegister(input);
+    var output = this.clientFunctions.registerServer(input);
     return  JSON.stringify( output);
   }
 
