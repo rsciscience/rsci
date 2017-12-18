@@ -4,6 +4,10 @@
     <button v-on:click="startJob">Start Rat Job</button>
     <button v-on:click="becomeServer">Become Server</button>
 
+    <h2>Server</h2>
+    {{ server.ip  }}
+    {{ server.me  }}
+
     <h2>Clients</h2>
     <ul id="clientlist">
       <li v-for="item in clientList">
@@ -63,6 +67,7 @@ export default {
   data () {
     return {
       id: '',
+      server: {},
       discoveryList: [],
       clientList: [],
       jobs: [{ip: '1231244'}],
@@ -79,6 +84,7 @@ export default {
     function success (response) {
       console.log(response)
       this.id = response.data.id
+      this.server = response.data.server
       this.discoveryList = response.data.discoveryList
       this.clientList = response.data.clientList
       this.jobs = response.data.jobs

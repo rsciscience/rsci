@@ -85,7 +85,7 @@ this.client.registerWithServer = async function (payload, serverip, port) {
 this.client.registerServer = function (payload) {
   debug('client.registerServer');
   this.state.server = payload;
-
+  this.state.clientList = [];
 
   var payload = { ip: this.state.me.ip, id: this.state.me.id, initTimeStamp: this.state.me.initTimeStamp }
   this.client.registerWithServer(payload, this.state.server.ip, this.state.listeningPort);
