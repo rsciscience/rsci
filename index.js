@@ -22,7 +22,7 @@ this.state = {
   clientList: [],
   jobs: [],
   listeningPort: 3003,
-  cpuInterface: ['eth0', 'en0', 'wlan0'],
+  cpuInterface: ['eth0', 'en0', 'wlan0','enp0s3'],
   server: {
   }
 };
@@ -84,8 +84,8 @@ this.client.registerWithServer = async function (payload, serverip, port) {
 
 this.client.registerServer = function (payload) {
   debug('client.registerServer');
-  this.state.server = payload ;
-  return {success:true};
+  this.state.server = payload;
+  return { success: true };
 }.bind(this);
 
 this.server.startJob = async function (jobId) {
@@ -151,33 +151,35 @@ this.server.addClient = function (client) {
 
 this.server.register = function () {
   debug('server.register');
+    
+  this.state.server = this.state.me;
 
-  var serverInfo = null;
-  for (var i = 0; i < this.state.clientList.length; i++) {
-    if (item.me === true) {
-      serverInfo = item;
-    }
+  function gotDiscoveryList(discoveryList) {
+
+    this.state.discoveryList = discoveryList;
+
+    let payload = {
+      ip: this.state.server.ip,
+      id: this.state.server.id,
+      initTimeStamp: this.state.server.initTimeStamp,
+    };
+
+    this.server.sendDiscoveryListNewServer(payload);
   }
 
-  this.state.server = serverInfo;
-  this.state.server.me = true;
 
-  let payload = {
-    ip: serverInfo.ip,
-    id: serverInfo.id,
-    initTimeStamp: serverInfo.initTimeStamp,
-  };
 
-  this.server.sendClientsNewServer (payload);
-  
+  discovery.search(this.state.cpuInterface, this.state.listeningPort).then(gotList.bind(this));
+
+
 }.bind(this);
 
-this.server.pushClientsNewServer = async function (payload) {
-  debug('server.pushClientsNewServer');
+this.server.sendDiscoveryListNewServer = async function (payload) {
+  debug('server.sendDiscoveryListNewServer');
 
   var port = this.state.listeningPort;
 
-  async function sendClientsNewServer(client) {
+  async function sendListNewServer(client) {
     debug('sendClientJobStart');
 
     var options = {
@@ -197,11 +199,11 @@ this.server.pushClientsNewServer = async function (payload) {
     return null;
   }
 
-  let calledClients = await Promise.all(this.state.clientList.map(sendClientsNewServer));
+  let calledClients = await Promise.all(this.state.discoveryList.map(sendListNewServer));
 
   return {
     clientList: calledClients,
-    server:payload
+    server: payload
   };
 
 }.bind(this);
@@ -271,9 +273,11 @@ this.start = function (discoveryList) {
     ip: ip.address(),
     id: this.state.id,
     initTimeStamp: this.state.initTimeStamp,
-    me: true
   };
+  this.state.me = me;
+  me.me = true;
   this.state.discoveryList.push(me);
+
   webApp.setProps(this.state);
 
   this.state.server = discovery.findServer(this.state.discoveryList);
@@ -306,20 +310,7 @@ this.init = function () {
   debug('init');
 
   webApp.init(this.state.listeningPort, this.state, this.onUpdateState, this.client, this.server);
-
-  var fakeDiscoveryLIst = [
-    {
-      "ip": "192.168.100.105",
-      "id": "229449991",
-      "initTimeStamp": "2016-11-29T03:08:43.158Z"
-    }
-  ];
-
-  //this.start(fakeDiscoveryLIst);
   discovery.search(this.state.cpuInterface, this.state.listeningPort).then(this.start);
-
-
-
 
 }.bind(this);
 
