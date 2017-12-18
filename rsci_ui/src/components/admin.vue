@@ -1,6 +1,8 @@
 <template>
   <div class="admin">
     <h1>Admin {{ id }}</h1>
+    <button v-on:click="startJob">Start Rat Job</button>
+    <button v-on:click="becomeServer">Become Server</button>
 
     <h2>Clients</h2>
     <ul id="clientlist">
@@ -40,7 +42,6 @@
       </li>
     </ul>
 
-    <button v-on:click="startJob">Start Rat Job</button>
 
   </div>
 </template>
@@ -96,6 +97,17 @@ export default {
       }
 
       HTTP.post('server/job/start', { jobId: '1234' }).then(success.bind(this)).catch(err.bind(this))
+    },
+    becomeServer: function () {
+      function err (e) {
+        this.errors.push(e)
+      }
+
+      function success (response) {
+        console.log('Became Server!')
+      }
+
+      HTTP.post('server/register', {}).then(success.bind(this)).catch(err.bind(this))
     }
   }
 }
