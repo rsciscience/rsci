@@ -287,7 +287,6 @@ a {
 .scene {
   height: 480px;
   width: 800px;
-  border: 1px solid red;
   overflow: hidden;
   display: none;
 }
