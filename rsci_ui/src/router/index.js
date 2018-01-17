@@ -4,6 +4,9 @@ import job from '@/components/job'
 import admin from '@/components/admin'
 import client from '@/components/client'
 
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
 Vue.use(Router)
 
 export default new Router({
