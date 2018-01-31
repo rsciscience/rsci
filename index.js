@@ -24,7 +24,8 @@ this.state = {
   listeningPort: 3003,
   cpuInterface: ['eth0', 'en0', 'wlan0', 'enp0s3'],
   server: {
-  }
+  },
+  me:{}
 };
 
 function generateId() {
@@ -199,10 +200,12 @@ this.server.sendDiscoveryListNewServer = async function (payload) {
     }
 
     try {
+      console.log(options);
       let res = await request(options);
       return res;
 
     } catch (e) {
+      console.log(e);
       debug('Error sending server registration');
     }
     return null;
@@ -317,10 +320,8 @@ this.start = function (discoveryList) {
 
 this.init = function () {
   debug('init');
-
-  webApp.init(this.state.listeningPort, this.state, this.onUpdateState, this.client, this.server);
   discovery.search(this.state.cpuInterface, this.state.listeningPort).then(this.start);
-
+  webApp.init(this.state.listeningPort, this.state, this.onUpdateState, this.client, this.server);
 }.bind(this);
 
 

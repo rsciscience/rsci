@@ -4,6 +4,16 @@
     <button v-on:click="startJob">Start Rat Job</button>
     <button v-on:click="becomeServer">Become Server</button>
 
+
+    <div class="row">
+      <div class="col-sm-4">.col-sm-4</div>
+      <div class="col-sm-4">.col-sm-4</div>
+      <div class="col-sm-4">.col-sm-4</div>
+    </div>
+
+
+
+
     <h2>Server</h2>
     {{ server.ip  }}
     {{ server.me  }}
@@ -75,7 +85,7 @@ export default {
     }
   },
   mounted () {
-   // this.$socket.emit('onevent', {})
+    // this.$socket.emit('onevent', {})
 
     function err (e) {
       this.errors.push(e)
