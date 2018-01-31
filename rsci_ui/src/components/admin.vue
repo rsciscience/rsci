@@ -1,8 +1,32 @@
 <template>
   <div class="admin">
-    <h1>Admin {{ id }}</h1>
-    <button v-on:click="startJob">Start Rat Job</button>
-    <button v-on:click="becomeServer">Become Server</button>
+    <div class="admin-nav">
+      <h1 class="admin-header">Admin {{ id }}</h1>
+      <div class="admin-btns">
+        <button v-on:click="startJob">Start Rat Job</button>
+        <button v-on:click="becomeServer">Become Server</button>
+      </div>
+    </div>
+
+    <div class="experiment-selector">
+      <select>
+        <option v-for="experiment in experiments">{{ experiment.name }}</option>
+      </select>
+    </div>
+
+    <div class="session">
+      <h1>Session:</h1>
+      {{ currentExperiment.config.sessionLength }}
+      <!-- <input type="text">{{ currentExperiment.config.sessionLength }}</input> -->
+    </div>
+
+    <div class="boxes">
+      <ul id="box-list">
+        <li v-for="box in currentExperiment.config.assignedBoxes">
+          {{ box.id }} {{ box.available }}
+        </li>
+      </ul>
+    </div>
 
     <h2>Server</h2>
     {{ server.ip  }}
@@ -18,7 +42,7 @@
     <h2>Discovery Results</h2>
     <ul id="discoverylist">
       <li v-for="item in discoveryList">
-        {{ item.ip }} 
+        {{ item.ip }}
         <span  v-if="item.me" >Me</span>
       </li>
     </ul>
@@ -71,7 +95,49 @@ export default {
       discoveryList: [],
       clientList: [],
       jobs: [{ip: '1231244'}],
-      lastAction: {}
+      lastAction: {},
+       experiments: [
+        {
+            name: 'jackies experiment',
+            defaultSessionConfig: {
+                sessionLength: 30,
+                assignedBoxes: [
+                    'box1', 'box2', 'box3'
+                ]
+            }
+        },
+        {
+            name: 'fergs experiment',
+            defaultSessionConfig: {
+                sessionLength: 60,
+                assignedBoxes: [
+                    'box1', 'box2', 'box3', 'box4', 'box5'
+                ]
+            }
+        }
+    ],
+    currentExperiment: {
+        name: 'fergs experiment',
+        config: {
+            sessionLength: 60,
+            assignedBoxes: [
+                {
+                  id: 'box1',
+                  available: true
+                },
+                {
+                  id: 'box2',
+                  available: true
+                },
+            ]
+        }
+    },
+    availableBoxes: [
+        'box1'
+    ],
+    sessions:[
+
+      ]
     }
   },
   mounted () {
@@ -134,4 +200,26 @@ li {
 a {
   color: #42b983;
 }
+.admin-nav {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  border-bottom: 1px solid black;
+
+}
+.admin-header, .admin-btns  {
+  display: inline-block;
+}
+.admin-btns {
+  margin-top: 10px;
+  margin-right: 10px;
+}
+.experiment-selector {
+  padding: 20px;
+  border-bottom: 1px solid black;
+}
+.session {
+  display: block;
+}
+
 </style>
