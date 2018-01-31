@@ -200,12 +200,10 @@ this.server.sendDiscoveryListNewServer = async function (payload) {
     }
 
     try {
-      console.log(options);
       let res = await request(options);
       return res;
 
     } catch (e) {
-      console.log(e);
       debug('Error sending server registration');
     }
     return null;
