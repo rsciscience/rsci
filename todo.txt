@@ -1,0 +1,68 @@
+job vue 
+    Needs to load dffernt experaments/session infromation in to it 
+
+install boot strap 
+
+session need a config loaded in to them 
+
+instance of a round of experaments. 
+
+experaments     -> 'jakies experament'
+    session     -> 'rat in a box'
+        trial   -> 'pressing a button'
+
+experiments.config{
+    name:"jakies exp 12"
+    type:"5 choice"
+    boxAsignments[
+        {clientid: '12349' 
+        ratid: 'raty12'}
+    ]
+}
+
+experiment {
+    name
+session {
+    start time 
+    stop time. 
+clients[
+
+       clinetid {
+            total number of completed trials
+            total number correct responses 
+            total number incorrect 
+            total number ommisions 
+            results:[....]
+    }
+    ]
+}
+}
+
+
+createing a job 
+    load variables 
+    slect boxes you want 
+        load rat id in to box
+            change varibles rat
+
+session (job) 1 
+    session number/name : external id to define job.
+    save rat id for each box 
+    rename : 5 choice serial raction time task 
+    nose should not register as premiture. 
+    code ommisions
+    realtime stats on a job 
+     
+
+
+
+Export data 
+    CSV
+
+
+Access 
+create sql scripts to summarise client data
+
+
+
+
