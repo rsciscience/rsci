@@ -12,21 +12,12 @@ debug('Init Discovery');
 const request = require('request-promise');
 
 var job = require('./job');
-this.client = {};
-this.server = {};
+this.client = require('./client');
+this.server = require('./server');
 
-this.state = {
-  id: generateId(),
-  initTimeStamp: new Date(),
-  discoveryList: [],
-  clientList: [],
-  jobs: [],
-  listeningPort: 3003,
-  cpuInterface: ['eth0', 'en0', 'wlan0', 'enp0s3'],
-  server: {
-  },
-  me:{}
-};
+this.state = require('./state');
+this.state.id = generateId();
+
 
 function generateId() {
   return leftPadWithZeros(Math.floor(Math.random() * 1000000000));
@@ -40,183 +31,6 @@ function leftPadWithZeros(number, length) {
 
   return str;
 };
-
-
-this.client.startJob = function (jobId) {
-  debug('client.startJob');
-  this.state.job = {
-    id: jobId
-  };
-  function watchJobEvents(args) {
-    sendServerJobEvent(args, this.state.server.ip, this.state.listeningPort, this.state.id, this.state.job.id)
-  }
-  var j = new job(jobId);
-
-  j.on('Start', watchJobEvents.bind(this));
-  j.on('Stop', watchJobEvents.bind(this));
-  j.on('Event', watchJobEvents.bind(this));
-  j.on('Action', watchJobEvents.bind(this));
-
-  j.start(webApp.getClientCommunicationFunctions(j.listen));
-  return {
-    clientId: this.state.id,
-    jobStartDate: new Date(),
-    jobId: jobId
-  };
-}.bind(this);
-
-this.client.registerWithServer = async function (payload, serverip, port) {
-  debug('client.registerWithServer');
-
-  var options = {
-    uri: 'http://' + serverip + ':' + port + '/server/client/add',
-    json: true,
-    method: 'POST',
-    body: payload
-  };
-
-  try {
-    let res = await request(options);
-  } catch (e) {
-    debug('Error registering client');
-  }
-
-}.bind(this);
-
-this.client.registerServer = function (payload) {
-  debug('client.registerServer');
-  this.state.server = payload;
-  this.state.clientList = [];
-
-  var payload = { ip: this.state.me.ip, id: this.state.me.id, initTimeStamp: this.state.me.initTimeStamp }
-  this.client.registerWithServer(payload, this.state.server.ip, this.state.listeningPort);
-
-
-  return { success: true };
-}.bind(this);
-
-this.server.startJob = async function (jobId) {
-  debug('server.startJob');
-
-  var payload = {
-    jobId: generateId()
-  };
-
-  var port = this.state.listeningPort;
-
-  async function sendClientJobStart(client) {
-    debug('sendClientJobStart');
-
-    var options = {
-      uri: 'http://' + client.ip + ':' + port + '/client/job/start',
-      json: true,
-      method: 'POST',
-      body: payload
-    }
-
-      ;
-
-    try {
-      let res = await request(options);
-      return res;
-
-    } catch (e) {
-      debug('Error sending job event');
-    }
-    return null;
-  }
-
-  let calledClients = await Promise.all(this.state.clientList.map(sendClientJobStart));
-
-  return {
-    clientList: calledClients,
-    jobStartDate: new Date(),
-    jobId: jobId
-  };
-
-}.bind(this);
-
-
-this.server.addClient = function (client) {
-  debug('server.addClient');
-
-  var isNewClient = true;
-
-  for (var i = 0; i < this.state.clientList.length; i++) {
-    if (this.state.clientList[i].ip === client.ip) {
-      isNewClient = false;
-    }
-  }
-
-  if (isNewClient) {
-    this.state.clientList.push(client);
-  }
-  return this.state.clientList;
-
-}.bind(this);
-
-
-this.server.register = function () {
-  debug('server.register');
-
-  this.state.server = this.state.me;
-
-  function gotDiscoveryList(discoveryList) {
-    debug('gotDiscoveryList');
-
-    this.state.discoveryList = discoveryList;
-
-    let payload = {
-      ip: this.state.server.ip,
-      id: this.state.server.id,
-      initTimeStamp: this.state.server.initTimeStamp,
-    };
-
-    this.server.sendDiscoveryListNewServer(payload);
-  }
-  function err(e) {
-    debug('error getting discovery list', e);
-  }
-
-
-  discovery.search(this.state.cpuInterface, this.state.listeningPort).then(gotDiscoveryList.bind(this));
-
-
-}.bind(this);
-
-this.server.sendDiscoveryListNewServer = async function (payload) {
-  debug('server.sendDiscoveryListNewServer');
-
-  var port = this.state.listeningPort;
-
-  async function sendListNewServer(client) {
-    debug('sendClientJobStart');
-
-    var options = {
-      uri: 'http://' + client.ip + ':' + port + '/client/server/register',
-      json: true,
-      method: 'POST',
-      body: payload
-    }
-
-    try {
-      let res = await request(options);
-      return res;
-
-    } catch (e) {
-      debug('Error sending server registration');
-    }
-    return null;
-  }
-
-  let calledClients = await Promise.all(this.state.discoveryList.map(sendListNewServer));
-
-  return {
-    clientList: calledClients,
-    server: payload
-  };
-
-}.bind(this);
 
 
 async function sendServerJobEvent(data, serverip, port, clientId, jobId) {
@@ -273,7 +87,7 @@ function dumpJobs(jobs) {
 
 
 
-this.start = function (discoveryList) {
+this.start =  function (discoveryList) {
 
   debug('start');
   debug('Received friend list');
@@ -295,6 +109,7 @@ this.start = function (discoveryList) {
   debug('server', this.state.server.ip);
   if (this.state.server.me == true) {
     debug('I\'m the server');
+    this.server.loadServerData();
   } else {
     debug('I\'m the client');
     var payload = { ip: me.ip, id: me.id, initTimeStamp: me.initTimeStamp }
@@ -314,12 +129,10 @@ this.start = function (discoveryList) {
 }.bind(this);
 
 
-
-
-this.init = function () {
+this.init =  function () {
   debug('init');
-  discovery.search(this.state.cpuInterface, this.state.listeningPort).then(this.start);
-  webApp.init(this.state.listeningPort, this.state, this.onUpdateState, this.client, this.server);
+    discovery.search(this.state.cpuInterface, this.state.listeningPort).then(this.start);
+    webApp.init(this.state.listeningPort, this.state, this.onUpdateState, this.client, this.server)
 }.bind(this);
 
 
