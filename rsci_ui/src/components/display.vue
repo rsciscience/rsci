@@ -21,12 +21,10 @@ export default {
     },
     client_experiment_init: function (data) {
       debugger
-      this.expermentSession= data
+      this.expermentSession = data
       this.sessionRunning = true
       console.log('client_experiment_init')
-    },
-   
-
+    }
   },
   data () {
     return {
@@ -35,7 +33,7 @@ export default {
       sessionRunning: false
     }
   },
-  mounted () {},
+  mounted () {}
 }
 </script>
 
