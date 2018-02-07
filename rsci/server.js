@@ -5,14 +5,16 @@ var fs = require('fs');
 var path = require('path');
 var helpers = require('./helpers');
 const request = require('request-promise');
+var discovery = require('./discovery');
 
 this.startExperiment = async function (experimentId) {
   debug('startExperiment');
 
 var expConfig = null;
+
   for(var i = 0 ; i < this.state.experiments.configs.length; i ++ ){
     var config = this.state.experiments.configs[i];
-      if (config.id === experimentId  ){
+      if (config.config.id == experimentId  ){
         expConfig = config; 
       }
   }
@@ -22,7 +24,6 @@ var expConfig = null;
     instanceId: helpers.generateId(),
     config:JSON.stringify(expConfig),
   };
-
   var port = this.state.listeningPort;
 
   async function sendClientStart(client) {
@@ -43,14 +44,14 @@ var expConfig = null;
     }
     return null;
   }
-
+  debug(this.state.clientList)
   let calledClients = await Promise.all(this.state.clientList.map(sendClientStart));
 
   return {
     clientList: calledClients,
     startDate: new Date(),
     experimentId: experimentId, 
-    instanceId:instanceId,
+    instanceId: payload.instanceId,
   };
 
 };
