@@ -4,7 +4,7 @@
   "description": "Rat Server Client Interface",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"npm run rsci_service\" \"npm run rsci_ui\"",
+    "start": "concurrently \"npm run service\" \"npm run ui\"",
     "ui": "npm run start --prefix rsci_ui",
     "service": "DEBUG=RSCI* node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
