@@ -10,19 +10,23 @@ var discovery = require('./discovery');
 this.startExperiment = async function (experimentId) {
   debug('startExperiment');
 
-var expConfig = null;
+var experimentConfig = null;
 
   for(var i = 0 ; i < this.state.experiments.configs.length; i ++ ){
     var config = this.state.experiments.configs[i];
       if (config.config.id == experimentId  ){
-        expConfig = config; 
+        experimentConfig = config; 
       }
+  }
+
+  if(experimentConfig == null){
+      throw excption('Can\'t find experiment ' + experimentId );
   }
 
   var payload = {
     experimentId : experimentId, 
     instanceId: helpers.generateId(),
-    config:JSON.stringify(expConfig),
+    experimentConfig:experimentConfig,
   };
   var port = this.state.listeningPort;
 

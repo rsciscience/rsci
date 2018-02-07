@@ -18,8 +18,7 @@ debug(experimentRequest);
 var requestConfig = {
   experimentId : experimentRequest.experimentId, 
   instanceId: experimentRequest.instanceId,
-  config: experimentRequest.config,      
-
+  experimentConfig: experimentRequest.experimentConfig,      
 };
 
 this.state.currentExperimentSession = requestConfig;
@@ -32,7 +31,7 @@ this.state.currentExperimentSession = requestConfig;
        this.state.currentExperimentSession.experimentId,
        this.state.currentExperimentSession.instanceId);
   }
-  var j = new  requestConfig.config.session( requestConfig.instanceId,  requestConfig.config );
+  var j = new  requestConfig.experimentConfig.session( requestConfig.instanceId,  requestConfig.experimentConfig.config );
 
   j.on('Start', watchEvents.bind(this));
   j.on('Stop', watchEvents.bind(this));
