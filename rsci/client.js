@@ -1,6 +1,7 @@
 "use strict";
 const debug = require('debug')('RSCI.client');
 this.state = require('./state');
+const request = require('request-promise');
 
 this.startExperimentSession = function (experimentRequest) {
   debug('startExperimentSession');
@@ -58,6 +59,8 @@ this.registerWithServer = async function (payload, serverip, port) {
   try {
     let res = await request(options);
   } catch (e) {
+
+    debug(e);
     debug('Error registering client');
   }
 

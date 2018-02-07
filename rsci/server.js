@@ -4,6 +4,7 @@ this.state = require('./state');
 var fs = require('fs');
 var path = require('path');
 var helpers = require('./helpers');
+const request = require('request-promise');
 
 this.startExperiment = async function (experimentId) {
   debug('startExperiment');
