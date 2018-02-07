@@ -1,6 +1,8 @@
 "use strict";
 const debug = require('debug')('RSCI.client');
 this.state = require('./state');
+const webApp =  require('./webApp');
+
 const request = require('request-promise');
 
 this.startExperimentSession = function (experimentRequest) {
@@ -13,13 +15,13 @@ this.startExperimentSession = function (experimentRequest) {
   };
 */
 
-debug(experimentRequest);
-
 var requestConfig = {
   experimentId : experimentRequest.experimentId, 
   instanceId: experimentRequest.instanceId,
   experimentConfig: experimentRequest.experimentConfig,      
 };
+
+requestConfig.experimentConfig.session = eval(experimentRequest.experimentConfig.session);
 
 this.state.currentExperimentSession = requestConfig;
   
@@ -31,6 +33,7 @@ this.state.currentExperimentSession = requestConfig;
        this.state.currentExperimentSession.experimentId,
        this.state.currentExperimentSession.instanceId);
   }
+
   var j = new  requestConfig.experimentConfig.session( requestConfig.instanceId,  requestConfig.experimentConfig.config );
 
   j.on('Start', watchEvents.bind(this));
