@@ -5,8 +5,8 @@ var fs = require('fs');
 var path = require('path');
 var helpers = require('./helpers');
 
-this.start = async function (experimentId) {
-  debug('start');
+this.startExperiment = async function (experimentId) {
+  debug('startExperiment');
 
 var expConfig = null;
   for(var i = 0 ; i < this.state.experiments.configs.length; i ++ ){

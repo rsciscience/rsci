@@ -12,7 +12,7 @@ this.io = require('socket.io')(this.server,{transports: ['polling', 'websocket']
 
 
 this.io.on('connection', function (socket) {
-  socket.on('client_job_onevent', function (data) {
+  socket.on('client_experiment_onevent', function (data) {
     if (this.externalJobListen) {
       this.externalJobListen(data);
     } else {
@@ -26,9 +26,9 @@ this.getClientCommunicationFunctions = function (listen) {
   debug('getClientCommunicationFunctions');
   this.externalJobListen = listen;
   return {
-    start: (job) => { this.io.emit('client_job_start', job)},
-    stop: (job) => { this.io.emit('client_job_stop', job)},
-    emitAction: (action) => { this.io.emit('client_job_action', action)},
+    start: (data) => { this.io.emit('client_experiment_start', data)},
+    stop: (data) => { this.io.emit('client_experiment_stop', data)},
+    emitAction: (action) => { this.io.emit('client_experiemnt_action', action)},
   }
 };
 
@@ -55,12 +55,12 @@ this.app.get('/discovery',discovery.bind(this));
 this.app.get('/discovery/list',discovery_list.bind(this));
 this.app.get('/client/state',client_state.bind(this));
 this.app.post('/client/experiment/start',client_experiment_start.bind(this));
-this.app.post('/client/experiment/:id/stop',client_experiment_stop.bind(this));
+this.app.post('/client/experiment/stop',client_experiment_stop.bind(this));
 this.app.post('/client/server/register',client_server_register.bind(this));
 this.app.post('/server/client/add',server_client_add.bind(this));
 this.app.post('/server/register',server_register.bind(this))
 this.app.post('/server/experiment/:id/start',server_experiment_start.bind(this));
-this.app.post('/server/experiment/:id/:clientId/event',server_experiment_id_event.bind(this));
+this.app.post('/server/experiment/:id/session/:sessionId/:clientId/event',server_experiment_id_event.bind(this));
 
 
 
@@ -153,8 +153,7 @@ function client_experiment_start(req, res)  {
   debug('API:client_experiment_start_event');
 
   function doWork(input){
-
-    var output = this.clientFunctions.startExperiment(input.Id);
+    var output = this.clientFunctions.startExperimentSession(input);
     return  JSON.stringify( output);
   }
 
@@ -197,7 +196,7 @@ function server_experiment_start(req, res)  {
 
   function doWork(input){
 
-    var output = this.serverFunctions.startExperiment(input.Id);
+    var output = this.serverFunctions.startExperiment(input.experimentId);
     return  JSON.stringify( output);
   }
 
