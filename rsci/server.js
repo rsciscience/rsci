@@ -23,6 +23,7 @@ var experimentConfig = null;
       throw excption('Can\'t find experiment ' + experimentId );
   }
 
+
   var payload = {
     experimentId : experimentId, 
     instanceId: helpers.generateId(),
@@ -150,7 +151,7 @@ function getDirectories(path) {
   debug('Loading from : ' + dir); 
   var exp = {
      config :  eval(fs.readFileSync( path.join(dir , "config.js") ,"utf8" )),
-     session : eval(fs.readFileSync( path.join(dir , "session.js") ,"utf8")),
+     session : fs.readFileSync( path.join(dir , "session.js") ,"utf8"),
      ui :  fs.readFileSync( path.join(dir , "ui.vue"),"utf8" )
   } ;
   return exp;
