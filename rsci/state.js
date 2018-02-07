@@ -7,5 +7,10 @@ module.exports = {
     cpuInterface: ['eth0', 'en0', 'wlan0', 'enp0s3'],
     server: {
     },
-    me:{}
+    me:{},
+    experiments: {
+      configDir: './experiments', 
+      configs:[]
+    }
+
   };

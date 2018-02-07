@@ -54,13 +54,13 @@ this.app.use(function(req, res, next) {
 this.app.get('/discovery',discovery.bind(this));
 this.app.get('/discovery/list',discovery_list.bind(this));
 this.app.get('/client/state',client_state.bind(this));
-this.app.post('/client/job/start',client_job_start.bind(this));
-this.app.post('/client/job/:id/stop',client_job_stop.bind(this));
+this.app.post('/client/experiment/start',client_experiment_start.bind(this));
+this.app.post('/client/experiment/:id/stop',client_experiment_stop.bind(this));
 this.app.post('/client/server/register',client_server_register.bind(this));
 this.app.post('/server/client/add',server_client_add.bind(this));
 this.app.post('/server/register',server_register.bind(this))
-this.app.post('/server/job/start',server_job_start.bind(this));
-this.app.post('/server/job/:id/:clientId/event',server_job_id_event.bind(this));
+this.app.post('/server/experiment/:id/start',server_experiment_start.bind(this));
+this.app.post('/server/experiment/:id/:clientId/event',server_experiment_id_event.bind(this));
 
 
 
@@ -149,12 +149,12 @@ function discovery_list (req, res)  {
   res.send(clientResponse);
 }
 
-function client_job_start(req, res)  {
-  debug('API:client_job_start_event');
+function client_experiment_start(req, res)  {
+  debug('API:client_experiment_start_event');
 
   function doWork(input){
 
-    var output = this.clientFunctions.startJob(input.jobId);
+    var output = this.clientFunctions.startExperiment(input.Id);
     return  JSON.stringify( output);
   }
 
@@ -192,12 +192,12 @@ function client_server_register(req, res)  {
   res.send(clientResponse);
 }
 
-function server_job_start(req, res)  {
-  debug('API:server_job_start_event');
+function server_experiment_start(req, res)  {
+  debug('API:server_experiment_start_event');
 
   function doWork(input){
 
-    var output = this.serverFunctions.startJob(input.jobId);
+    var output = this.serverFunctions.startExperiment(input.Id);
     return  JSON.stringify( output);
   }
 
@@ -236,7 +236,7 @@ function server_register(req, res)  {
 }
 
 
-function client_job_stop(req, res) {
+function client_experiment_stop(req, res) {
   res.status(500).send();
 }
 
@@ -262,8 +262,8 @@ function server_client_add(req, res)  {
   res.send(clientResponse);
 }
 
-function server_job_id_event(req, res)  {
-  debug('API:server_job_id_event');
+function server_experiment_id_event(req, res)  {
+  debug('API:server_experiment_id_event');
 
   var job = {
     id: req.params.id,
@@ -300,7 +300,7 @@ function server_job_id_event(req, res)  {
   actions.push(req.body);
 
   this.onUpdateParrentState(this.state);
-  this.io.emit('server_job_id_event', req.body);
+  this.io.emit('server_experiment_id_event', req.body);
 
   res.status(200).send();
 }
