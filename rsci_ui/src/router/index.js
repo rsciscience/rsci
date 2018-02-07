@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import job from '@/components/job'
+import display from '@/components/display'
 import admin from '@/components/admin'
 import client from '@/components/client'
 
@@ -13,8 +13,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'job',
-      component: job
+      name: 'display',
+      component: display
     },
     {
       path: '/admin',
