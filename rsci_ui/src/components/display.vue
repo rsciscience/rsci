@@ -2,7 +2,7 @@
   <div class="experiment">
     
     <div className='session'>
-     
+      <session></session>
      </div>
 
     <div id="waiting" >
@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 export default {
   name: 'Admin',
   sockets: {
@@ -20,9 +21,10 @@ export default {
       console.log('socket connected')
     },
     client_experiment_init: function (data) {
-      debugger
       this.expermentSession = data
       this.sessionRunning = true
+      Vue.component('session', data.ui)
+      debugger
       console.log('client_experiment_init')
     }
   },

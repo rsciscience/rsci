@@ -7,6 +7,10 @@ var helpers = require('./helpers');
 const request = require('request-promise');
 var discovery = require('./discovery');
 
+//vue parser
+
+var vuetemplatecompiler = require("vue-template-compiler")
+
 this.startExperiment = async function (experimentId) {
   debug('startExperiment');
 
@@ -149,10 +153,13 @@ function getDirectories(path) {
 
  function getExperiment(dir) {
   debug('Loading from : ' + dir); 
+  var uistr =  fs.readFileSync( path.join(dir , "ui.vue"),"utf8" );
+  var ui = vuetemplatecompiler.parseComponent(uistr); 
+//console.log(ui);
   var exp = {
      config :  eval(fs.readFileSync( path.join(dir , "config.js") ,"utf8" )),
      session : fs.readFileSync( path.join(dir , "session.js") ,"utf8"),
-     ui :  fs.readFileSync( path.join(dir , "ui.vue"),"utf8" )
+     ui :  ui
   } ;
   return exp;
 }
