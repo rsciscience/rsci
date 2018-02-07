@@ -92,7 +92,7 @@ this.register = function () {
       initTimeStamp: this.state.server.initTimeStamp,
     };
 
-    this.server.sendDiscoveryListNewServer(payload);
+    this.sendDiscoveryListNewServer(payload);
   }
   function err(e) {
     debug('error getting discovery list', e);
@@ -121,6 +121,7 @@ this.sendDiscoveryListNewServer = async function (payload) {
       return res;
 
     } catch (e) {
+      debug(e);
       debug('Error sending server registration');
     }
     return null;

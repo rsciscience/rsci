@@ -13,10 +13,12 @@ this.startExperimentSession = function (experimentRequest) {
   };
 */
 
+debug(experimentRequest);
+
 var requestConfig = {
   experimentId : experimentRequest.experimentId, 
   instanceId: experimentRequest.instanceId,
-  config: eval(experimentRequest.config),      
+  config: experimentRequest.config,      
 
 };
 
@@ -72,7 +74,7 @@ this.registerServer = function (payload) {
   this.state.clientList = [];
 
   var payload = { ip: this.state.me.ip, id: this.state.me.id, initTimeStamp: this.state.me.initTimeStamp }
-  this.client.registerWithServer(payload, this.state.server.ip, this.state.listeningPort);
+  this.registerWithServer(payload, this.state.server.ip, this.state.listeningPort);
 
 
   return { success: true };
