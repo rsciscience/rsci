@@ -1,7 +1,7 @@
 <template>
   <div class="admin">
     <h1>Admin {{ id }}</h1>
-    <button v-on:click="startJob">Start Rat Job</button>
+    <button v-on:click="startExperiment">Start Experiment Session</button>
     <button v-on:click="becomeServer">Become Server</button>
 
 
@@ -28,7 +28,7 @@
     <h2>Discovery Results</h2>
     <ul id="discoverylist">
       <li v-for="item in discoveryList">
-        {{ item.ip }} 
+        {{ item.ip }}
         <span  v-if="item.me" >Me</span>
       </li>
     </ul>
@@ -103,16 +103,16 @@ export default {
     HTTP.get('client/state').then(success.bind(this)).catch(err.bind(this))
   },
   methods: {
-    startJob: function () {
+    startExperiment: function () {
       function err (e) {
         this.errors.push(e)
       }
 
       function success (response) {
-        console.log('Job Started!')
+        console.log('Experiment Started!')
       }
 
-      HTTP.post('server/job/start', { jobId: '1234' }).then(success.bind(this)).catch(err.bind(this))
+      HTTP.post('server/experiment/start', { experimentId: '1985' }).then(success.bind(this)).catch(err.bind(this))
     },
     becomeServer: function () {
       function err (e) {
