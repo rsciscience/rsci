@@ -41,12 +41,12 @@ this.state.currentExperimentSession = requestConfig;
   j.on('Event', watchEvents.bind(this));
   j.on('Action', watchEvents.bind(this));
 
-  var comms = webApp.getClientCommunicationFunctions(j.listen)
-
+  var comms = webApp.getClientCommunicationFunctions(j.listen);
+  
   comms.init({ 
     experimentId: requestConfig.experimentId,
     instanceId: requestConfig.instanceId, 
-    ui : requestConfig.ui
+    ui : requestConfig.experimentConfig.ui
   }); 
 
   j.start(comms);
