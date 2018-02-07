@@ -26,8 +26,9 @@ this.getClientCommunicationFunctions = function (listen) {
   debug('getClientCommunicationFunctions');
   this.externalJobListen = listen;
   return {
-    start: (data) => { this.io.emit('client_experiment_start', data)},
-    stop: (data) => { this.io.emit('client_experiment_stop', data)},
+    init: (data) => { this.io.emit('client_experiment_init', data)}, 
+    start: (data) => { this.io.emit('client_experiment_session_start', data)},
+    stop: (data) => { this.io.emit('client_experiment_session_stop', data)},
     emitAction: (action) => { this.io.emit('client_experiemnt_action', action)},
   }
 };
