@@ -20,7 +20,7 @@ var experimentConfig = null;
   }
 
   if(experimentConfig == null){
-      throw excption('Can\'t find experiment ' + experimentId );
+      throw 'Can\'t find experiment ' + experimentId ;
   }
 
 
