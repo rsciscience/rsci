@@ -104,6 +104,7 @@ export default {
   },
   methods: {
     startExperiment: function () {
+      var experimentId = '1985'
       function err (e) {
         this.errors.push(e)
       }
@@ -112,7 +113,7 @@ export default {
         console.log('Experiment Started!')
       }
 
-      HTTP.post('server/experiment/start', { experimentId: '1985' }).then(success.bind(this)).catch(err.bind(this))
+      HTTP.post('server/experiment/' + experimentId + '/start', { experimentId: experimentId }).then(success.bind(this)).catch(err.bind(this))
     },
     becomeServer: function () {
       function err (e) {
