@@ -154,8 +154,8 @@ function getDirectories(path) {
  function getExperiment(dir) {
   debug('Loading from : ' + dir); 
   var uistr =  fs.readFileSync( path.join(dir , "ui.vue"),"utf8" );
-  var ui = vuetemplatecompiler.parseComponent(uistr); 
-//console.log(ui);
+  var ui = vuetemplatecompiler.parseComponent(uistr ,{ pad: true }); 
+  console.log(ui);
   var exp = {
      config :  eval(fs.readFileSync( path.join(dir , "config.js") ,"utf8" )),
      session : fs.readFileSync( path.join(dir , "session.js") ,"utf8"),

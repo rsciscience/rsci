@@ -1,8 +1,7 @@
 <template>
   <div class="experiment">
     
-    <div className='session'>
-      <session></session>
+    <div id='session'>
      </div>
 
     <div id="waiting" >
@@ -24,8 +23,15 @@ export default {
       this.expermentSession = data
       this.sessionRunning = true
       Vue.component('session', data.ui)
-      debugger
+
+      console.log(data.ui)
+      var MyComponent = Vue.extend(data.ui)
+
+      var component = new MyComponent().$mount('#session')
+
+      console.log(component)
       console.log('client_experiment_init')
+      debugger
     }
   },
   data () {

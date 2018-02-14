@@ -7,13 +7,6 @@ const request = require('request-promise');
 
 this.startExperimentSession = function (experimentRequest) {
   debug('startExperimentSession');
-/*
-  var payload = {
-    experimentId : experimentId, 
-    instanceId: helpers.generateId(),
-    config:JSON.stringify(expConfig),
-  };
-*/
 
 var requestConfig = {
   experimentId : experimentRequest.experimentId, 
