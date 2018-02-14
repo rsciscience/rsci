@@ -172,7 +172,7 @@ function getExperiment(dir) {
 console.log(x);
     var ui = {
       template: uiparsed.template.content,
-      script: x,
+      script: scripttTransformed.code,
       style: uiparsed.styles.content
     };
     var exp = {

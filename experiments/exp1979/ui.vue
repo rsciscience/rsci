@@ -61,7 +61,7 @@
 
 <script>
 export default {
-  name: 'Admin',
+  name: '1979',
   sockets: {
     connect: function () {
       console.log('socket connected')
