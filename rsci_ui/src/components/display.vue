@@ -22,14 +22,16 @@ export default {
     client_experiment_init: function (data) {
       this.expermentSession = data
       this.sessionRunning = true
-      Vue.component('session', data.ui)
+      
 
       console.log(data.ui)
-      var MyComponent = Vue.extend(data.ui)
+      var MyComponent = Vue.extend(data.ui,{ 
+        mixins: data.script,
+      })
 
       var component = new MyComponent().$mount('#session')
 
-      console.log(component)
+      //console.log(component)
       console.log('client_experiment_init')
       debugger
     }

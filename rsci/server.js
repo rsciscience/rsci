@@ -7,6 +7,7 @@ var helpers = require('./helpers');
 const request = require('request-promise');
 var discovery = require('./discovery');
 
+
 //vue parser
 
 var vuetemplatecompiler = require("vue-template-compiler")
@@ -14,24 +15,24 @@ var vuetemplatecompiler = require("vue-template-compiler")
 this.startExperiment = async function (experimentId) {
   debug('startExperiment');
 
-var experimentConfig = null;
+  var experimentConfig = null;
 
-  for(var i = 0 ; i < this.state.experiments.configs.length; i ++ ){
+  for (var i = 0; i < this.state.experiments.configs.length; i++) {
     var config = this.state.experiments.configs[i];
-      if (config.config.id == experimentId  ){
-        experimentConfig = config; 
-      }
+    if (config.config.id == experimentId) {
+      experimentConfig = config;
+    }
   }
 
-  if(experimentConfig == null){
-      throw 'Can\'t find experiment ' + experimentId ;
+  if (experimentConfig == null) {
+    throw 'Can\'t find experiment ' + experimentId;
   }
 
 
   var payload = {
-    experimentId : experimentId, 
+    experimentId: experimentId,
     instanceId: helpers.generateId(),
-    experimentConfig:experimentConfig,
+    experimentConfig: experimentConfig,
   };
   var port = this.state.listeningPort;
 
@@ -59,7 +60,7 @@ var experimentConfig = null;
   return {
     clientList: calledClients,
     startDate: new Date(),
-    experimentId: experimentId, 
+    experimentId: experimentId,
     instanceId: payload.instanceId,
   };
 
@@ -151,31 +152,55 @@ function getDirectories(path) {
   });
 }
 
- function getExperiment(dir) {
-  debug('Loading from : ' + dir); 
-  var uistr =  fs.readFileSync( path.join(dir , "ui.vue"),"utf8" );
-  var ui = vuetemplatecompiler.parseComponent(uistr ,{ pad: true }); 
-  console.log(ui);
-  var exp = {
-     config :  eval(fs.readFileSync( path.join(dir , "config.js") ,"utf8" )),
-     session : fs.readFileSync( path.join(dir , "session.js") ,"utf8"),
-     ui :  ui
-  } ;
-  return exp;
+function getExperiment(dir) {
+
+  debug('Loading from : ' + dir);
+  try {
+
+    var uistr = fs.readFileSync(path.join(dir, "ui.vue"), "utf8");
+    var uiparsed = vuetemplatecompiler.parseComponent(uistr, { pad: true });
+
+    var scripttTransformed = require("babel-core").transform(uiparsed.script.content, {
+      minified :true,
+      babelrc: false,
+      plugins: ["transform-es2015-modules-commonjs"]
+    });
+
+    //console.log("scripttTransformed" ,scripttTransformed.code)  ;
+
+    var x = eval(scripttTransformed.code);
+console.log(x);
+    var ui = {
+      template: uiparsed.template.content,
+      script: x,
+      style: uiparsed.styles.content
+    };
+    var exp = {
+      config: eval(fs.readFileSync(path.join(dir, "config.js"), "utf8")),
+      session: fs.readFileSync(path.join(dir, "session.js"), "utf8"),
+      ui: ui
+    };
+    return exp;
+
+  } catch (err) {
+    console.log(err);
+  }
+
 }
 
 this.loadExperiments = function (configDir) {
   debug('loadExperiments');
   debug('Searching : ' + configDir);
-  var configs =[];
+  var configs = [];
   var dirs = getDirectories(configDir);
-  debug('Found ' + dirs.length + ' experiments ' );
+  debug('Found ' + dirs.length + ' experiments ');
   for (var i = 0; i < dirs.length; i++) {
-    configs.push(getExperiment(path.join(configDir, dirs[i] ))); 
+    configs.push(getExperiment(path.join(configDir, dirs[i])));
   }
-  
-  debug('loadExperiments complete ' );
+
+  debug('loadExperiments complete ');
   return configs;
+
 };
 
 module.exports = this;

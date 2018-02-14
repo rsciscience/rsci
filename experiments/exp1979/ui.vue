@@ -53,7 +53,7 @@
     </div>
     </div>
     <div id="scene_noJob" v-else class="scene">
-      <div>Waiting...</div>
+      <div>1979 Waiting...</div>
     </div>
   
   </div>
