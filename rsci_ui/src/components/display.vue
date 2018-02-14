@@ -26,7 +26,7 @@ export default {
 
       console.log(data.ui)
       var MyComponent = Vue.extend(data.ui,{ 
-        mixins: data.script,
+        mixins: data.ui.script,
       })
 
       var component = new MyComponent().$mount('#session')
