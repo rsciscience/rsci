@@ -16,8 +16,11 @@ var base  = class base {
             this.state.ignoreExtraneousInputs = false;
             this.emit('Start', {eventTimeStamp:new Date(), eventType:'Start' } );
             this.uiCalls.start({ id: this.id }); 
-
-            ChangeSceneTo (1);
+           
+            setTimeout(() => {
+                ChangeSceneTo (1);
+            }, 3000);
+            debug('first screen in 3 seconds');
                 
             setTimeout(() => {
                 this.emit('Stop', {eventTimeStamp:new Date(), eventType:'Stop' } );

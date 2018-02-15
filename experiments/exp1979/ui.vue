@@ -1,6 +1,5 @@
 <template>
   <div class="session">
-    hello
     <div class= "scene-container"  v-bind:class="{flashing: isFlashing}">
      
       <div id="scene_1" sceneNumber="1" class = "scene" v-bind:class="{currentScene: showScene1}">
