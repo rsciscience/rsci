@@ -104,7 +104,7 @@ export default {
   },
   methods: {
     startExperiment: function () {
-      var experimentId = '1985'
+      var experimentId = '1979'
       function err (e) {
         this.errors.push(e)
       }
