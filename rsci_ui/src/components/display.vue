@@ -27,7 +27,7 @@ export default {
 
       console.log(data.ui)
       var MyComponent = Vue.extend(data.ui, {
-        data: script.default.data,
+        data: script.default.data(),
         mixins: script.default
       })
 
