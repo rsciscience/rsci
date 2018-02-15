@@ -25,7 +25,7 @@ export default {
       var config = eval(data.ui.script).default
       config.template = data.ui.template
       
-      var styles = data.styles
+      var styles = data.ui.styles
       var sessionStyles = document.getElementById('sessionStyles')
 
       try {
@@ -36,7 +36,7 @@ export default {
 
       console.log(data.ui)
       var MyComponent = Vue.extend(config)
-      this.session = new MyComponent({data: config.data()}).$mount('#session')
+      this.session = new MyComponent().$mount('#session')
       console.log('client_experiment_init')
       debugger
     },

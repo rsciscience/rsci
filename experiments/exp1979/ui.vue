@@ -1,5 +1,6 @@
 <template>
   <div class="session">
+    hello
     <div class= "scene-container"  v-bind:class="{flashing: isFlashing}">
      
       <div id="scene_1" sceneNumber="1" class = "scene" v-bind:class="{currentScene: showScene1}">
@@ -24,33 +25,32 @@
             <button v-on:click="Scene2nosepokestim5_onclick" class="nosepoke nosepoke5" v-bind:class="{nosepokeActive: nosepokeStimulus_5}" ></button>
           </div>
       </div>
-    <div id="scene_3" class = "scene" v-bind:class="{currentScene: showScene3}" >
-          <div class = "sceneLabel"> win outcome scene</div>
-          <button class= "nosepokeLarge nosepokeLargeOff Scene3PerseverativeTrialStartNosepoke"></button>
+      <div id="scene_3" class = "scene" v-bind:class="{currentScene: showScene3}" >
+            <div class = "sceneLabel"> win outcome scene</div>
+            <button class= "nosepokeLarge nosepokeLargeOff Scene3PerseverativeTrialStartNosepoke"></button>
+          
+          <div class= "nosepokeholescontainer">
+            <button v-on:click="Scene3nosepokestim1_onclick" class="nosepoke nosepoke1"></button>
+            <button v-on:click="Scene3nosepokestim2_onclick" class="nosepoke nosepoke2"></button>
+            <button v-on:click="Scene3nosepokestim3_onclick" class="nosepoke nosepoke3"></button>
+            <button v-on:click="Scene3nosepokestim4_onclick" class="nosepoke nosepoke4"></button>
+            <button v-on:click="Scene3nosepokestim5_onclick" class="nosepoke nosepoke5"></button>
+          </div>
+      </div>
+      <div id="scene_4"  class = "scene" v-bind:class="{currentScene: showScene4}" >
+          <div class = "aversiveLight"></div>
+            <button class= "nosepokeLarge nosepokeLargeOff Scene4PerseverativeTrialStartNosepoke"></button>
         
-        <div class= "nosepokeholescontainer">
-          <button v-on:click="Scene3nosepokestim1_onclick" class="nosepoke nosepoke1"></button>
-          <button v-on:click="Scene3nosepokestim2_onclick" class="nosepoke nosepoke2"></button>
-          <button v-on:click="Scene3nosepokestim3_onclick" class="nosepoke nosepoke3"></button>
-          <button v-on:click="Scene3nosepokestim4_onclick" class="nosepoke nosepoke4"></button>
-          <button v-on:click="Scene3nosepokestim5_onclick" class="nosepoke nosepoke5"></button>
-        </div>
-    </div>
-    <div id="scene_4"  class = "scene" v-bind:class="{currentScene: showScene4}" >
-         <div class = "aversiveLight"></div>
-          <button class= "nosepokeLarge nosepokeLargeOff Scene4PerseverativeTrialStartNosepoke"></button>
-       
-        <div class= "nosepokeholescontainer">
-          <button v-on:click="Scene4nosepokestim1_onclick" class="nosepoke nosepoke1"></button>
-          <button v-on:click="Scene4nosepokestim2_onclick" class="nosepoke nosepoke2"></button>
-          <button v-on:click="Scene4nosepokestim3_onclick" class="nosepoke nosepoke3"></button>
-          <button v-on:click="Scene4nosepokestim4_onclick" class="nosepoke nosepoke4"></button>
-          <button v-on:click="Scene4nosepokestim5_onclick" class="nosepoke nosepoke5"></button>
-        </div>
-    </div>
+          <div class= "nosepokeholescontainer">
+            <button v-on:click="Scene4nosepokestim1_onclick" class="nosepoke nosepoke1"></button>
+            <button v-on:click="Scene4nosepokestim2_onclick" class="nosepoke nosepoke2"></button>
+            <button v-on:click="Scene4nosepokestim3_onclick" class="nosepoke nosepoke3"></button>
+            <button v-on:click="Scene4nosepokestim4_onclick" class="nosepoke nosepoke4"></button>
+            <button v-on:click="Scene4nosepokestim5_onclick" class="nosepoke nosepoke5"></button>
+          </div>
+      </div>
 
-      <div id="scene_5"  class = "scene" v-bind:class="{currentScene: showScene5}" >
-    </div>
+      <div id="scene_5"  class = "scene" v-bind:class="{currentScene: showScene5}" > </div>
     </div>
     
   </div>
@@ -61,7 +61,7 @@ export default {
   name: 'exp1979',
   sockets: {
     connect: function () {
-      console.log('socket connected')
+      console.log('session socket connected')
     },
  
     client_experment_action: function (action) {
