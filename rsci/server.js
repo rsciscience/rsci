@@ -186,8 +186,6 @@ async function getExperiment(dir, cb) {
       debug("complier result");
       content = mfs.readFileSync("//packed.js", "utf8");
       debug('Script len : ' + content.length);
-      console.log( uiparsed.styles);
-
       var ui = {
         template: uiparsed.template.content,
         script: content,

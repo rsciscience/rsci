@@ -147,7 +147,10 @@ export default {
       ITIOn: false
     }
   },
-  mounted () {},
+  mounted () {
+    console.log('mounted')
+    debugger
+  },
   methods: {
     btnRedOnClick: function () {
       console.log('Btn Red Clicked!')
