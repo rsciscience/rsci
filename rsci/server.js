@@ -191,7 +191,7 @@ async function getExperiment(dir, cb) {
       var ui = {
         template: uiparsed.template.content,
         script: content,
-        style: uiparsed.styles.content
+        styles: uiparsed.styles.content
       };
       var exp = {
         config: eval(fs.readFileSync(path.join(dir, "config.js"), "utf8")),

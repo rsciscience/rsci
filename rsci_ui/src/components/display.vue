@@ -6,7 +6,9 @@
     <div id="waiting" v-if="!sessionRunning" >
       <div>Waiting...</div>
     </div>
-  
+
+ <style id = 'sessionStyles'></style>
+
   </div>
 </template>
 
@@ -24,12 +26,19 @@ export default {
       var config = eval(data.ui.script).default
       config.template = data.ui 
 
+      var styles = data.styles;
+      var sessionStyles = document.getElementById('sessionStyles')
+
+      try{sessionStyles.innerHTML = styles;}
+      //IE fix
+      catch(error){sessionStyles.styleSheet.cssText = styles;}
+
       console.log(data.ui)
       var MyComponent = Vue.extend(config)
       this.session = new MyComponent({data: config.data()}).$mount('#session')
       console.log('client_experiment_init')
       debugger
-    },  
+    },
     client_experment_stop: function (val) {
       this.job = val
       this.jobRunning = false

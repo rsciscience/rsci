@@ -1,5 +1,5 @@
 <template>
-  <div class="job">
+  <div class="session">
     <div class= "scene-container"  v-bind:class="{flashing: isFlashing}">
      
       <div id="scene_1" sceneNumber="1" class = "scene" v-bind:class="{currentScene: showScene1}">
@@ -58,7 +58,7 @@
 
 <script>
 export default {
-  name: '1979',
+  name: 'exp1979',
   sockets: {
     connect: function () {
       console.log('socket connected')
@@ -238,7 +238,7 @@ li {
 a {
   color: #42b983;
 }
-.job {
+.session {
   color: white;
   height: 100vh;
   width: 100%;
