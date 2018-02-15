@@ -66,82 +66,60 @@ export default {
  
     client_experment_action: function (action) {
       console.log('client_experment_action', action)
+    
+    if (action.startsWith('changeToScene')){
+      this.showScene1 = false
+      this.showScene2 = false
+      this.showScene3 = false
+      this.showScene4 = false
+      this.showScene5 = false
+    
       if (action.type === 'changeToScene1') {
         this.currentScene = 1
         this.showScene1 = true
-        this.showScene2 = false
-        this.showScene3 = false
-        this.showScene4 = false
-        this.showScene5 = false
         this.ITIOn = false
       }
       if (action.type === 'changeToScene2') {
         this.currentScene = 2
-        this.showScene1 = false
         this.showScene2 = true
-        this.showScene3 = false
-        this.showScene4 = false
-        this.showScene5 = false
+        
       }
       if (action.type === 'changeToScene3') {
         this.currentScene = 3
-        this.showScene1 = false
-        this.showScene2 = false
         this.showScene3 = true
-        this.showScene4 = false
-        this.showScene5 = false
       }
       if (action.type === 'changeToScene4') {
         this.currentScene = 4
-        this.showScene1 = false
-        this.showScene2 = false
-        this.showScene3 = false
         this.showScene4 = true
-        this.showScene5 = false
       }
       if (action.type === 'changeToScene5') {
         this.currentScene = 5
-        this.showScene1 = false
-        this.showScene2 = false
-        this.showScene3 = false
-        this.showScene4 = false
         this.showScene5 = true
       }
+    }
+
+    if (action.startsWith('nosepokeStimulus_')){
+      this.nosepokeStimulus_1 = false
+      this.nosepokeStimulus_2 = false
+      this.nosepokeStimulus_3 = false
+      this.nosepokeStimulus_4 = false
+      this.nosepokeStimulus_5 = false
       if (action.type === 'nosepokeStimulus_1') {
         this.nosepokeStimulus_1 = true
-        this.nosepokeStimulus_2 = false
-        this.nosepokeStimulus_3 = false
-        this.nosepokeStimulus_4 = false
-        this.nosepokeStimulus_5 = false
       }
       if (action.type === 'nosepokeStimulus_2') {
-        this.nosepokeStimulus_1 = false
         this.nosepokeStimulus_2 = true
-        this.nosepokeStimulus_3 = false
-        this.nosepokeStimulus_4 = false
-        this.nosepokeStimulus_5 = false
       }
       if (action.type === 'nosepokeStimulus_3') {
-        this.nosepokeStimulus_1 = false
-        this.nosepokeStimulus_2 = false
         this.nosepokeStimulus_3 = true
-        this.nosepokeStimulus_4 = false
-        this.nosepokeStimulus_5 = false
       }
       if (action.type === 'nosepokeStimulus_4') {
-        this.nosepokeStimulus_1 = false
-        this.nosepokeStimulus_2 = false
-        this.nosepokeStimulus_3 = false
         this.nosepokeStimulus_4 = true
-        this.nosepokeStimulus_5 = false
       }
       if (action.type === 'nosepokeStimulus_5') {
-        this.nosepokeStimulus_1 = false
-        this.nosepokeStimulus_2 = false
-        this.nosepokeStimulus_3 = false
-        this.nosepokeStimulus_4 = false
         this.nosepokeStimulus_5 = true
       }
+    }
       if (action.type === 'ITIOn') {
         this.ITIOn = true
       }

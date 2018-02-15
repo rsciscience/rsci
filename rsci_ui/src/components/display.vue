@@ -1,8 +1,7 @@
 <template>
   <div class="experiment">
     
-    <div id='session' >
-     </div>
+    <div id='session'> </div>
 
     <div id="waiting" v-if="!sessionRunning" >
       <div>Waiting...</div>
@@ -22,14 +21,10 @@ export default {
     client_experiment_init: function (data) {
       this.expermentSession = data
       this.sessionRunning = true
-
       var script = eval(data.ui.script)
 
       console.log(data.ui)
-      var MyComponent = Vue.extend(data.ui, {
-        methods: script.default.methods,
-        mixins: script.default
-      })
+      var MyComponent = Vue.extend(data.ui, script.default)
       this.session = new MyComponent({data: script.default.data()}).$mount('#session')
       console.log('client_experiment_init')
       debugger
