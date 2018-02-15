@@ -1,10 +1,10 @@
 <template>
   <div class="experiment">
     
-    <div id='session'>
+    <div id='session' >
      </div>
 
-    <div id="waiting" >
+    <div id="waiting" v-if="!sessionRunning" >
       <div>Waiting...</div>
     </div>
   
@@ -27,15 +27,18 @@ export default {
 
       console.log(data.ui)
       var MyComponent = Vue.extend(data.ui, {
-        data: script.default.data(),
+        methods: script.default.methods,
         mixins: script.default
       })
-
-      var component = new MyComponent().$mount('#session')
-
+      this.session = new MyComponent({data: script.default.data()}).$mount('#session')
       console.log('client_experiment_init')
       debugger
-    }
+    },  
+    client_experment_stop: function (val) {
+      this.job = val
+      this.jobRunning = false
+      console.log('client_experment_stop', val)
+    },
   },
   data () {
     return {

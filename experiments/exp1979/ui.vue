@@ -1,6 +1,6 @@
 <template>
   <div class="job">
-    <div class= "scene-container" v-if="jobRunning" v-bind:class="{flashing: isFlashing}">
+    <div class= "scene-container"  v-bind:class="{flashing: isFlashing}">
      
       <div id="scene_1" sceneNumber="1" class = "scene" v-bind:class="{currentScene: showScene1}">
         <div class = "sceneLabel"> trial start scene </div>
@@ -52,10 +52,7 @@
       <div id="scene_5"  class = "scene" v-bind:class="{currentScene: showScene5}" >
     </div>
     </div>
-    <div id="scene_noJob" v-else class="scene">
-      <div>1979 Waiting...</div>
-    </div>
-  
+    
   </div>
 </template>
 
@@ -66,16 +63,7 @@ export default {
     connect: function () {
       console.log('socket connected')
     },
-    client_experiment_start: function (val) {
-      this.job = val
-      this.jobRunning = true
-      console.log('client_experiment_start')
-    },
-    client_experment_stop: function (val) {
-      this.job = val
-      this.jobRunning = false
-      console.log('client_experment_stop', val)
-    },
+ 
     client_experment_action: function (action) {
       console.log('client_experment_action', action)
       if (action.type === 'changeToScene1') {
@@ -167,7 +155,6 @@ export default {
       job: {
         id: 'No Job'
       },
-      jobRunning: false,
       isFlashing: false,
       currentScene: 0,
       showScene1: false,
