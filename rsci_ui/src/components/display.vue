@@ -23,7 +23,7 @@ export default {
       this.expermentSession = data
       this.sessionRunning = true
       var config = eval(data.ui.script).default
-      config.template = data.ui
+      config.template = data.ui.template
 
       var styles = data.styles
       var sessionStyles = document.getElementById('sessionStyles')
