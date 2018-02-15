@@ -7,7 +7,6 @@
       <div>Waiting...</div>
     </div>
 
- <style id = 'sessionStyles'></style>
 
   </div>
 </template>
@@ -24,14 +23,16 @@ export default {
       this.expermentSession = data
       this.sessionRunning = true
       var config = eval(data.ui.script).default
-      config.template = data.ui 
+      config.template = data.ui
 
-      var styles = data.styles;
+      var styles = data.styles
       var sessionStyles = document.getElementById('sessionStyles')
 
-      try{sessionStyles.innerHTML = styles;}
-      //IE fix
-      catch(error){sessionStyles.styleSheet.cssText = styles;}
+      try {
+        sessionStyles.innerHTML = styles
+      } catch(error) {
+        sessionStyles.styleSheet.cssText = styles
+      }
 
       console.log(data.ui)
       var MyComponent = Vue.extend(config)
