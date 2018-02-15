@@ -21,11 +21,12 @@ export default {
     client_experiment_init: function (data) {
       this.expermentSession = data
       this.sessionRunning = true
-      var script = eval(data.ui.script)
+      var config = eval(data.ui.script).default
+      config.template = data.ui 
 
       console.log(data.ui)
-      var MyComponent = Vue.extend(data.ui, script.default)
-      this.session = new MyComponent({data: script.default.data()}).$mount('#session')
+      var MyComponent = Vue.extend(config)
+      this.session = new MyComponent({data: config.data()}).$mount('#session')
       console.log('client_experiment_init')
       debugger
     },  
