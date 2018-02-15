@@ -24,6 +24,9 @@ export default {
       this.sessionRunning = true
       var config = eval(data.ui.script).default
       config.template = data.ui.template
+      config.el=function() {
+        return document.createElement('div')   
+      }
 
       var styles = data.styles
       var sessionStyles = document.getElementById('sessionStyles')
