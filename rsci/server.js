@@ -6,7 +6,9 @@ var path = require('path');
 var helpers = require('./helpers');
 const request = require('request-promise');
 var discovery = require('./discovery');
-
+var webpackConfig = require('./webpack.conf.js');
+const MemoryFS = require("memory-fs");
+const webpack = require("webpack");
 
 //vue parser
 
@@ -152,35 +154,53 @@ function getDirectories(path) {
   });
 }
 
-function getExperiment(dir) {
+
+async function getExperiment(dir, cb) {
 
   debug('Loading from : ' + dir);
   try {
 
+
+    debug('Parsing out.....');
     var uistr = fs.readFileSync(path.join(dir, "ui.vue"), "utf8");
     var uiparsed = vuetemplatecompiler.parseComponent(uistr, { pad: true });
 
     var scripttTransformed = require("babel-core").transform(uiparsed.script.content, {
-      minified :true,
+      minified: false,
+      comments: false,
       babelrc: false,
-      plugins: ["transform-es2015-modules-commonjs"]
+      plugins: ['transform-runtime'],
+      presets: ['es2015', 'stage-2'],
     });
 
-    //console.log("scripttTransformed" ,scripttTransformed.code)  ;
 
-    var x = eval(scripttTransformed.code);
-console.log(x);
-    var ui = {
-      template: uiparsed.template.content,
-      script: scripttTransformed.code,
-      style: uiparsed.styles.content
-    };
-    var exp = {
-      config: eval(fs.readFileSync(path.join(dir, "config.js"), "utf8")),
-      session: fs.readFileSync(path.join(dir, "session.js"), "utf8"),
-      ui: ui
-    };
-    return exp;
+    debug('Webpacking.....');
+
+
+    webpackConfig.context = dir;
+    const mfs = new MemoryFS();
+    const compiler = webpack(webpackConfig);
+    compiler.outputFileSystem = mfs;
+    var content = '';
+    await compiler.run((err, stats) => {
+      debug("complier result");
+      content = mfs.readFileSync("//packed.js", "utf8");
+      debug('Script len : ' + content.length);
+      var ui = {
+        template: uiparsed.template.content,
+        script: content,
+        style: uiparsed.styles.content
+      };
+      var exp = {
+        config: eval(fs.readFileSync(path.join(dir, "config.js"), "utf8")),
+        session: fs.readFileSync(path.join(dir, "session.js"), "utf8"),
+        ui: ui
+      };
+      cb(exp);
+
+
+    });
+
 
   } catch (err) {
     console.log(err);
@@ -195,7 +215,12 @@ this.loadExperiments = function (configDir) {
   var dirs = getDirectories(configDir);
   debug('Found ' + dirs.length + ' experiments ');
   for (var i = 0; i < dirs.length; i++) {
-    configs.push(getExperiment(path.join(configDir, dirs[i])));
+    var dir = path.resolve(path.join(configDir, dirs[i]));
+    getExperiment(dir, function (exp) {
+      configs.push(exp);
+
+    });
+   
   }
 
   debug('loadExperiments complete ');
