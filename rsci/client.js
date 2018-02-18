@@ -1,54 +1,54 @@
 "use strict";
 const debug = require('debug')('RSCI.client');
 this.state = require('./state');
-const webApp =  require('./webApp');
+const webApp = require('./webApp');
 
 const request = require('request-promise');
 
 this.initExperimentSession = function (experimentRequest) {
   debug('initExperimentSession');
 
-var requestConfig = {
-  experimentId : experimentRequest.experimentId, 
-  instanceId: experimentRequest.instanceId,
-  experimentConfig: experimentRequest.experimentConfig,      
-};
+  var requestConfig = {
+    experimentId: experimentRequest.experimentId,
+    instanceId: experimentRequest.instanceId,
+    experimentConfig: experimentRequest.experimentConfig,
+  };
 
-requestConfig.experimentConfig.session = eval(experimentRequest.experimentConfig.session);
+  requestConfig.experimentConfig.session = eval(experimentRequest.experimentConfig.session);
 
-this.state.currentExperimentSession = requestConfig;
-  
+  this.state.currentExperimentSession = requestConfig;
+
   function watchEvents(args) {
-    sendServerExperimentSessionEvent(args, 
+    sendServerExperimentSessionEvent(args,
       this.state.server.ip,
-       this.state.listeningPort, 
-       this.state.id, 
-       this.state.currentExperimentSession.experimentId,
-       this.state.currentExperimentSession.instanceId);
+      this.state.listeningPort,
+      this.state.id,
+      this.state.currentExperimentSession.experimentId,
+      this.state.currentExperimentSession.instanceId);
   }
 
-  var j = new  requestConfig.experimentConfig.session( requestConfig.instanceId,  requestConfig.experimentConfig.config );
+  var sess = new requestConfig.experimentConfig.session(requestConfig.instanceId, requestConfig.experimentConfig.config);
 
-  j.on('Init', watchEvents.bind(this));
-  j.on('Start', watchEvents.bind(this));
-  j.on('Stop', watchEvents.bind(this));
-  j.on('Event', watchEvents.bind(this));
-  j.on('Action', watchEvents.bind(this));
+  sess.on('Init', watchEvents.bind(this));
+  sess.on('Start', watchEvents.bind(this));
+  sess.on('Stop', watchEvents.bind(this));
+  sess.on('Event', watchEvents.bind(this));
+  sess.on('Action', watchEvents.bind(this));
 
-  var comms = webApp.getClientCommunicationFunctions(j.listen);
-  
-  comms.init({ 
+  var comms = webApp.getClientCommunicationFunctions(sess.listen);
+
+  comms.init({
     experimentId: requestConfig.experimentId,
-    instanceId: requestConfig.instanceId, 
-    ui : requestConfig.experimentConfig.ui
-  }); 
+    instanceId: requestConfig.instanceId,
+    ui: requestConfig.experimentConfig.ui
+  });
 
-  j.start(comms);
+  sess.init(comms);
 
   return {
     clientId: this.state.id,
     startDate: new Date(),
-    experimentId : experimentRequest.experimentId, 
+    experimentId: experimentRequest.experimentId,
     instanceId: experimentRequest.instanceId,
   };
 }
@@ -89,7 +89,7 @@ this.registerServer = function (payload) {
 async function sendServerExperimentSessionEvent(data, serverip, port, clientId, experimentId, instanceId, ) {
   debug('sendServerExperimentSessionEvent');
   var options = {
-    uri: 'http://' + serverip + ':' + port + '/server/experiment/' + experimentId + '/session/' +  instanceId + '/'+ clientId + '/event',
+    uri: 'http://' + serverip + ':' + port + '/server/experiment/' + experimentId + '/session/' + instanceId + '/' + clientId + '/event',
     json: true,
     method: 'POST',
     body: data
@@ -104,5 +104,5 @@ async function sendServerExperimentSessionEvent(data, serverip, port, clientId, 
 }
 
 
-module.exports =  this;
+module.exports = this;
 
