@@ -158,17 +158,17 @@ export default {
         this.$socket.emit('client_experiment_onevent', { type: type})
     },
     
-    Scene1TrialStartNosepoke_onclick: function () { event('Scene1TrialStartNosepoke_onclick') },
-    Scene1nosepokestim1_onclick: function () { event('prematureResponse2') },
-    Scene1nosepokestim2_onclick: function () { event('prematureResponse2') },
-    Scene1nosepokestim3_onclick: function () { event('prematureResponse3') },
-    Scene1nosepokestim4_onclick: function () { event('prematureResponse4') },
-    Scene1nosepokestim5_onclick: function () { event('prematureResponse5') },
-    Scene2nosepokestim1_onclick: function () { event('Scene2nosepokestim1_onclick') },
-    Scene2nosepokestim2_onclick: function () { event('Scene2nosepokestim2_onclick') },
-    Scene2nosepokestim3_onclick: function () { event('Scene2nosepokestim3_onclick') },
-    Scene2nosepokestim4_onclick: function () { event('Scene2nosepokestim4_onclick') },
-    Scene2nosepokestim5_onclick: function () { event('Scene2nosepokestim5_onclick') },
+    Scene1TrialStartNosepoke_onclick: function () { this.event('Scene1TrialStartNosepoke_onclick') },
+    Scene1nosepokestim1_onclick: function () { this.event('prematureResponse2') },
+    Scene1nosepokestim2_onclick: function () { this.event('prematureResponse2') },
+    Scene1nosepokestim3_onclick: function () { this.event('prematureResponse3') },
+    Scene1nosepokestim4_onclick: function () { this.event('prematureResponse4') },
+    Scene1nosepokestim5_onclick: function () { this.event('prematureResponse5') },
+    Scene2nosepokestim1_onclick: function () { this.event('Scene2nosepokestim1_onclick') },
+    Scene2nosepokestim2_onclick: function () { this.event('Scene2nosepokestim2_onclick') },
+    Scene2nosepokestim3_onclick: function () { this.event('Scene2nosepokestim3_onclick') },
+    Scene2nosepokestim4_onclick: function () { this.event('Scene2nosepokestim4_onclick') },
+    Scene2nosepokestim5_onclick: function () { this.event('Scene2nosepokestim5_onclick') },
     Scene3nosepokestim1_onclick: function () {
       console.log('Clicked!')
     },
