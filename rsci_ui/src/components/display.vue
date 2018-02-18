@@ -22,29 +22,30 @@ export default {
     client_experiment_init: function (data) {
       this.expermentSession = data
       this.sessionRunning = true
+      // eslint-disable-next-line
       var config = eval(data.ui.script).default
       config.template = data.ui.template
-      
       var styles = data.ui.styles
       var sessionStyles = document.getElementById('sessionStyles')
 
       try {
         sessionStyles.innerHTML = styles
-      } catch(error) {
+      } catch (error) {
         sessionStyles.styleSheet.cssText = styles
       }
 
       console.log(data.ui)
-      var MyComponent = Vue.extend(config)
-      this.session = new MyComponent().$mount('#session')
+      this.state.MyComponent = Vue.extend(config)
+      this.session = new this.state.MyComponent().$mount('#session')
       console.log('client_experiment_init')
       debugger
     },
     client_experment_stop: function (val) {
       this.job = val
       this.jobRunning = false
+      // unmout ????? this.state.MyComponent
       console.log('client_experment_stop', val)
-    },
+    }
   },
   data () {
     return {

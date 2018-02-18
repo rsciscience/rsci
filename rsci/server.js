@@ -38,11 +38,11 @@ this.startExperiment = async function (experimentId) {
   };
   var port = this.state.listeningPort;
 
-  async function sendClientStart(client) {
-    debug('sendClientStart');
+  async function sendClientInit(client) {
+    debug('sendClientInit');
 
     var options = {
-      uri: 'http://' + client.ip + ':' + port + '/client/experiment/start',
+      uri: 'http://' + client.ip + ':' + port + '/client/experiment/init',
       json: true,
       method: 'POST',
       body: payload
@@ -52,12 +52,13 @@ this.startExperiment = async function (experimentId) {
       let res = await request(options);
       return res;
     } catch (e) {
+      console.log(e)
       debug('Error sending experiment start event');
     }
     return null;
   }
   debug(this.state.clientList)
-  let calledClients = await Promise.all(this.state.clientList.map(sendClientStart));
+  let calledClients = await Promise.all(this.state.clientList.map(sendClientInit));
 
   return {
     clientList: calledClients,
