@@ -29,6 +29,7 @@ this.getClientCommunicationFunctions = function (listen) {
     init: (data) => { this.io.emit('client_experiment_init', data)}, 
     start: (data) => { this.io.emit('client_experiment_session_start', data)},
     stop: (data) => { this.io.emit('client_experiment_session_stop', data)},
+    dispose: (data) => { this.io.emit('client_experiment_dispose', data)},
     emitAction: (action) => { this.io.emit('client_experiemnt_action', action)},
   }
 };

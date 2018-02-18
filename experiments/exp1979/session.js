@@ -63,6 +63,7 @@ var base = class base {
             setTimeout(() => {
                 this.emit('Stop', { eventTimeStamp: new Date(), eventType: 'Stop' });
                 this.uiCalls.stop({ id: this.id });
+                this.uiCalls.dispose({ id: this.id });
             }, this.config.duration);
         }.bind(this);
 
@@ -87,19 +88,21 @@ var base = class base {
                 return;
             }
             switch (incomingMessage.type) {
-                case 'ui_onReady' : ui_onReady();
-                case 'Scene1TrialStartNosepoke_onclick' : Scene1TrialStartNosepoke_onclick();
-                case 'Scene2nosepokestim1_onclick': callAWinner(1);
-                case 'Scene2nosepokestim2_onclick': callAWinner(2);
-                case 'Scene2nosepokestim3_onclick': callAWinner(3);
-                case 'Scene2nosepokestim4_onclick': callAWinner(4);
-                case 'Scene2nosepokestim5_onclick': callAWinner(5);
+                case 'ui_onReady': ui_onReady(); break;
+                case 'Scene1TrialStartNosepoke_onclick': Scene1TrialStartNosepoke_onclick(); break;
+                case 'Scene2nosepokestim1_onclick': callAWinner(1); break;
+                case 'Scene2nosepokestim2_onclick': callAWinner(2); break;
+                case 'Scene2nosepokestim3_onclick': callAWinner(3); break;
+                case 'Scene2nosepokestim4_onclick': callAWinner(4); break;
+                case 'Scene2nosepokestim5_onclick': callAWinner(5); break;
                 case 'prematureResponse1':
                 case 'prematureResponse2':
                 case 'prematureResponse3':
                 case 'prematureResponse4':
                 case 'prematureResponse5':
                     prematureResponse();
+                break;
+                default: debug('unknown action recived ' + incomingMessage.type); break;
 
         }
         }.bind(this);
