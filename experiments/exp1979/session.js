@@ -54,7 +54,7 @@ var base = class base {
             }
         }.bind(this);
 
-        var Scene1TrialStartNosepoke_onclick = function () {
+        var ui_onReady = function () {
             // on start after the ui is ready to go.
             this.uiCalls.start({ id: this.id });
             this.emit('Start', { eventTimeStamp: new Date(), eventType: 'Start' });
