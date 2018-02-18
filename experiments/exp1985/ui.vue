@@ -257,8 +257,9 @@ a {
   left: 50px; 
   background-color:white; 
 }
-
 .nosepoke {
+  border-radius: 50%;
+  behavior: url(PIE.htc); /* remove if you don't care about IE8 */
   height: 100px;
   width: 100px;
   background-color: rgb(153, 153, 155);
