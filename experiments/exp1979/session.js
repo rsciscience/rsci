@@ -46,7 +46,7 @@ var base = class base {
             }, 10000);
         }.bind(this);
 
-        var callAWinner = function () {
+        var callAWinner = function (poke) {
             if (this.state.winningPokeHole === poke) {
                 CorrectResponseTime();
             } else {
