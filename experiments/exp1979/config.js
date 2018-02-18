@@ -5,8 +5,8 @@ module.exports = {
     name:'davids exp 1979',
     type:"5 choice",
     sessionConfig:{
-        duration:60,
-        timeOutDuration:3,
+        duration:60000,
+        timeOutDuration:3000,
     }, 
     clientAsignments:[
         {
