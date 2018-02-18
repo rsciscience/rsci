@@ -2,7 +2,6 @@
   <div class="session">
     
     <div class= "scene-container"  v-bind:class="{flashing: isFlashing}">
-     
       <div id="scene_1" sceneNumber="1" class = "scene" v-bind:class="{currentScene: showScene1}">
         <div class = "sceneLabel"> trial start scene </div>
         <button v-on:click="Scene1TrialStartNosepoke_onclick" class= "nosepokeLarge" v-bind:class="{nosepokeLargeOff: ITIOn}"></button>
@@ -84,42 +83,46 @@ export default {
       this.showScene4 = false
       this.showScene5 = false
    
-   switch(action.type){
-     case 'changeToScene1':
-      this.currentScene = 1
-      this.showScene1 = true
-      this.ITIOn = false
-     break;
-     case 'changeToScene2': 
-      this.currentScene = 2
-      this.showScene2 = true
-     break;
-     case 'changeToScene3':  
-       this.currentScene = 3
-       this.showScene3 = true
-     break;
-     case 'changeToScene4': 
-       this.currentScene = 4
-       this.showScene4 = true
-     break;
-     case 'changeToScene5': 
-      this.currentScene = 5
-      this.showScene5 = true
-     break;
-   }
-  
+      switch(action.type){
+        case 'changeToScene1':
+          this.currentScene = 1
+          this.showScene1 = true
+          this.ITIOn = false
+        break;
+        case 'changeToScene2': 
+          this.currentScene = 2
+          this.showScene2 = true
+        break;
+        case 'changeToScene3':  
+          this.currentScene = 3
+          this.showScene3 = true
+        break;
+        case 'changeToScene4': 
+          this.currentScene = 4
+          this.showScene4 = true
+        break;
+        case 'changeToScene5': 
+          this.currentScene = 5
+          this.showScene5 = true
+        break;
+      }
+    }
+      
     if (action.startsWith('nosepokeStimulus_')){
       this.nosepokeStimulus_1 = false
       this.nosepokeStimulus_2 = false
       this.nosepokeStimulus_3 = false
       this.nosepokeStimulus_4 = false
       this.nosepokeStimulus_5 = false
-      if (action.type === 'nosepokeStimulus_1') { this.nosepokeStimulus_1 = true }
-      if (action.type === 'nosepokeStimulus_2') { this.nosepokeStimulus_2 = true }
-      if (action.type === 'nosepokeStimulus_3') { this.nosepokeStimulus_3 = true }
-      if (action.type === 'nosepokeStimulus_4') { this.nosepokeStimulus_4 = true }
-      if (action.type === 'nosepokeStimulus_5') { this.nosepokeStimulus_5 = true }
+      switch(action.type){
+        case 'nosepokeStimulus_1' : this.nosepokeStimulus_1 = true; break;
+        case 'nosepokeStimulus_2' : this.nosepokeStimulus_2 = true; break;
+        case 'nosepokeStimulus_3' : this.nosepokeStimulus_3 = true; break;
+        case 'nosepokeStimulus_4' : this.nosepokeStimulus_4 = true; break;
+        case 'nosepokeStimulus_5' : this.nosepokeStimulus_5 = true; break;
+      }
     }
+
     if (action.type === 'ITIOn') {
         this.ITIOn = true
       }
@@ -200,6 +203,7 @@ export default {
       console.log('Clicked!')
     }
   }
+
 }
 </script>
 

@@ -1,7 +1,6 @@
 <template>
   <div class="job">
     <div class= "scene-container" v-if="jobRunning" v-bind:class="{flashing: isFlashing}">
-     
       <div id="scene_1" sceneNumber="1" class = "scene" v-bind:class="{currentScene: showScene1}">
         <div class = "sceneLabel"> trial start scene </div>
         <button v-on:click="Scene1TrialStartNosepoke_onclick" class= "nosepokeLarge" v-bind:class="{nosepokeLargeOff: ITIOn}"></button>
