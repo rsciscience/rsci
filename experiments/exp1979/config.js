@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-    id:1979,
+    id:'exp1979',
     name:'davids exp 1979',
     type:"5 choice",
     sessionConfig:{
