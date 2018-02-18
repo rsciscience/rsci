@@ -150,12 +150,12 @@ export default {
   },
   mounted () {
     console.log('mounted')
-    this.$socket.emit('client_onevent', { type: 'ui_onReady' })
+    this.$socket.emit('client_experiment_onevent', { type: 'ui_onReady' })
     debugger
   },
   methods: {
     event: function (eventType) {
-        this.$socket.emit('client_onevent', { type: type})
+        this.$socket.emit('client_experiment_onevent', { type: type})
     },
     
     Scene1TrialStartNosepoke_onclick: function () { event('Scene1TrialStartNosepoke_onclick') },
