@@ -21,7 +21,9 @@ this.startExperiment = async function (experimentId) {
 
   for (var i = 0; i < this.state.experiments.configs.length; i++) {
     var config = this.state.experiments.configs[i];
-    if (config.config.id == experimentId) {
+    console.log(config.config.id.toUpperCase())
+    console.log(experimentId.toUpperCase())
+    if (config.config.id.toUpperCase()    == experimentId.toUpperCase()) {
       experimentConfig = config;
     }
   }

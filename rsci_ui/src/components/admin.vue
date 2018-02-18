@@ -5,7 +5,6 @@
     <button v-on:click="startExperiment2">Start Experiment Session 85 </button>
     <button v-on:click="becomeServer">Become Server</button>
 
-
     <div class="row">
       <div class="col-sm-4">
         <h2>Server</h2>
@@ -16,7 +15,7 @@
       <div class="col-sm-4">
         <h2>Clients</h2>
         <ul id="clientlist">
-          <li v-for="item in clientList">
+          <li v-for="item in clientList" >
             {{ item.ip }} ({{ item.id }})
           </li>
         </ul>
@@ -25,7 +24,7 @@
       <div class="col-sm-4">
         <h2>Discovery Results</h2>
         <ul id="discoverylist">
-          <li v-for="item in discoveryList">
+          <li v-for="item in discoveryList" >
             {{ item.ip }}
             <span  v-if="item.me" >Me</span>
           </li>
