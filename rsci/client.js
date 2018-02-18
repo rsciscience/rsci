@@ -5,8 +5,8 @@ const webApp =  require('./webApp');
 
 const request = require('request-promise');
 
-this.startExperimentSession = function (experimentRequest) {
-  debug('startExperimentSession');
+this.initExperimentSession = function (experimentRequest) {
+  debug('initExperimentSession');
 
 var requestConfig = {
   experimentId : experimentRequest.experimentId, 
@@ -29,6 +29,7 @@ this.state.currentExperimentSession = requestConfig;
 
   var j = new  requestConfig.experimentConfig.session( requestConfig.instanceId,  requestConfig.experimentConfig.config );
 
+  j.on('Init', watchEvents.bind(this));
   j.on('Start', watchEvents.bind(this));
   j.on('Stop', watchEvents.bind(this));
   j.on('Event', watchEvents.bind(this));

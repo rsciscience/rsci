@@ -55,7 +55,7 @@ this.app.use(function(req, res, next) {
 this.app.get('/discovery',discovery.bind(this));
 this.app.get('/discovery/list',discovery_list.bind(this));
 this.app.get('/client/state',client_state.bind(this));
-this.app.post('/client/experiment/start',client_experiment_start.bind(this));
+this.app.post('/client/experiment/init',client_experiment_init.bind(this));
 this.app.post('/client/experiment/stop',client_experiment_stop.bind(this));
 this.app.post('/client/server/register',client_server_register.bind(this));
 this.app.post('/server/client/add',server_client_add.bind(this));
@@ -150,11 +150,11 @@ function discovery_list (req, res)  {
   res.send(clientResponse);
 }
 
-function client_experiment_start(req, res)  {
-  debug('API:client_experiment_start_event');
+function client_experiment_init(req, res)  {
+  debug('API:client_experiment_init_event');
 
   function doWork(input){
-    var output = this.clientFunctions.startExperimentSession(input);
+    var output = this.clientFunctions.initExperimentSession(input);
     return  JSON.stringify( output);
   }
 

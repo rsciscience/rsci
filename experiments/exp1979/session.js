@@ -2,131 +2,112 @@
 var ee = require('event-emitter');
 const debug = require('debug')('RSCI.session');
 
-var base  = class base {
-    constructor(sessionId,experiment) {
+var base = class base {
+    constructor(sessionId, experiment) {
         this.id = sessionId;
-        this.start = startmeup ;
+        this.init = initilise;
         this.config = experiment.sessionConfig;
         this.experiment = experiment
-            
-        function startmeup (clientCommunicationFunctions) {
-            debug('startmeup');
+
+        function initialize(clientCommunicationFunctions) {
+            debug('initialize');
             this.uiCalls = clientCommunicationFunctions;
             this.state = {};
             this.state.ignoreExtraneousInputs = false;
-            this.emit('Start', {eventTimeStamp:new Date(), eventType:'Start' } );
-            this.uiCalls.start({ id: this.id }); 
-           
-            setTimeout(() => {
-                ChangeSceneTo (1);
-            }, 3000);
-            debug('first screen in 3 seconds');
-                
-            setTimeout(() => {
-                this.emit('Stop', {eventTimeStamp:new Date(), eventType:'Stop' } );
-                this.uiCalls.stop({ id: this.id });
-            }, this.config.duration);
-
+            this.emit('init', { eventTimeStamp: new Date(), eventType: 'init' });
+            //session starts on ui_onReady 
         };
 
-         var doEvent = function (eventType){
-            debug('doEvent:' + eventType);
-            this.emit('Action', {eventTimeStamp:new Date(), eventType: eventType } );
-            this.uiCalls.emitAction({ type: eventType });
-        }.bind(this);
-
-        var prematureResponse  = function (){
-            clearTimeout (this.state.interTrialIntervalTimeOut);
-            ChangeSceneTo (5);
+        var prematureResponse = function () {
+            clearTimeout(this.state.interTrialIntervalTimeOut);
+            ChangeSceneTo(5);
             setTimeout(() => {
-                ChangeSceneTo (1);   
-            }, 5000);  
+                ChangeSceneTo(1);
+            }, 5000);
         }.bind(this);
 
-        var ChangeSceneTo  = function (newScene){ 
+        var ChangeSceneTo = function (newScene) {
             this.state.currentScene = newScene;
-            doEvent('changeToScene'+ newScene);
+            doEvent('changeToScene' + newScene);
         }.bind(this);
 
-        var CorrectResponseTime = function (){
-            debug('Winner !!!!'); 
-            ChangeSceneTo (3);
-
+        var CorrectResponseTime = function () {
+            debug('Winner Winner Chicken Dinner !!!!');
+            ChangeSceneTo(3);
             setTimeout(() => {
-                ChangeSceneTo (1);   
+                ChangeSceneTo(1);
             }, 1000);
         }.bind(this);
 
-        var IncorrectResponseTime = function (){
-            ChangeSceneTo (4);
-
+        var IncorrectResponseTime = function () {
+            ChangeSceneTo(4);
             setTimeout(() => {
-                ChangeSceneTo (1);   
+                ChangeSceneTo(1);
             }, 10000);
         }.bind(this);
 
-        var callAWinner = function (poke){
-            if(this.state.winningPokeHole  ===  poke){
-                CorrectResponseTime() ;
-            }else{
+        var callAWinner = function () {
+            if (this.state.winningPokeHole === poke) {
+                CorrectResponseTime();
+            } else {
                 IncorrectResponseTime();
             }
         }.bind(this);
 
-      this.listen = function(incomingMessage) {
+        var Scene1TrialStartNosepoke_onclick = function () {
+            // on start after the ui is ready to go.
+            this.uiCalls.start({ id: this.id });
+            this.emit('Start', { eventTimeStamp: new Date(), eventType: 'Start' });
+            ChangeSceneTo(1);
+
+            setTimeout(() => {
+                this.emit('Stop', { eventTimeStamp: new Date(), eventType: 'Stop' });
+                this.uiCalls.stop({ id: this.id });
+            }, this.config.duration);
+        }.bind(this);
+
+        var Scene1TrialStartNosepoke_onclick = function (poke) {
+            this.state.interTrialIntervalTimeOut = setTimeout(() => {
+                this.state.interTrialInterval = new Date();
+                ChangeSceneTo(2);
+                this.state.winningPokeHole = Math.floor(Math.random() * 5) + 1;
+                debug('Next winner is poke ' + this.state.winningPokeHole);
+                doEvent('nosepokeStimulus_' + this.state.winningPokeHole);
+            }, 5000);
+            doEvent('ITIOn');
+        }.bind(this);
+
+        this.listen = function (incomingMessage) {
             debug('listen');
-            this.emit('Action', {eventTimeStamp:new Date(), eventType: incomingMessage.type }  ); 
+            this.emit('Action', { eventTimeStamp: new Date(), eventType: incomingMessage.type });
             this.state[incomingMessage.type]++;
             debug(incomingMessage.type);
 
-            if (this.state.ignoreExtraneousInputs === true){
+            if (this.state.ignoreExtraneousInputs === true) {
                 return;
             }
-    
-            if (incomingMessage.type === 'Scene1TrialStartNosepoke_onclick') {
-               this.state.interTrialIntervalTimeOut = setTimeout(() => {
-                    this.state.interTrialInterval = new Date();
-                    ChangeSceneTo (2);
-                    this.state.winningPokeHole =  Math.floor(Math.random() * 5) + 1 ;
-                    debug('Next winner is poke ' + this.state.winningPokeHole );
-                    doEvent('nosepokeStimulus_' + this.state.winningPokeHole);
-                }, 5000); 
-                doEvent('ITIOn');
-            }
+            switch (incomingMessage.type) {
+                case 'ui_onReady' : ui_onReady();
+                case 'Scene1TrialStartNosepoke_onclick' : Scene1TrialStartNosepoke_onclick();
+                case 'Scene2nosepokestim1_onclick': callAWinner(1);
+                case 'Scene2nosepokestim2_onclick': callAWinner(2);
+                case 'Scene2nosepokestim3_onclick': callAWinner(3);
+                case 'Scene2nosepokestim4_onclick': callAWinner(4);
+                case 'Scene2nosepokestim5_onclick': callAWinner(5);
+                case 'prematureResponse1':
+                case 'prematureResponse2':
+                case 'prematureResponse3':
+                case 'prematureResponse4':
+                case 'prematureResponse5':
+                    prematureResponse();
 
-            if (incomingMessage.type === 'Scene2nosepokestim1_onclick') {               
-                callAWinner(1);
-            }
-            if (incomingMessage.type === 'Scene2nosepokestim2_onclick') {
-                callAWinner(2);
-            }
-            if (incomingMessage.type === 'Scene2nosepokestim3_onclick') {
-                callAWinner(3);
-            }
-            if (incomingMessage.type === 'Scene2nosepokestim4_onclick') {
-                callAWinner(4);
-            }
-            if (incomingMessage.type === 'Scene2nosepokestim5_onclick') {
-                callAWinner(5);
-            }
+        }
+        }.bind(this);
 
-            if (incomingMessage.type === "prematureResponse1"){
-                prematureResponse ();
-            }
-            if (incomingMessage.type === "prematureResponse2"){
-                prematureResponse ();
-            }
-            if (incomingMessage.type === "prematureResponse3"){
-                prematureResponse ();
-            }
-            if (incomingMessage.type === "prematureResponse4"){
-                prematureResponse ();
-            }
-            if (incomingMessage.type === "prematureResponse5"){
-                prematureResponse ();
-            }
-
-
+        var doEvent = function (eventType) {
+            debug('doEvent:' + eventType);
+            this.emit('Action', { eventTimeStamp: new Date(), eventType: eventType });
+            this.uiCalls.emitAction({ type: eventType });
         }.bind(this);
     };
 
