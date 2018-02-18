@@ -150,16 +150,13 @@ export default {
   },
   mounted () {
     console.log('mounted')
-       this.$socket.emit('sendClientInit', { type: 'ui_onReady' })
+    this.$socket.emit('client_onevent', { type: 'ui_onReady' })
     debugger
   },
   methods: {
-    btnRedOnClick: function () {
-      console.log('Btn Red Clicked!')
-      this.$socket.emit('client_onevent', { type: 'btn_red_onClick' })
-    },
     event: function (eventType) {
-        this.$socket.emit('client_onevent', { type: type}) },
+        this.$socket.emit('client_onevent', { type: type})
+    },
     
     Scene1TrialStartNosepoke_onclick: function () { event('Scene1TrialStartNosepoke_onclick') },
     Scene1nosepokestim1_onclick: function () { event('prematureResponse2') },

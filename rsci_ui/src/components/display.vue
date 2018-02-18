@@ -35,15 +35,15 @@ export default {
       }
 
       console.log(data.ui)
-      this.sessionComponent = Vue.extend(config)
-      this.session = new this.sessionComponent().$mount('#session')
+      this.SessionComponent = Vue.extend(config)
+      this.session = new this.SessionComponent().$mount('#session')
       console.log('client_experiment_init')
       debugger
     },
-    client_experment_stop: function (val) {
+    client_experiment_dispose: function (val) {
       this.job = val
       this.jobRunning = false
-      // unmout ????? this.sessionComponent / this.session
+      // unmout ????? this.SessionComponent / this.session
 
       console.log('client_experment_stop', val)
     }
