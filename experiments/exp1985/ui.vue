@@ -1,7 +1,9 @@
 <template>
-  <div class="job">
-    <div class= "scene-container" v-if="jobRunning" v-bind:class="{flashing: isFlashing}">
+  <div class="session">
+    
+    <div class= "scene-container"  v-bind:class="{flashing: isFlashing}">
       <div id="scene_1" sceneNumber="1" class = "scene" v-bind:class="{currentScene: showScene1}">
+        <h1> hello fergs exp  </h1>
         <div class = "sceneLabel"> trial start scene </div>
         <button v-on:click="Scene1TrialStartNosepoke_onclick" class= "nosepokeLarge" v-bind:class="{nosepokeLargeOff: ITIOn}"></button>
         <div class= "nosepokeholescontainer">
@@ -23,150 +25,115 @@
             <button v-on:click="Scene2nosepokestim5_onclick" class="nosepoke nosepoke5" v-bind:class="{nosepokeActive: nosepokeStimulus_5}" ></button>
           </div>
       </div>
-    <div id="scene_3" class = "scene" v-bind:class="{currentScene: showScene3}" >
+      <div id="scene_3" class = "scene" v-bind:class="{currentScene: showScene3}" >
           <div class = "sceneLabel"> win outcome scene</div>
           <button class= "nosepokeLarge nosepokeLargeOff Scene3PerseverativeTrialStartNosepoke"></button>
+          
+          <div class= "nosepokeholescontainer">
+            <button v-on:click="Scene3nosepokestim1_onclick" class="nosepoke nosepoke1"></button>
+            <button v-on:click="Scene3nosepokestim2_onclick" class="nosepoke nosepoke2"></button>
+            <button v-on:click="Scene3nosepokestim3_onclick" class="nosepoke nosepoke3"></button>
+            <button v-on:click="Scene3nosepokestim4_onclick" class="nosepoke nosepoke4"></button>
+            <button v-on:click="Scene3nosepokestim5_onclick" class="nosepoke nosepoke5"></button>
+          </div>
+      </div>
+      <div id="scene_4"  class = "scene" v-bind:class="{currentScene: showScene4}" >
+          <div class = "aversiveLight"></div>
+            <button class= "nosepokeLarge nosepokeLargeOff Scene4PerseverativeTrialStartNosepoke"></button>
         
-        <div class= "nosepokeholescontainer">
-          <button v-on:click="Scene3nosepokestim1_onclick" class="nosepoke nosepoke1"></button>
-          <button v-on:click="Scene3nosepokestim2_onclick" class="nosepoke nosepoke2"></button>
-          <button v-on:click="Scene3nosepokestim3_onclick" class="nosepoke nosepoke3"></button>
-          <button v-on:click="Scene3nosepokestim4_onclick" class="nosepoke nosepoke4"></button>
-          <button v-on:click="Scene3nosepokestim5_onclick" class="nosepoke nosepoke5"></button>
-        </div>
-    </div>
-    <div id="scene_4"  class = "scene" v-bind:class="{currentScene: showScene4}" >
-         <div class = "aversiveLight"></div>
-          <button class= "nosepokeLarge nosepokeLargeOff Scene4PerseverativeTrialStartNosepoke"></button>
-       
-        <div class= "nosepokeholescontainer">
-          <button v-on:click="Scene4nosepokestim1_onclick" class="nosepoke nosepoke1"></button>
-          <button v-on:click="Scene4nosepokestim2_onclick" class="nosepoke nosepoke2"></button>
-          <button v-on:click="Scene4nosepokestim3_onclick" class="nosepoke nosepoke3"></button>
-          <button v-on:click="Scene4nosepokestim4_onclick" class="nosepoke nosepoke4"></button>
-          <button v-on:click="Scene4nosepokestim5_onclick" class="nosepoke nosepoke5"></button>
-        </div>
-    </div>
+          <div class= "nosepokeholescontainer">
+            <button v-on:click="Scene4nosepokestim1_onclick" class="nosepoke nosepoke1"></button>
+            <button v-on:click="Scene4nosepokestim2_onclick" class="nosepoke nosepoke2"></button>
+            <button v-on:click="Scene4nosepokestim3_onclick" class="nosepoke nosepoke3"></button>
+            <button v-on:click="Scene4nosepokestim4_onclick" class="nosepoke nosepoke4"></button>
+            <button v-on:click="Scene4nosepokestim5_onclick" class="nosepoke nosepoke5"></button>
+          </div>
+      </div>
 
-      <div id="scene_5"  class = "scene" v-bind:class="{currentScene: showScene5}" >
+      <div id="scene_5"  class = "scene" v-bind:class="{currentScene: showScene5}" > </div>
     </div>
-    </div>
-    <div id="scene_noJob" v-else class="scene">
-      <div>Waiting...</div>
-    </div>
-  
+    
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Admin',
+  name: 'exp1979',
   sockets: {
     connect: function () {
-      console.log('socket connected')
+      console.log('session socket connected')
     },
-    client_job_start: function (val) {
+
+    client_experiment_session_start: function (val) {
       this.job = val
       this.jobRunning = true
-      console.log('client_job_start')
+      console.log('client_experiment_session_start')
     },
-    client_job_stop: function (val) {
-      this.job = val
+    client_experiment_session_stop: function (val) {
       this.jobRunning = false
-      console.log('client_job_stop', val)
+      console.log('client_experiment_session_stop')
     },
-    client_job_action: function (action) {
-      console.log('client_job_action', action)
-      if (action.type === 'changeToScene1') {
-        this.currentScene = 1
-        this.showScene1 = true
-        this.showScene2 = false
-        this.showScene3 = false
-        this.showScene4 = false
-        this.showScene5 = false
-        this.ITIOn = false
+
+    client_experiment_action: function (action) {
+      console.log('client_experment_action', action)
+    
+    if (action.type.startsWith('changeToScene')){
+      this.showScene1 = false
+      this.showScene2 = false
+      this.showScene3 = false
+      this.showScene4 = false
+      this.showScene5 = false
+   
+      switch(action.type){
+        case 'changeToScene1':
+          this.currentScene = 1
+          this.showScene1 = true
+          this.ITIOn = false
+        break;
+        case 'changeToScene2': 
+          this.currentScene = 2
+          this.showScene2 = true
+        break;
+        case 'changeToScene3':  
+          this.currentScene = 3
+          this.showScene3 = true
+        break;
+        case 'changeToScene4': 
+          this.currentScene = 4
+          this.showScene4 = true
+        break;
+        case 'changeToScene5': 
+          this.currentScene = 5
+          this.showScene5 = true
+        break;
       }
-      if (action.type === 'changeToScene2') {
-        this.currentScene = 2
-        this.showScene1 = false
-        this.showScene2 = true
-        this.showScene3 = false
-        this.showScene4 = false
-        this.showScene5 = false
+    }
+      
+    if (action.type.startsWith('nosepokeStimulus_')){
+      this.nosepokeStimulus_1 = false
+      this.nosepokeStimulus_2 = false
+      this.nosepokeStimulus_3 = false
+      this.nosepokeStimulus_4 = false
+      this.nosepokeStimulus_5 = false
+      switch(action.type){
+        case 'nosepokeStimulus_1' : this.nosepokeStimulus_1 = true; break;
+        case 'nosepokeStimulus_2' : this.nosepokeStimulus_2 = true; break;
+        case 'nosepokeStimulus_3' : this.nosepokeStimulus_3 = true; break;
+        case 'nosepokeStimulus_4' : this.nosepokeStimulus_4 = true; break;
+        case 'nosepokeStimulus_5' : this.nosepokeStimulus_5 = true; break;
       }
-      if (action.type === 'changeToScene3') {
-        this.currentScene = 3
-        this.showScene1 = false
-        this.showScene2 = false
-        this.showScene3 = true
-        this.showScene4 = false
-        this.showScene5 = false
-      }
-      if (action.type === 'changeToScene4') {
-        this.currentScene = 4
-        this.showScene1 = false
-        this.showScene2 = false
-        this.showScene3 = false
-        this.showScene4 = true
-        this.showScene5 = false
-      }
-      if (action.type === 'changeToScene5') {
-        this.currentScene = 5
-        this.showScene1 = false
-        this.showScene2 = false
-        this.showScene3 = false
-        this.showScene4 = false
-        this.showScene5 = true
-      }
-      if (action.type === 'nosepokeStimulus_1') {
-        this.nosepokeStimulus_1 = true
-        this.nosepokeStimulus_2 = false
-        this.nosepokeStimulus_3 = false
-        this.nosepokeStimulus_4 = false
-        this.nosepokeStimulus_5 = false
-      }
-      if (action.type === 'nosepokeStimulus_2') {
-        this.nosepokeStimulus_1 = false
-        this.nosepokeStimulus_2 = true
-        this.nosepokeStimulus_3 = false
-        this.nosepokeStimulus_4 = false
-        this.nosepokeStimulus_5 = false
-      }
-      if (action.type === 'nosepokeStimulus_3') {
-        this.nosepokeStimulus_1 = false
-        this.nosepokeStimulus_2 = false
-        this.nosepokeStimulus_3 = true
-        this.nosepokeStimulus_4 = false
-        this.nosepokeStimulus_5 = false
-      }
-      if (action.type === 'nosepokeStimulus_4') {
-        this.nosepokeStimulus_1 = false
-        this.nosepokeStimulus_2 = false
-        this.nosepokeStimulus_3 = false
-        this.nosepokeStimulus_4 = true
-        this.nosepokeStimulus_5 = false
-      }
-      if (action.type === 'nosepokeStimulus_5') {
-        this.nosepokeStimulus_1 = false
-        this.nosepokeStimulus_2 = false
-        this.nosepokeStimulus_3 = false
-        this.nosepokeStimulus_4 = false
-        this.nosepokeStimulus_5 = true
-      }
-      if (action.type === 'ITIOn') {
+    }
+
+    if (action.type === 'ITIOn') {
         this.ITIOn = true
       }
     }
   },
   data () {
-    /* Jcomments
-     * this part of the code defines the data that the UI uses to control different scenes and states such as colours, sizes, and positions
-     */
     return {
       job: {
         id: 'No Job'
       },
-      jobRunning: false,
       isFlashing: false,
       currentScene: 0,
       showScene1: false,
@@ -182,45 +149,26 @@ export default {
       ITIOn: false
     }
   },
-  mounted () {},
+  mounted () {
+    console.log('mounted')
+    this.$socket.emit('client_experiment_onevent', { type: 'ui_onReady' })
+  },
   methods: {
-    btnRedOnClick: function () {
-      console.log('Btn Red Clicked!')
-      this.$socket.emit('client_job_onevent', { type: 'btn_red_onClick' })
+    event: function (eventType) {
+        this.$socket.emit('client_experiment_onevent', { type: eventType})
     },
-    Scene1TrialStartNosepoke_onclick: function () {
-      this.$socket.emit('client_job_onevent', { type: 'Scene1TrialStartNosepoke_onclick' })
-    },
-    Scene1nosepokestim1_onclick: function () {
-      this.$socket.emit('client_job_onevent', { type: 'prematureResponse1' })
-    },
-    Scene1nosepokestim2_onclick: function () {
-      this.$socket.emit('client_job_onevent', { type: 'prematureResponse2' })
-    },
-    Scene1nosepokestim3_onclick: function () {
-      this.$socket.emit('client_job_onevent', { type: 'prematureResponse3' })
-    },
-    Scene1nosepokestim4_onclick: function () {
-      this.$socket.emit('client_job_onevent', { type: 'prematureResponse4' })
-    },
-    Scene1nosepokestim5_onclick: function () {
-      this.$socket.emit('client_job_onevent', { type: 'prematureResponse5' })
-    },
-    Scene2nosepokestim1_onclick: function () {
-      this.$socket.emit('client_job_onevent', { type: 'Scene2nosepokestim1_onclick' })
-    },
-    Scene2nosepokestim2_onclick: function () {
-      this.$socket.emit('client_job_onevent', { type: 'Scene2nosepokestim2_onclick' })
-    },
-    Scene2nosepokestim3_onclick: function () {
-      this.$socket.emit('client_job_onevent', { type: 'Scene2nosepokestim3_onclick' })
-    },
-    Scene2nosepokestim4_onclick: function () {
-      this.$socket.emit('client_job_onevent', { type: 'Scene2nosepokestim4_onclick' })
-    },
-    Scene2nosepokestim5_onclick: function () {
-      this.$socket.emit('client_job_onevent', { type: 'Scene2nosepokestim5_onclick' })
-    },
+    
+    Scene1TrialStartNosepoke_onclick: function () { this.event('Scene1TrialStartNosepoke_onclick') },
+    Scene1nosepokestim1_onclick: function () { this.event('prematureResponse2') },
+    Scene1nosepokestim2_onclick: function () { this.event('prematureResponse2') },
+    Scene1nosepokestim3_onclick: function () { this.event('prematureResponse3') },
+    Scene1nosepokestim4_onclick: function () { this.event('prematureResponse4') },
+    Scene1nosepokestim5_onclick: function () { this.event('prematureResponse5') },
+    Scene2nosepokestim1_onclick: function () { this.event('Scene2nosepokestim1_onclick') },
+    Scene2nosepokestim2_onclick: function () { this.event('Scene2nosepokestim2_onclick') },
+    Scene2nosepokestim3_onclick: function () { this.event('Scene2nosepokestim3_onclick') },
+    Scene2nosepokestim4_onclick: function () { this.event('Scene2nosepokestim4_onclick') },
+    Scene2nosepokestim5_onclick: function () { this.event('Scene2nosepokestim5_onclick') },
     Scene3nosepokestim1_onclick: function () {
       console.log('Clicked!')
     },
@@ -252,6 +200,7 @@ export default {
       console.log('Clicked!')
     }
   }
+
 }
 </script>
 
@@ -272,7 +221,7 @@ li {
 a {
   color: #42b983;
 }
-.job {
+.session {
   color: white;
   height: 100vh;
   width: 100%;

@@ -1,38 +1,37 @@
 <template>
   <div class="admin">
     <h1>Admin {{ id }}</h1>
-    <button v-on:click="startExperiment">Start Experiment Session</button>
+    <button v-on:click="startExperiment">Start Experiment Session 79</button>
+    <button v-on:click="startExperiment2">Start Experiment Session 85 </button>
     <button v-on:click="becomeServer">Become Server</button>
 
 
     <div class="row">
-      <div class="col-sm-4">.col-sm-4</div>
-      <div class="col-sm-4">.col-sm-4</div>
-      <div class="col-sm-4">.col-sm-4</div>
+      <div class="col-sm-4">
+        <h2>Server</h2>
+        {{ server.ip  }}
+        {{ server.me  }}
+      </div>
+
+      <div class="col-sm-4">
+        <h2>Clients</h2>
+        <ul id="clientlist">
+          <li v-for="item in clientList">
+            {{ item.ip }} ({{ item.id }})
+          </li>
+        </ul>
+      </div>
+
+      <div class="col-sm-4">
+        <h2>Discovery Results</h2>
+        <ul id="discoverylist">
+          <li v-for="item in discoveryList">
+            {{ item.ip }}
+            <span  v-if="item.me" >Me</span>
+          </li>
+        </ul>
+      </div>
     </div>
-
-
-
-
-    <h2>Server</h2>
-    {{ server.ip  }}
-    {{ server.me  }}
-
-    <h2>Clients</h2>
-    <ul id="clientlist">
-      <li v-for="item in clientList">
-        {{ item.ip }} ({{ item.id }})
-      </li>
-    </ul>
-
-    <h2>Discovery Results</h2>
-    <ul id="discoverylist">
-      <li v-for="item in discoveryList">
-        {{ item.ip }}
-        <span  v-if="item.me" >Me</span>
-      </li>
-    </ul>
-
 
     <h2>Last Action</h2>
     <h1> {{ lastAction.eventType }}  {{ lastAction.eventTimeStamp }} </h1>
@@ -104,7 +103,19 @@ export default {
   },
   methods: {
     startExperiment: function () {
-      var experimentId = '1979'
+      var experimentId = 'exp1979'
+      function err (e) {
+        this.errors.push(e)
+      }
+
+      function success (response) {
+        console.log('Experiment Started!')
+      }
+
+      HTTP.post('server/experiment/' + experimentId + '/start', { experimentId: experimentId }).then(success.bind(this)).catch(err.bind(this))
+    },
+    startExperiment2: function () {
+      var experimentId = 'exp1985'
       function err (e) {
         this.errors.push(e)
       }
