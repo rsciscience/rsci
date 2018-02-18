@@ -64,16 +64,17 @@ export default {
     },
 
     client_experiment_session_start: function (val) {
+      debugger
       this.job = val
       this.jobRunning = true
       console.log('client_experiment_session_start')
     },
-      client_experiment_session_stop: function (val) {
+    client_experiment_session_stop: function (val) {
       this.jobRunning = false
       console.log('client_experiment_session_stop')
     },
 
-    client_experment_action: function (action) {
+    client_experiment_action: function (action) {
       console.log('client_experment_action', action)
     
     if (action.startsWith('changeToScene')){
@@ -151,7 +152,6 @@ export default {
   mounted () {
     console.log('mounted')
     this.$socket.emit('client_experiment_onevent', { type: 'ui_onReady' })
-    debugger
   },
   methods: {
     event: function (eventType) {

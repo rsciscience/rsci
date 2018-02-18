@@ -10,7 +10,6 @@ this.app= express();
 this.server = require('http').Server(this.app);
 this.io = require('socket.io')(this.server,{transports: ['polling', 'websocket']});
 
-
 this.io.on('connection', function (socket) {
   socket.on('client_experiment_onevent', function (data) {
     if (this.externalJobListen) {
@@ -21,7 +20,6 @@ this.io.on('connection', function (socket) {
   }.bind(this));
 }.bind(this));
 
-
 this.getClientCommunicationFunctions = function (listen) {
   debug('getClientCommunicationFunctions');
   this.externalJobListen = listen;
@@ -30,7 +28,7 @@ this.getClientCommunicationFunctions = function (listen) {
     start: (data) => { this.io.emit('client_experiment_session_start', data)},
     stop: (data) => { this.io.emit('client_experiment_session_stop', data)},
     dispose: (data) => { this.io.emit('client_experiment_dispose', data)},
-    emitAction: (action) => { this.io.emit('client_experiemnt_action', action)},
+    emitAction: (action) => { this.io.emit('client_experiment_action', action)},
   }
 };
 

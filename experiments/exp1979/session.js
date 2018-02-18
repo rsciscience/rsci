@@ -59,7 +59,6 @@ var base = class base {
             this.uiCalls.start({ id: this.id });
             this.emit('Start', { eventTimeStamp: new Date(), eventType: 'Start' });
             ChangeSceneTo(1);
-
             setTimeout(() => {
                 this.emit('Stop', { eventTimeStamp: new Date(), eventType: 'Stop' });
                 this.uiCalls.stop({ id: this.id });
