@@ -38,7 +38,6 @@ export default {
       this.SessionComponent = Vue.extend(config)
       this.session = new this.SessionComponent().$mount('#session')
       console.log('client_experiment_init')
-      debugger
     },
     client_experiment_dispose: function (val) {
       this.job = val
