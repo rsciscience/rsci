@@ -155,7 +155,7 @@ export default {
   },
   methods: {
     event: function (eventType) {
-        this.$socket.emit('client_experiment_onevent', { type: type})
+        this.$socket.emit('client_experiment_onevent', { type: eventType})
     },
     
     Scene1TrialStartNosepoke_onclick: function () { this.event('Scene1TrialStartNosepoke_onclick') },
