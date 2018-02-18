@@ -5,7 +5,7 @@ const debug = require('debug')('RSCI.session');
 var base = class base {
     constructor(sessionId, experiment) {
         this.id = sessionId;
-        this.init = initilise;
+        this.init = initialize;
         this.config = experiment.sessionConfig;
         this.experiment = experiment
 
