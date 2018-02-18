@@ -77,7 +77,7 @@ export default {
     client_experiment_action: function (action) {
       console.log('client_experment_action', action)
     
-    if (action.startsWith('changeToScene')){
+    if (action.type.startsWith('changeToScene')){
       this.showScene1 = false
       this.showScene2 = false
       this.showScene3 = false
@@ -109,7 +109,7 @@ export default {
       }
     }
       
-    if (action.startsWith('nosepokeStimulus_')){
+    if (action.type.startsWith('nosepokeStimulus_')){
       this.nosepokeStimulus_1 = false
       this.nosepokeStimulus_2 = false
       this.nosepokeStimulus_3 = false
