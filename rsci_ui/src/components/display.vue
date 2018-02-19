@@ -42,7 +42,7 @@ export default {
     client_experiment_dispose: function (val) {
       this.sessionRunning = false
       // unmout ????? this.SessionComponent / this.session
-      document.getElementById(session).innerHTML = ""
+      document.getElementById('session').innerHTML = ''
       this.SessionComponent = null
       this.session = null
       console.log('client_experment_stop', val)
