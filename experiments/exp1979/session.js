@@ -64,6 +64,7 @@ var base = class base {
         }.bind(this);
 
         var sessionStopping = function(){
+            debug('sessionStopping');
             //server
             this.emit('Stop', { eventTimeStamp: new Date(), eventType: 'Stop' });
             this.emit('Dispose', { eventTimeStamp: new Date(), eventType: 'Stop' });
