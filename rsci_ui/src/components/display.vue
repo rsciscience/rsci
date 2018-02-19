@@ -45,7 +45,7 @@ export default {
       console.log('client_experiment_init')
     },
     client_experiment_dispose: function (val) {
-      debugger;
+      debugger
       console.log('Experiment Dispose')
       this.sessionRunning = false
 
