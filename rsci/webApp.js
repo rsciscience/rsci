@@ -219,7 +219,7 @@ function server_experiment_start(req, res)  {
 
   function doWork(input){
 
-    var output = this.serverFunctions.startExperiment(input.experimentId);
+    var output = this.serverFunctions.startExperiment(input);
     return  JSON.stringify( output);
   }
 

@@ -16,9 +16,10 @@ var vuetemplatecompiler = require("vue-template-compiler")
 
 this.startExperiment = async function (config) {
   debug('startExperiment');
-
-  experimentId = config.id
+  var experimentId = config.id;
   var experimentConfig = null;
+
+  console.log(experimentId);
 
   for (var i = 0; i < this.state.experiments.configs.length; i++) {
     var config = this.state.experiments.configs[i];
@@ -30,7 +31,6 @@ this.startExperiment = async function (config) {
   if (experimentConfig == null) {
     throw 'Can\'t find experiment ' + experimentId;
   }
-
 
   var payload = {
     experimentId: experimentId,

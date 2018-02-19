@@ -40,6 +40,7 @@ export default {
       console.log('client_experiment_init')
     },
     client_experiment_dispose: function (val) {
+      debugger
       this.sessionRunning = false
       // unmout ????? this.SessionComponent / this.session
 
