@@ -14,14 +14,15 @@ const webpack = require("webpack");
 
 var vuetemplatecompiler = require("vue-template-compiler")
 
-this.startExperiment = async function (experimentId) {
+this.startExperiment = async function (config) {
   debug('startExperiment');
 
+  experimentId = config.id
   var experimentConfig = null;
 
   for (var i = 0; i < this.state.experiments.configs.length; i++) {
     var config = this.state.experiments.configs[i];
-    if (config.config.id.toUpperCase()    == experimentId.toUpperCase()) {
+    if (config.config.id.toUpperCase() == experimentId.toUpperCase()) {
       experimentConfig = config;
     }
   }
@@ -96,7 +97,7 @@ this.experimentsList = function () {
 
   for (var i = 0; i < this.state.experiments.configs.length; i++) {
     var config = this.state.experiments.configs[i];
-    output.push(config); 
+    output.push(config.config); 
   }
 
   return output;

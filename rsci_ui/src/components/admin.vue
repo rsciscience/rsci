@@ -1,14 +1,21 @@
 <template>
   <div class="admin">
     <h1>Admin {{ id }}</h1>
-    
-    <button v-on:click="startExperiment2">Start Experiment Session 85 </button>
+
 
     <button v-on:click="becomeServer">Become Server</button>
 
+    <h2>Avaible Experiments</h2>
     <ul id="experimentslist">
       <li v-for="item in experiments" >
-        <button v-on:click="startExperiment">Start {{item.id}} </button>
+        <button v-on:click="startExperiment(item.id)">Start {{item.name}} </button>
+        <div> duration:  <input v-model="item.sessionConfig.duration" placeholder="edit me">  </div>
+        <div>timeOutDuration:<input v-model="item.sessionConfig.timeOutDuration" placeholder="edit me">  </div>
+         <ul id="experimentslist">
+          <li v-for="client in item.clientAsignments" >
+            {{client.id}} 
+          </li>
+        </ul>
       </li>
      </ul>
 
@@ -115,16 +122,13 @@ export default {
     HTTP.get('server/experiments/list').then(successExperimentsList.bind(this)).catch(err.bind(this))
   },
   methods: {
-    startExperiment: function () {
-      var experimentId = 'exp1979'
+    startExperiment: function (experimentId) {
       function err (e) {
         this.errors.push(e)
       }
-
       function success (response) {
         console.log('Experiment Started!')
       }
-
       HTTP.post('server/experiment/' + experimentId + '/start', { experimentId: experimentId }).then(success.bind(this)).catch(err.bind(this))
     },
     startExperiment2: function () {

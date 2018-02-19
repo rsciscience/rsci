@@ -68,8 +68,8 @@ var base = class base {
             this.emit('Stop', { eventTimeStamp: new Date(), eventType: 'Stop' });
             this.emit('Dispose', { eventTimeStamp: new Date(), eventType: 'Stop' });
             //client
-            this.uiCalls.Stop({ id: this.id });
-            this.uiCalls.Dispose({ id: this.id });
+            this.uiCalls.stop({ id: this.id });
+            this.uiCalls.dispose({ id: this.id });
 
         }.bind(this);
 

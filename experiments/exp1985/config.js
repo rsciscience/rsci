@@ -10,10 +10,10 @@ module.exports = {
     }, 
     clientAsignments:[
         {
-            clientid: 'rm1-b12' ,
+            id: 'rm1-b12' ,
             ratid:    'raty12'
         },{
-            clientid: 'rm1-b03' ,
+            id: 'rm1-b03' ,
             ratid: 'raty03'
         }
     ]
