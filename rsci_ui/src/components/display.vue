@@ -48,7 +48,7 @@ export default {
       console.log('Experiment Dispose')
       this.sessionRunning = false
 
-      document.getElementById('content').innerHTML = ''
+      document.getElementById('session').innerHTML = '<div id=\'content\'></div>'
       this.SessionComponent = null
       this.session = null
       var sessionStyles = document.getElementById('sessionStyles')
