@@ -30,6 +30,7 @@ this.initExperimentSession = function (experimentRequest) {
   var sess = new requestConfig.experimentConfig.session(requestConfig.instanceId, requestConfig.experimentConfig.config);
 
   sess.on('Init', watchEvents.bind(this));
+  sess.on('Dispose', watchEvents.bind(this));
   sess.on('Start', watchEvents.bind(this));
   sess.on('Stop', watchEvents.bind(this));
   sess.on('Event', watchEvents.bind(this));

@@ -64,8 +64,7 @@ var base = class base {
 
         var sessionStopping = function(){
             this.emit('Stop', { eventTimeStamp: new Date(), eventType: 'Stop' });
-            this.uiCalls.stop({ id: this.id });
-            this.uiCalls.dispose({ id: this.id });
+            this.emit('Dispose', { eventTimeStamp: new Date(), eventType: 'Stop' });
         }.bind(this);
 
         var Scene1TrialStartNosepoke_onclick = function (poke) {
@@ -111,7 +110,6 @@ var base = class base {
         var doEvent = function (eventType) {
             debug('doEvent:' + eventType);
             this.emit('Action', { eventTimeStamp: new Date(), eventType: eventType });
-            this.uiCalls.emitAction({ type: eventType });
         }.bind(this);
     };
 
