@@ -64,7 +64,6 @@ export default {
     },
 
     client_experiment_session_start: function (val) {
-      debugger
       this.job = val
       this.jobRunning = true
       console.log('client_experiment_session_start')
