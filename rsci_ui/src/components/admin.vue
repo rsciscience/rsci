@@ -88,7 +88,7 @@ export default {
       clientList: [],
       jobs: [{ip: '1231244'}],
       lastAction: {},
-      experiments:[]
+      experiments: []
     }
   },
   mounted () {
@@ -112,7 +112,6 @@ export default {
     function successExperimentsList (response) {
       console.log(response)
       this.experiments = response.data
-     
     }
 
     HTTP.get('server/experiments/list').then(successExperimentsList.bind(this)).catch(err.bind(this))
