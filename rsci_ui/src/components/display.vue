@@ -40,8 +40,7 @@ export default {
       console.log('client_experiment_init')
     },
     client_experiment_dispose: function (val) {
-      this.job = val
-      this.jobRunning = false
+      this.sessionRunning = false
       // unmout ????? this.SessionComponent / this.session
 
       console.log('client_experment_stop', val)

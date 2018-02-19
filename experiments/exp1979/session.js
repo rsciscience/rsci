@@ -59,11 +59,13 @@ var base = class base {
             this.uiCalls.start({ id: this.id });
             this.emit('Start', { eventTimeStamp: new Date(), eventType: 'Start' });
             ChangeSceneTo(1);
-            setTimeout(() => {
-                this.emit('Stop', { eventTimeStamp: new Date(), eventType: 'Stop' });
-                this.uiCalls.stop({ id: this.id });
-                this.uiCalls.dispose({ id: this.id });
-            }, this.config.duration);
+            setTimeout(sessionStopping, this.config.duration);
+        }.bind(this);
+
+        var sessionStopping = function(){
+            this.emit('Stop', { eventTimeStamp: new Date(), eventType: 'Stop' });
+            this.uiCalls.stop({ id: this.id });
+            this.uiCalls.dispose({ id: this.id });
         }.bind(this);
 
         var Scene1TrialStartNosepoke_onclick = function (poke) {
