@@ -1,7 +1,11 @@
 <template>
   <div class="experiment">
     
-    <div id='session'> </div>
+    <div id='session'> 
+      <div id='content'> 
+      
+    </div> 
+    </div>
 
     <div id="waiting" v-if="!sessionRunning" >
       <div>Waiting...</div>
@@ -20,6 +24,7 @@ export default {
       console.log('socket connected')
     },
     client_experiment_init: function (data) {
+      console.log('Experiment Init')
       this.expermentSession = data
       this.sessionRunning = true
       // eslint-disable-next-line
@@ -36,15 +41,23 @@ export default {
 
       console.log(data.ui)
       this.SessionComponent = Vue.extend(config)
-      this.session = new this.SessionComponent().$mount('#session')
+      this.session = new this.SessionComponent().$mount('#content')
       console.log('client_experiment_init')
     },
     client_experiment_dispose: function (val) {
+      debugger;
+      console.log('Experiment Dispose')
       this.sessionRunning = false
-      // unmout ????? this.SessionComponent / this.session
+
       document.getElementById('session').innerHTML = ''
       this.SessionComponent = null
       this.session = null
+      var sessionStyles = document.getElementById('sessionStyles')
+      try {
+        sessionStyles.innerHTML = ''
+      } catch (error) {
+        sessionStyles.styleSheet.cssText = ''
+      }
       console.log('client_experment_stop', val)
     }
   },
