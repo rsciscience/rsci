@@ -1,9 +1,17 @@
 <template>
   <div class="admin">
     <h1>Admin {{ id }}</h1>
-    <button v-on:click="startExperiment">Start Experiment Session 79</button>
+    
     <button v-on:click="startExperiment2">Start Experiment Session 85 </button>
+
     <button v-on:click="becomeServer">Become Server</button>
+
+    <ul id="experimentslist">
+      <li v-for="item in experiments" >
+        <button v-on:click="startExperiment">Start {{item.id}} </button>
+      </li>
+     </ul>
+
 
     <div class="row">
       <div class="col-sm-4">
@@ -79,7 +87,8 @@ export default {
       discoveryList: [],
       clientList: [],
       jobs: [{ip: '1231244'}],
-      lastAction: {}
+      lastAction: {},
+      experiments:[]
     }
   },
   mounted () {
@@ -98,7 +107,16 @@ export default {
       this.jobs = response.data.jobs
     }
 
-    HTTP.get('client/state').then(success.bind(this)).catch(err.bind(this))
+    HTTP.get('server/state').then(success.bind(this)).catch(err.bind(this))
+
+    function successExperimentsList (response) {
+      console.log(response)
+      this.experiments = response.data
+     
+    }
+
+    HTTP.get('server/experiments/list').then(successExperimentsList.bind(this)).catch(err.bind(this))
+
   },
   methods: {
     startExperiment: function () {

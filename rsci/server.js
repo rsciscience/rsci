@@ -21,8 +21,6 @@ this.startExperiment = async function (experimentId) {
 
   for (var i = 0; i < this.state.experiments.configs.length; i++) {
     var config = this.state.experiments.configs[i];
-    console.log(config.config.id.toUpperCase())
-    console.log(experimentId.toUpperCase())
     if (config.config.id.toUpperCase()    == experimentId.toUpperCase()) {
       experimentConfig = config;
     }
@@ -89,6 +87,21 @@ this.addClient = function (client) {
   return this.state.clientList;
 
 };
+
+
+this.experimentsList = function () {
+  debug('experimentsList');
+
+  var output = [];
+
+  for (var i = 0; i < this.state.experiments.configs.length; i++) {
+    var config = this.state.experiments.configs[i];
+    ouput.push[config]; 
+  }
+
+  return output;
+};
+
 
 
 this.register = function () {

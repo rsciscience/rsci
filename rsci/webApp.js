@@ -53,10 +53,12 @@ this.app.use(function(req, res, next) {
 
 this.app.get('/discovery',discovery.bind(this));
 this.app.get('/discovery/list',discovery_list.bind(this));
-this.app.get('/client/state',client_state.bind(this));
 this.app.post('/client/experiment/init',client_experiment_init.bind(this));
 this.app.post('/client/experiment/stop',client_experiment_stop.bind(this));
 this.app.post('/client/server/register',client_server_register.bind(this));
+
+this.app.get('/server/state',client_state.bind(this));
+this.app.get('/server/experiments/list',server_experiments_list.bind(this))
 this.app.post('/server/client/add',server_client_add.bind(this));
 this.app.post('/server/register',server_register.bind(this))
 this.app.post('/server/experiment/:id/start',server_experiment_start.bind(this));
@@ -175,6 +177,27 @@ function client_server_register(req, res)  {
 
   function doWork(input){
     var output = this.clientFunctions.registerServer(input);
+    return  JSON.stringify( output);
+  }
+
+  var clientResponse = {}
+
+  try{
+    clientResponse =  doWork.bind(this, req.body)();
+  }catch (ex) {
+    debug(ex);
+    res.status(500).send('Something broke!')
+    return;
+  }
+
+  res.send(clientResponse);
+}
+
+function server_experiments_list(req, res)  {
+  debug('API:server_experiments_list');
+
+  function doWork(input){
+    var output = this.serverFunctions.experimentsList();
     return  JSON.stringify( output);
   }
 
