@@ -14,6 +14,7 @@ var base = class base {
             this.uiCalls = clientCommunicationFunctions;
             this.state = {};
             this.state.ignoreExtraneousInputs = false;
+            this.uiCalls.start({ id: this.id });
             this.emit('init', { eventTimeStamp: new Date(), eventType: 'init' });
             //session starts on ui_onReady 
         };
@@ -63,8 +64,13 @@ var base = class base {
         }.bind(this);
 
         var sessionStopping = function(){
+            //server
             this.emit('Stop', { eventTimeStamp: new Date(), eventType: 'Stop' });
             this.emit('Dispose', { eventTimeStamp: new Date(), eventType: 'Stop' });
+            //client
+            this.uiCalls.Stop({ id: this.id });
+            this.uiCalls.Dispose({ id: this.id });
+
         }.bind(this);
 
         var Scene1TrialStartNosepoke_onclick = function (poke) {
@@ -110,6 +116,7 @@ var base = class base {
         var doEvent = function (eventType) {
             debug('doEvent:' + eventType);
             this.emit('Action', { eventTimeStamp: new Date(), eventType: eventType });
+            this.uiCalls.emitAction({ type: eventType });
         }.bind(this);
     };
 

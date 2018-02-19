@@ -64,12 +64,12 @@ export default {
     },
 
     client_experiment_session_start: function (val) {
-      this.job = val
-      this.jobRunning = true
+      this.config = val
+      this.ruunning = true
       console.log('client_experiment_session_start')
     },
     client_experiment_session_stop: function (val) {
-      this.jobRunning = false
+      this.running = false
       console.log('client_experiment_session_stop')
     },
 
@@ -130,9 +130,10 @@ export default {
   },
   data () {
     return {
-      job: {
-        id: 'No Job'
+      config: {
+        id: 'Placeholder'
       },
+      ruunning :false,
       isFlashing: false,
       currentScene: 0,
       showScene1: false,
