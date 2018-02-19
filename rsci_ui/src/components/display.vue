@@ -45,11 +45,10 @@ export default {
       console.log('client_experiment_init')
     },
     client_experiment_dispose: function (val) {
-      debugger
       console.log('Experiment Dispose')
       this.sessionRunning = false
 
-      document.getElementById('session').innerHTML = ''
+      document.getElementById('content').innerHTML = ''
       this.SessionComponent = null
       this.session = null
       var sessionStyles = document.getElementById('sessionStyles')
