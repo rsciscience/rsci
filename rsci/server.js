@@ -96,13 +96,11 @@ this.experimentsList = function () {
 
   for (var i = 0; i < this.state.experiments.configs.length; i++) {
     var config = this.state.experiments.configs[i];
-    output.push[config]; 
+    output.push(config); 
   }
 
   return output;
 };
-
-
 
 this.register = function () {
   debug('register');

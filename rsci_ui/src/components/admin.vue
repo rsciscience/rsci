@@ -92,8 +92,6 @@ export default {
     }
   },
   mounted () {
-    // this.$socket.emit('onevent', {})
-
     function err (e) {
       this.errors.push(e)
     }
@@ -115,7 +113,6 @@ export default {
     }
 
     HTTP.get('server/experiments/list').then(successExperimentsList.bind(this)).catch(err.bind(this))
-
   },
   methods: {
     startExperiment: function () {
