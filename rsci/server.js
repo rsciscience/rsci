@@ -14,9 +14,9 @@ const webpack = require("webpack");
 
 var vuetemplatecompiler = require("vue-template-compiler")
 
-this.startExperiment = async function (config) {
+this.startExperiment = async function (inputConfig) {
   debug('startExperiment');
-  var experimentId = config.id;
+  var experimentId = inputConfig.id;
   var experimentConfig = null;
 
   console.log(experimentId);
@@ -31,6 +31,14 @@ this.startExperiment = async function (config) {
   if (experimentConfig == null) {
     throw 'Can\'t find experiment ' + experimentId;
   }
+
+  if(!this.state.clientList || this.state.clientList.length < 1 ){
+    throw 'No clients'  ;
+  }
+  //copy incoming config
+  experimentConfig.config.config = Object.assign(experimentConfig.config, inputConfig);
+  console.log(experimentConfig.config);
+  console.log(inputConfig);
 
   var payload = {
     experimentId: experimentId,
