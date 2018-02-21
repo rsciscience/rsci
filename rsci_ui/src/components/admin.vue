@@ -26,6 +26,28 @@
     <ul id="experimentSessions">
       <li v-for="(sess, index) in experimentSessions" :key='index'>
         session: {{ sess.id }}
+
+         <div class="client"  v-for="client in sess.clients">
+            <div class="box" v-bind:class="{clientactive: isActiveRecient(client)}">
+               {{client.assignedRat}}
+            </div>
+            <div class="name">{{client.name}}</div>
+            <div class="id">({{client.id}})</div>
+            <div class="id"> last <span >{{getLastActionEvntType(client)}}</span></div>
+
+          </div>
+
+      </li>
+    </ul>
+
+     </div>
+      </div>
+
+
+      <h1>Data dump</h1>
+    <ul id="experimentSessions">
+      <li v-for="(sess, index) in experimentSessions" :key='index'>
+        session: {{ sess.id }}
         <ul id="clients">
           <li v-for="(client, index) in sess.clients" :key='index'>
             ClientId: {{ client.id }}
@@ -38,9 +60,6 @@
         </ul>
       </li>
     </ul>
-
-     </div>
-      </div>
 
   <div class="networkInfo">
 <h1>Network information</h1>
@@ -142,6 +161,12 @@ export default {
       }
 
       HTTP.post('server/register', {}).then(success.bind(this)).catch(err.bind(this))
+    },
+    getLastActionEvntType: function (client) {
+      return client.actions[client.actions.length - 1].eventType
+    },
+    isActiveRecient: function (client) {
+      return true
     }
   }
 }
@@ -160,4 +185,25 @@ li {
 a {
   color: #42b983;
 }
+
+
+  .box {
+    background: darkgrey;
+    border: 5px solid gray;
+    width: 80px;
+    height: 80px;
+    color: white; 
+    text-align:center;
+  }
+  .name{
+
+    font-size :10px;
+  }
+  .id{
+    font-size :10px;
+  }
+  .clientactive {
+    background: green;
+    border: 5px solid rgb(1, 85, 1);
+  }
 </style>

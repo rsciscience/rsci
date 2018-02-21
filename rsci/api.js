@@ -74,7 +74,7 @@ this.init = function(port, props , onUpdateParrentState, clientFunctions, server
   this.clientFunctions = clientFunctions;
   this.serverFunctions = serverFunctions;
   this.server.listen(port,  '0.0.0.0', function() {
-    debug("... Web App up");
+    debug("... API up");
   });
 };
 
@@ -345,16 +345,16 @@ function server_experiment_id_event(req, res)  {
   //watch all client events
   debug('API:server_experiment_id_event');
 
-  function doWork(id, clientId, input){
+  function doWork(sessionId, expId, clientId, input){
 
-    var output = this.serverFunctions.processExperimentSessionEvent(id , clientId, input);
+    var output = this.serverFunctions.processExperimentSessionEvent(sessionId,expId , clientId, input);
     return  JSON.stringify(output);
   }
 
   var clientResponse = {}
 
   try{
-    clientResponse =  doWork.bind(this,req.params.id,req.params.clientId, req.body)();
+    clientResponse =  doWork.bind(this,req.params.sessionId ,req.params.id,req.params.clientId, req.body)();
   }catch (ex) {
     debug(ex);
     res.status(500).send('Something broke!')

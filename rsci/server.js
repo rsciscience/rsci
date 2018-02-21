@@ -264,15 +264,16 @@ this.loadExperiments = function (configDir) {
 };
 
 
-this.processExperimentSessionEvent = function(id,clientId,data){
+this.processExperimentSessionEvent = function(sessionId,expId , clientId, data){
 
   var session = {
-    id: id,
+    id: sessionId,
+    experimentId:expId, 
     clients:[]
   }
   var known = false;
   for (var i = 0, len = this.state.experimentSessions.length; i < len; i++) {
-    if(id == this.state.experimentSessions[i].id){
+    if(sessionId == this.state.experimentSessions[i].id){
       session = this.state.experimentSessions[i];
       known = true;
       break;
