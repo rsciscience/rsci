@@ -5,7 +5,7 @@
 
 
     <button v-on:click="becomeServer">Become Server</button>
-    <experiments experimentsList="experiments"></experiments>
+    <experiments v-bind:experimentsList="experiments"></experiments>
 
 
     <div class="row">
