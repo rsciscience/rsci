@@ -1,7 +1,7 @@
 "use strict";
 const debug = require('debug')('RSCI.client');
 this.state = require('./state');
-const webApp = require('./webApp');
+const api = require('./api');
 
 const request = require('request-promise');
 
@@ -36,7 +36,7 @@ this.initExperimentSession = function (experimentRequest) {
   sess.on('Event', watchEvents.bind(this));
   sess.on('Action', watchEvents.bind(this));
 
-  var comms = webApp.getClientCommunicationFunctions(sess.listen);
+  var comms = api.getClientCommunicationFunctions(sess.listen);
 
   comms.init({
     experimentId: requestConfig.experimentId,

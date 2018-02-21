@@ -3,7 +3,7 @@
     <h1>Client : {{ me.id }}</h1>
     I'm here :)
       <div>
-        connected to server  <a target="" :href="'http://' + server.ip + ':8080/#admin'" >{{ item.id }}</a>
+        connected to server  <a target="" :href="'http://' + server.ip + ':8080/#admin'" >{{ server.id }}</a>
       </div>
   </div>
 </template>
@@ -29,7 +29,7 @@
         this.server = response.data.server
       }
 
-      HTTP.get('client/info').then(success.bind(this)).catch(err.bind(this))
+      HTTP.get('client/state').then(success.bind(this)).catch(err.bind(this))
     }
   }
 </script>

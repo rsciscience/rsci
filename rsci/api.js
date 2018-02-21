@@ -53,10 +53,10 @@ this.app.use(function(req, res, next) {
 
 this.app.get('/discovery',discovery.bind(this));
 this.app.get('/discovery/list',discovery_list.bind(this));
+this.app.get('/client/state',client_state.bind(this));
 this.app.post('/client/experiment/init',client_experiment_init.bind(this));
 this.app.post('/client/experiment/stop',client_experiment_stop.bind(this));
 this.app.post('/client/server/register',client_server_register.bind(this));
-this.app.post('/client/state',client_state.bind(this));
 
 this.app.get('/server/network',server_network.bind(this));
 this.app.get('/server/experiments/sessions',server_experiments_sessions.bind(this));

@@ -3,8 +3,8 @@ var ip = require('ip');
 const debug = require('debug')('RSCI.index.');
 const request = require('request-promise');
 
-var webApp = require('./rsci/webApp');
-debug('Init Web server');
+var api = require('./rsci/api');
+debug('Init api server');
 
 var discovery = require('./rsci/discovery');
 debug('Init Discovery');
@@ -55,7 +55,7 @@ this.start = function (discoveryList) {
     }
   }
 
-  webApp.setProps(this.state);
+  api.setProps(this.state);
   this.state.experiments.configs = this.server.loadExperiments(this.state.experiments.configDir);
 
 }.bind(this);
@@ -64,7 +64,7 @@ this.start = function (discoveryList) {
 this.init = function () {
   debug('init');
   discovery.search(this.state.cpuInterface, this.state.listeningPort).then(this.start);
-  webApp.init(this.state.listeningPort, this.state, this.onUpdateState, this.client, this.server)
+  api.init(this.state.listeningPort, this.state, this.onUpdateState, this.client, this.server)
 
 }.bind(this);
 
