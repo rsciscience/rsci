@@ -97,6 +97,15 @@ this.addClient = function (client) {
 
 };
 
+function isClientActive(clientId, activeClientList) {
+
+  for (var i = 0; i < activeClientList.length; i++) {
+    if (activeClientList[i].id.toUpperCase() === clientId.toUpperCase()) {
+      return true;
+    }
+  }
+  return false;
+}
 
 this.experimentsList = function () {
   debug('experimentsList');
@@ -104,8 +113,13 @@ this.experimentsList = function () {
   var output = [];
 
   for (var i = 0; i < this.state.experiments.configs.length; i++) {
-    var config = this.state.experiments.configs[i];
-    output.push(config.config); 
+    var config = this.state.experiments.configs[i].config;
+    
+    for (var j = 0; j < config.clientAssignments.length; j++) {
+      var ca = config.clientAssignments[j];
+       ca.active = isClientActive(ca.id, this.state.clientList);
+    }
+    output.push(config); 
   }
 
   return output;

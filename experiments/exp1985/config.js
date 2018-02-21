@@ -8,7 +8,7 @@ module.exports = {
         duration:30000,
         timeOutDuration:3000,
     }, 
-    clientAsignments:[
+    clientAssignments:[
         {
             id: 'rm1-b12' ,
             ratid:    'raty12'

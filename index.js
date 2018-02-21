@@ -13,7 +13,7 @@ this.client = require('./rsci/client');
 this.server = require('./rsci/server');
 this.state = require('./rsci/state');
 this.helpers = require('./rsci/helpers')
-this.state.id = this.helpers.generateId();
+this.state.id = 'id_' + ip.address();
 
 this.onUpdateState = function (data) {
   this.state = data;

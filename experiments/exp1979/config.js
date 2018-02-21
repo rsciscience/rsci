@@ -8,13 +8,15 @@ module.exports = {
         duration:60000,
         timeOutDuration:3000,
     }, 
-    clientAsignments:[
+    clientAssignments:[
         {
-            id: 'rm1-b12' ,
-            ratid:    'raty12'
+            id: 'id_192.168.100.134' ,
+            name: 'davidvm',
+            assignedRat:    'raty12'
         },{
-            id: 'rm1-b03' ,
-            ratid: 'raty03'
+            id: 'id_192.168.100.137' ,
+            name: 'ferg',
+            assignedRat: 'raty03'
         }
     ]
 };
