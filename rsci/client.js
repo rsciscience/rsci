@@ -69,7 +69,7 @@ this.initExperimentSession = function (experimentRequest) {
 }
 
 
-this.saveExperimentSessionEventOnClient = function(id,clientId,data){
+async function  saveExperimentSessionEventOnClient  (id,clientId,data){
 
 
   var session = {
