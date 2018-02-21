@@ -14,17 +14,31 @@ this.initExperimentSession = function (experimentRequest) {
     experimentConfig: experimentRequest.experimentConfig,
   };
 
+  this.state.experimentSessionsLocal.push({
+    id:instanceId,
+    experimentId: experimentId,
+    experimentConfig: experimentConfig, 
+    clients:[]
+  });
+
   requestConfig.experimentConfig.session = eval(experimentRequest.experimentConfig.session);
 
   this.state.currentExperimentSession = requestConfig;
 
-  function watchEvents(args) {
-    sendServerExperimentSessionEvent(args,
+  function watchEvents(data) {
+    sendServerExperimentSessionEvent(data,
       this.state.server.ip,
       this.state.listeningPort,
       this.state.id,
       this.state.currentExperimentSession.experimentId,
       this.state.currentExperimentSession.instanceId);
+
+      saveExperimentSessionEventOnClient(
+        this.state.currentExperimentSession.instanceId,
+        this.state.id,
+        data
+      );
+
   }
 
   var sess = new requestConfig.experimentConfig.session(requestConfig.instanceId, requestConfig.experimentConfig.config);
@@ -52,6 +66,47 @@ this.initExperimentSession = function (experimentRequest) {
     experimentId: experimentRequest.experimentId,
     instanceId: experimentRequest.instanceId,
   };
+}
+
+
+this.saveExperimentSessionEventOnClient = function(id,clientId,data){
+
+
+  var session = {
+    id: id,
+    clients:[]
+  }
+  var known = false;
+  for (var i = 0, len = this.state.experimentSessionsLocal.length; i < len; i++) {
+    if(id == this.state.experimentSessionsLocal[i].id){
+      session = this.state.experimentSessionsLocal[i];
+      known = true;
+      break;
+    }
+  }
+
+  if(!known){
+    this.state.experimentSessionsLocal.push(session);
+  }
+
+  var clients = session.clients;
+
+  var client = {id:clientId,actions:[]}
+  var knownClient = false;
+  for (var i = 0, len = clients.length; i < len; i++) {
+    if(clientId == clients[i].id){
+      client= clients[i];
+      knownClient = true;
+      break;
+    }
+  }
+  if(!knownClient){
+    clients.push(client);
+  }
+  var actions = client.actions;
+  actions.push(data);
+
+
 }
 
 this.registerWithServer = async function (payload, serverip, port) {

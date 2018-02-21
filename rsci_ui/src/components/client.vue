@@ -5,6 +5,24 @@
       <div>
         connected to server  <a target="" :href="'http://' + server.ip + ':8080/#admin'" >{{ server.id }}</a>
       </div>
+
+   <h2>My Session Details</h2>
+    <ul id="experimentSessions">
+      <li v-for="(sess, index) in experimentSessions" :key='index'>
+        session: {{ sess.id }}
+        <ul id="clients">
+          <li v-for="(client, index) in sess.clients" :key='index'>
+            ClientId: {{ client.id }}
+            <ul id="actions">
+              <li v-for="(action, index) in client.actions" :key='index'>
+                {{ action.eventTimeStamp }} <b>{{ action.eventType }} </b>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
   </div>
 </template>
 
@@ -14,8 +32,9 @@
     name: 'client',
     data () {
       return {
-        me: '',
-        server: {}
+        me: {},
+        server: {},
+        experimentSessions: []
       }
     },
     mounted () {
@@ -27,6 +46,7 @@
         console.log(response)
         this.me = response.data.me
         this.server = response.data.server
+        this.experimentSessions = response.data.experimentSessionsLocal
       }
 
       HTTP.get('client/state').then(success.bind(this)).catch(err.bind(this))

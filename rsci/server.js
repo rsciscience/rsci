@@ -69,6 +69,13 @@ this.startExperiment = async function (inputConfig) {
   debug(this.state.clientList)
   let calledClients = await Promise.all(this.state.clientList.map(sendClientInit));
 
+  this.state.experimentSessions.push({
+    id:payload.instanceId,
+    experimentId: experimentId,
+    experimentConfig: experimentConfig, 
+    clients:[]
+  });
+
   return {
     clientList: calledClients,
     startDate: new Date(),
@@ -113,8 +120,7 @@ this.experimentsList = function () {
   var output = [];
 
   for (var i = 0; i < this.state.experiments.configs.length; i++) {
-    var config = this.state.experiments.configs[i].config;
-    
+    var config = JSON.parse(JSON.stringify( this.state.experiments.configs[i].config));
     for (var j = 0; j < config.clientAssignments.length; j++) {
       var ca = config.clientAssignments[j];
        ca.active = isClientActive(ca.id, this.state.clientList);
@@ -122,6 +128,7 @@ this.experimentsList = function () {
     output.push(config); 
   }
 
+   console.log(output); 
   return output;
 };
 
@@ -255,14 +262,11 @@ this.loadExperiments = function (configDir) {
     var dir = path.resolve(path.join(configDir, dirs[i]));
     getExperiment(dir, function (exp) {
       configs.push(exp);
-
     });
-   
   }
 
   debug('loadExperiments complete ');
   return configs;
-
 };
 
 

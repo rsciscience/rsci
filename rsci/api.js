@@ -1,6 +1,6 @@
 "use strict";
 
-const debug = require('debug')('RSCI.webApp.');
+const debug = require('debug')('RSCI.API.');
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -92,6 +92,7 @@ function client_state (req, res)  {
     var output = {
       server: this.state.server,
       me:this.state.me,
+      experimentSessionsLocal:this.state.experimentSessionsLocal
     };
     return  JSON.stringify( output);
   };
