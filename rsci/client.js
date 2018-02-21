@@ -15,7 +15,7 @@ this.initExperimentSession = function (experimentRequest) {
   };
 
   this.state.experimentSessionsLocal.push({
-    id:instanceId,
+    id:requestConfig.instanceId,
     experimentId: experimentId,
     experimentConfig: experimentConfig, 
     clients:[]

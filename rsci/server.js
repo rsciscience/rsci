@@ -19,8 +19,6 @@ this.startExperiment = async function (inputConfig) {
   var experimentId = inputConfig.id;
   var experimentConfig = null;
 
-  console.log(experimentId);
-
   for (var i = 0; i < this.state.experiments.configs.length; i++) {
     var config = this.state.experiments.configs[i];
     if (config.config.id.toUpperCase() == experimentId.toUpperCase()) {
@@ -37,8 +35,6 @@ this.startExperiment = async function (inputConfig) {
   }
   //copy incoming config
   experimentConfig.config.config = Object.assign(experimentConfig.config, inputConfig);
-  console.log(experimentConfig.config);
-  console.log(inputConfig);
 
   var payload = {
     experimentId: experimentId,
