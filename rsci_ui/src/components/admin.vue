@@ -1,13 +1,49 @@
 
 <template>
   <div class="admin">
-    <h1>Admin {{ id }}</h1>
-
+    <h3>RSCI Admin on {{ me.id }}</h3>
 
     <button v-on:click="becomeServer">Become Server</button>
+
     <experiments v-bind:experimentsList="experiments"></experiments>
 
 
+    <h1>Current Session</h1>
+    
+    <div class="row">
+      <div class="col-sm-2">
+        <h4>Last Action</h4>
+        <div> {{ lastAction.eventTimeStamp }} </div>
+        <div> {{ lastAction.eventType }} </div>
+      
+       
+      </div>
+      <div class="col-sm-10">
+     
+    
+  
+    <h2>Session Details</h2>
+    <ul id="experimentSessions">
+      <li v-for="(sess, index) in experimentSessions" :key='index'>
+        session: {{ sess.id }}
+        <ul id="clients">
+          <li v-for="(client, index) in sess.clients" :key='index'>
+            ClientId: {{ client.id }}
+            <ul id="actions">
+              <li v-for="(action, index) in client.actions" :key='index'>
+                {{ action.eventType }} {{ action.eventTimeStamp }}
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+     </div>
+      </div>
+
+  <div class="networkInfo">
+<h1>Network information</h1>
     <div class="row">
       <div class="col-sm-4">
         <h2>Server</h2>
@@ -19,7 +55,7 @@
         <h2>Clients</h2>
         <ul id="clientlist">
           <li v-for="item in clientList" >
-            {{ item.ip }} ({{ item.id }})
+            <a target="" :href="'http://' + item.ip + ':8080/#client'" >{{ item.id }}</a>
           </li>
         </ul>
       </div>
@@ -34,28 +70,8 @@
         </ul>
       </div>
     </div>
+  </div>
 
-    <h2>Last Action</h2>
-    <h1> {{ lastAction.eventType }}  {{ lastAction.eventTimeStamp }} </h1>
-
-
-
-    <h2>Job Details</h2>
-    <ul id="jobs">
-      <li v-for="(job, index) in jobs" :key='index'>
-        Job: {{ job.id }}
-        <ul id="clients">
-          <li v-for="(client, index) in job.clients" :key='index'>
-            ClientId: {{ client.id }}
-            <ul id="actions">
-              <li v-for="(action, index) in client.actions" :key='index'>
-                {{ action.eventType }} {{ action.eventTimeStamp }}
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-    </ul>
 
 
   </div>
@@ -70,18 +86,18 @@ export default {
     connect: function () {
       console.log('socket connected')
     },
-    server_job_id_event: function (val) {
+    server_experiment_id_event: function (val) {
       this.lastAction = val
-      console.log('server_job_id_event', val)
+      console.log('server_experiment_id_event', val)
     }
   },
   data () {
     return {
-      id: '',
+      me: '',
       server: {},
       discoveryList: [],
       clientList: [],
-      jobs: [{ip: '1231244'}],
+      experimentSessions: [],
       lastAction: {},
       experiments: []
     }
@@ -93,14 +109,13 @@ export default {
 
     function success (response) {
       console.log(response)
-      this.id = response.data.id
+      this.me = response.data.me
       this.server = response.data.server
       this.discoveryList = response.data.discoveryList
       this.clientList = response.data.clientList
-      this.jobs = response.data.jobs
     }
 
-    HTTP.get('server/state').then(success.bind(this)).catch(err.bind(this))
+    HTTP.get('server/network').then(success.bind(this)).catch(err.bind(this))
 
     function successExperimentsList (response) {
       console.log(response)
@@ -108,18 +123,15 @@ export default {
     }
 
     HTTP.get('server/experiments/list').then(successExperimentsList.bind(this)).catch(err.bind(this))
+
+    function successExperimentsSessionsList (response) {
+      console.log(response)
+      this.experimentSessions = response.data
+    }
+
+    HTTP.get('server/experiments/sessions').then(successExperimentsSessionsList.bind(this)).catch(err.bind(this))
   },
   methods: {
-    startExperiment: function (config) {
-      function err (e) {
-        this.errors.push(e)
-      }
-      function success (response) {
-        console.log('Experiment Started!')
-      }
-      HTTP.post('server/experiment/' + config.id + '/start', config).then(success.bind(this)).catch(err.bind(this))
-    },
-
     becomeServer: function () {
       function err (e) {
         this.errors.push(e)
@@ -137,9 +149,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
+
 ul {
   list-style-type: none;
   padding: 0;

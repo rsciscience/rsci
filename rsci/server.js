@@ -265,6 +265,46 @@ this.loadExperiments = function (configDir) {
 
 };
 
+
+this.processExperimentSessionEvent = function(id,clientId,data){
+
+  var session = {
+    id: id,
+    clients:[]
+  }
+  var known = false;
+  for (var i = 0, len = this.state.experimentSessions.length; i < len; i++) {
+    if(id == this.state.experimentSessions[i].id){
+      session = this.state.experimentSessions[i];
+      known = true;
+      break;
+    }
+  }
+
+  if(!known){
+    this.state.experimentSessions.push(session);
+  }
+
+  var clients = session.clients;
+
+  var client = {id:clientId,actions:[]}
+  var knownClient = false;
+  for (var i = 0, len = clients.length; i < len; i++) {
+    if(clientId == clients[i].id){
+      client= clients[i];
+      knownClient = true;
+      break;
+    }
+  }
+  if(!knownClient){
+    clients.push(client);
+  }
+  var actions = client.actions;
+  actions.push(data);
+
+
+}
+
 module.exports = this;
 
 

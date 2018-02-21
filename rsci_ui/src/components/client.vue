@@ -1,20 +1,37 @@
 <template>
-  <div class="job">
-    <h1>{{ msg }}</h1>
-    <h2>Job</h2>
-
+  <div class="client">
+    <h1>Client : {{ me.id }}</h1>
+    I'm here :)
+      <div>
+        connected to server  <a target="" :href="'http://' + server.ip + ':8080/#admin'" >{{ item.id }}</a>
+      </div>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'Job',
-  data () {
-    return {
-      msg: 'This is the job page'
+  import {HTTP} from '../http-common'
+  export default {
+    name: 'client',
+    data () {
+      return {
+        me: '',
+        server: {}
+      }
+    },
+    mounted () {
+      function err (e) {
+        this.errors.push(e)
+      }
+
+      function success (response) {
+        console.log(response)
+        this.me = response.data.me
+        this.server = response.data.server
+      }
+
+      HTTP.get('client/info').then(success.bind(this)).catch(err.bind(this))
     }
   }
-}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

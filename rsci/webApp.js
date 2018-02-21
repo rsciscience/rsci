@@ -12,17 +12,17 @@ this.io = require('socket.io')(this.server,{transports: ['polling', 'websocket']
 
 this.io.on('connection', function (socket) {
   socket.on('client_experiment_onevent', function (data) {
-    if (this.externalJobListen) {
-      this.externalJobListen(data);
+    if (this.externalExperimentSessionListen) {
+      this.externalExperimentSessionListen(data);
     } else {
-      throw ( 'No externalJobListen' );
+      throw ( 'No externalExperimentSession Listen' );
     }
   }.bind(this));
 }.bind(this));
 
 this.getClientCommunicationFunctions = function (listen) {
   debug('getClientCommunicationFunctions');
-  this.externalJobListen = listen;
+  this.externalExperimentSessionListen = listen;
   return {
     init: (data) => { this.io.emit('client_experiment_init', data)}, 
     start: (data) => { this.io.emit('client_experiment_session_start', data)},
@@ -56,8 +56,10 @@ this.app.get('/discovery/list',discovery_list.bind(this));
 this.app.post('/client/experiment/init',client_experiment_init.bind(this));
 this.app.post('/client/experiment/stop',client_experiment_stop.bind(this));
 this.app.post('/client/server/register',client_server_register.bind(this));
+this.app.post('/client/state',client_state.bind(this));
 
-this.app.get('/server/state',client_state.bind(this));
+this.app.get('/server/network',server_network.bind(this));
+this.app.get('/server/experiments/sessions',server_experiments_sessions.bind(this));
 this.app.get('/server/experiments/list',server_experiments_list.bind(this))
 this.app.post('/server/client/add',server_client_add.bind(this));
 this.app.post('/server/register',server_register.bind(this))
@@ -82,10 +84,63 @@ this.setProps = function(props) {
 
 };
 
+
 function client_state (req, res)  {
   debug('API:client_state');
   function doWork(){
-    var output = this.state;
+
+    var output = {
+      server: this.state.server,
+      me:this.state.me,
+    };
+    return  JSON.stringify( output);
+  };
+
+  var clientResponse = {}
+
+  try{
+    clientResponse =  doWork.bind(this)();
+  }catch (ex) {
+    debug(ex);
+    res.status(500).send('Something broke!')
+    return ;
+  }
+
+  res.send(clientResponse);
+}
+
+function server_network (req, res)  {
+  debug('API:server_network');
+  function doWork(){
+
+
+    var output = {
+      server: this.state.server,
+      me:this.state.me,
+      discoveryList: this.state.discoveryList,
+      clientList: this.state.clientList,
+    };
+    return  JSON.stringify( output);
+  };
+
+  var clientResponse = {}
+
+  try{
+    clientResponse =  doWork.bind(this)();
+  }catch (ex) {
+    debug(ex);
+    res.status(500).send('Something broke!')
+    return ;
+  }
+
+  res.send(clientResponse);
+}
+
+function server_experiments_sessions (req, res)  {
+  debug('API:server_experiments_sessions');
+  function doWork(){
+
+    var output = this.state.experimentSessions;
     return  JSON.stringify( output);
   };
 
@@ -284,44 +339,29 @@ function server_client_add(req, res)  {
   res.send(clientResponse);
 }
 
+
 function server_experiment_id_event(req, res)  {
+  //watch all client events
   debug('API:server_experiment_id_event');
 
-  var job = {
-    id: req.params.id,
-    clients:[]
-  }
-  var knownJob = false;
-  for (var i = 0, len = this.state.jobs.length; i < len; i++) {
-    if(req.params.id == this.state.jobs[i].id){
-      job = this.state.jobs[i];
-      knownJob = true;
-      break;
-    }
+  function doWork(id, clientId, input){
+
+    var output = this.serverFunctions.processExperimentSessionEvent(id , clientId, input);
+    return  JSON.stringify(output);
   }
 
-  if(!knownJob){
-    this.state.jobs.push(job);
+  var clientResponse = {}
+
+  try{
+    clientResponse =  doWork.bind(this,req.params.id,req.params.clientId, req.body)();
+  }catch (ex) {
+    debug(ex);
+    res.status(500).send('Something broke!')
+    return;
   }
 
-  var clients = job.clients;
+  res.send(clientResponse);
 
-  var client = {id:req.params.clientId,actions:[]}
-  var knownClient = false;
-  for (var i = 0, len = clients.length; i < len; i++) {
-    if(req.params.clientId == clients[i].id){
-      client= clients[i];
-      knownClient = true;
-      break;
-    }
-  }
-  if(!knownClient){
-    clients.push(client);
-  }
-  var actions = client.actions;
-  actions.push(req.body);
-
-  this.onUpdateParrentState(this.state);
   this.io.emit('server_experiment_id_event', req.body);
 
   res.status(200).send();
