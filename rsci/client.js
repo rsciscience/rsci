@@ -33,7 +33,7 @@ this.initExperimentSession = function (experimentRequest) {
       this.state.currentExperimentSession.experimentId,
       this.state.currentExperimentSession.instanceId);
 
-      saveExperimentSessionEventOnClient(
+      this.saveExperimentSessionEventOnClient(
         this.state.currentExperimentSession.instanceId,
         this.state.id,
         data
@@ -69,8 +69,8 @@ this.initExperimentSession = function (experimentRequest) {
 }
 
 
-async function  saveExperimentSessionEventOnClient  (id,clientId,data){
-
+this.saveExperimentSessionEventOnClient = function (id,clientId,data){
+  debug('saveExperimentSessionEventOnClient');
 
   var session = {
     id: id,
