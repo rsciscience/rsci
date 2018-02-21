@@ -33,9 +33,10 @@ this.startExperiment = async function (inputConfig) {
   if(!this.state.clientList || this.state.clientList.length < 1 ){
     throw 'No clients'  ;
   }
-  //copy incoming config
-  experimentConfig.config.config = Object.assign(experimentConfig.config, inputConfig);
 
+  //copy incoming config
+  const cpy = Object.assign(experimentConfig.config, inputConfig);
+  experimentConfig.config = cpy;
   var payload = {
     experimentId: experimentId,
     instanceId: helpers.generateId(),
@@ -124,7 +125,6 @@ this.experimentsList = function () {
     output.push(config); 
   }
 
-   console.log(output); 
   return output;
 };
 
@@ -194,12 +194,10 @@ function getDirectories(path) {
   });
 }
 
-
 async function getExperiment(dir, cb) {
 
   debug('Loading from : ' + dir);
   try {
-
 
     debug('Parsing out.....');
     var uistr = fs.readFileSync(path.join(dir, "ui.vue"), "utf8");
