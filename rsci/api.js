@@ -54,6 +54,7 @@ this.app.use(function(req, res, next) {
 this.app.get('/discovery',discovery.bind(this));
 this.app.get('/discovery/list',discovery_list.bind(this));
 this.app.get('/client/state',client_state.bind(this));
+this.app.post('/client',client.bind(this));
 this.app.post('/client/experiment/init',client_experiment_init.bind(this));
 this.app.post('/client/experiment/stop',client_experiment_stop.bind(this));
 this.app.post('/client/server/register',client_server_register.bind(this));
@@ -162,7 +163,7 @@ function discovery (req, res)  {
   debug('API:discovery');
   function doWork(){
     var output =    {
-      id: this.state.id,
+      id: this.state.clientId,
       initTimeStamp: this.state.initTimeStamp
     };
     return  JSON.stringify( output);
@@ -187,7 +188,7 @@ function discovery_list (req, res)  {
   function doWork(){
 
     var output =    {
-      id: this.state.id,
+      id: this.state.clientId,
       initTimeStamp: this.state.initTimeStamp,
       discoveryList : this.state.discoveryList
     };
@@ -206,6 +207,29 @@ function discovery_list (req, res)  {
 
   res.send(clientResponse);
 }
+
+
+function client(req, res)  {
+  debug('API:client');
+
+  function doWork(input){
+    var output = this.clientFunctions.updateSettings(input);
+    return  JSON.stringify( output);
+  }
+
+  var clientResponse = {}
+
+  try{
+    clientResponse =  doWork.bind(this, req.body)();
+  }catch (ex) {
+    debug(ex);
+    res.status(500).send('Something broke!')
+    return;
+  }
+
+  res.send(clientResponse);
+}
+
 
 function client_experiment_init(req, res)  {
   debug('API:client_experiment_init_event');

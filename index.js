@@ -10,10 +10,10 @@ var discovery = require('./rsci/discovery');
 debug('Init Discovery');
 
 this.client = require('./rsci/client');
+this.db = require('./rsci/db');
 this.server = require('./rsci/server');
 this.state = require('./rsci/state');
 this.helpers = require('./rsci/helpers')
-this.state.id = 'id_' + ip.address();
 
 this.onUpdateState = function (data) {
   this.state = data;
@@ -27,7 +27,7 @@ this.start = function (discoveryList) {
   this.state.discoveryList = discoveryList;
   let me = {
     ip: ip.address(),
-    id: this.state.id,
+    clientId: this.state.clientId,
     initTimeStamp: this.state.initTimeStamp,
   };
   this.state.me = me;
@@ -42,7 +42,7 @@ this.start = function (discoveryList) {
     debug('I\'m the server');
   } else {
     debug('I\'m the client');
-    var payload = { ip: me.ip, id: me.id, initTimeStamp: me.initTimeStamp }
+    var payload = { ip: me.ip, clientId: me.clientId, initTimeStamp: me.initTimeStamp }
     this.client.registerWithServer(payload, this.state.server.ip, this.state.listeningPort);
   }
 
@@ -60,12 +60,26 @@ this.start = function (discoveryList) {
 
 }.bind(this);
 
+this.initSettings = function (cb) {
+  debug('initSettings');
+  this.db.settings.read((data)=>{
+    debug('Read settings')
+    if (data && data.clientId) {
+      this.state.clientId = data.clientId;
+    } else {
+      this.state.clientId = 'id_' + ip.address();
+      this.db.settings.save({ clientId: this.state.clientId }, function () { debug('Saved settings') });
+    }
+    cb();
+  });
+}.bind(this);
 
 this.init = function () {
-  debug('init');
-  discovery.search(this.state.cpuInterface, this.state.listeningPort).then(this.start);
-  api.init(this.state.listeningPort, this.state, this.onUpdateState, this.client, this.server)
-
+  debug('init')
+  this.initSettings(()=>{
+    api.init(this.state.listeningPort, this.state, this.onUpdateState, this.client, this.server)
+    discovery.search(this.state.cpuInterface, this.state.listeningPort).then(this.start);
+  });
 }.bind(this);
 
 

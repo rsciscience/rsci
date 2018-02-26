@@ -8,6 +8,7 @@ module.exports = {
     cpuInterface: ['eth0', 'en0', 'wlan0', 'enp0s3'],
     server: {
     },
+    clientId:'no client id',
     me:{},
     experiments: {
       configDir: './experiments', 

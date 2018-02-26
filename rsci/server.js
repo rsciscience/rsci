@@ -104,7 +104,7 @@ this.addClient = function (client) {
 function isClientActive(clientId, activeClientList) {
 
   for (var i = 0; i < activeClientList.length; i++) {
-    if (activeClientList[i].id.toUpperCase() === clientId.toUpperCase()) {
+    if (activeClientList[i].clientId.toUpperCase() === clientId.toUpperCase()) {
       return true;
     }
   }
@@ -140,7 +140,7 @@ this.register = function () {
 
     let payload = {
       ip: this.state.server.ip,
-      id: this.state.server.id,
+      clientId: this.state.server.clientId,
       initTimeStamp: this.state.server.initTimeStamp,
     };
 
@@ -286,10 +286,10 @@ this.processExperimentSessionEvent = function(sessionId,expId , clientId, data){
 
   var clients = session.clients;
 
-  var client = {id:clientId,actions:[]}
+  var client = {clientId:clientId,actions:[]}
   var knownClient = false;
   for (var i = 0, len = clients.length; i < len; i++) {
-    if(clientId == clients[i].id){
+    if(clientId == clients[i].clientId){
       client= clients[i];
       knownClient = true;
       break;

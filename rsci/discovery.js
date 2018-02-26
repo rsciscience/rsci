@@ -47,7 +47,7 @@ async function findFriends(networkDeviceList,port) {
 
             return   {
                 ip: networkDevice.ip, 
-                id: res.id,
+                clientId: res.clientId,
                 initTimeStamp: res.initTimeStamp
             };
         } catch(e) {

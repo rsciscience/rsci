@@ -2,6 +2,7 @@
 const debug = require('debug')('RSCI.client');
 this.state = require('./state');
 const api = require('./api');
+const db = require('./db');
 
 const request = require('request-promise');
 
@@ -29,13 +30,13 @@ this.initExperimentSession = function (experimentRequest) {
     sendServerExperimentSessionEvent(data,
       this.state.server.ip,
       this.state.listeningPort,
-      this.state.id,
+      this.state.clientId,
       this.state.currentExperimentSession.experimentId,
       this.state.currentExperimentSession.instanceId);
 
       this.saveExperimentSessionEventOnClient(
         this.state.currentExperimentSession.instanceId,
-        this.state.id,
+        this.state.clientId,
         data
       );
 
@@ -61,7 +62,7 @@ this.initExperimentSession = function (experimentRequest) {
   sess.init(comms);
 
   return {
-    clientId: this.state.id,
+    clientId: this.state.clientId,
     startDate: new Date(),
     experimentId: experimentRequest.experimentId,
     instanceId: experimentRequest.instanceId,
@@ -91,7 +92,7 @@ this.saveExperimentSessionEventOnClient = function (id,clientId,data){
 
   var clients = session.clients;
 
-  var client = {id:clientId,actions:[]}
+  var client = {clientId:clientId,actions:[]}
   var knownClient = false;
   for (var i = 0, len = clients.length; i < len; i++) {
     if(clientId == clients[i].id){
@@ -134,12 +135,25 @@ this.registerServer = function (payload) {
   this.state.server = payload;
   this.state.clientList = [];
 
-  var payload = { ip: this.state.me.ip, id: this.state.me.id, initTimeStamp: this.state.me.initTimeStamp }
+  var payload = { ip: this.state.me.ip, id: this.state.me.clientId, initTimeStamp: this.state.me.initTimeStamp }
   this.registerWithServer(payload, this.state.server.ip, this.state.listeningPort);
 
 
   return { success: true };
 };
+
+this.updateSettings = function (payload) {
+  debug('updateSettings');
+  if (!payload.clientId){
+    throw('no supplied client id');
+  }
+  this.state.clientId = payload.clientId;
+  this.state.me.clientId = this.state.clientId; 
+  db.settings.save({clientId: this.state.clientId },()=>{debug('Saved settings')})
+
+  return { clientId: this.state.clientId };
+};
+
 
 
 async function sendServerExperimentSessionEvent(data, serverip, port, clientId, experimentId, instanceId, ) {

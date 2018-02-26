@@ -1,6 +1,8 @@
 <template>
   <div class="client">
-    <h1>Client : {{ me.id }}</h1>
+    <h1>Client : {{ me.clientId }}</h1>
+     <input v-model="me.clientId" placeholder="clientId"> 
+     <button v-on:click="updateSettings()"> update </button>
     I'm here :)
       <div>
         connected to server  <a target="" :href="'http://' + server.ip + ':8080/#admin'" >{{ server.id }}</a>
@@ -50,6 +52,19 @@
       }
 
       HTTP.get('client/state').then(success.bind(this)).catch(err.bind(this))
+    },
+    methods: {
+      updateSettings: function () {
+        function err (e) {
+          this.errors.push(e)
+        }
+
+        function success (response) {
+          console.log('Updated!')
+        }
+
+        HTTP.post('client', {clientId: this.me.clientId}).then(success.bind(this)).catch(err.bind(this))
+      }
     }
   }
 </script>
