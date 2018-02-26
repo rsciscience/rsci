@@ -163,7 +163,7 @@ function discovery (req, res)  {
   debug('API:discovery');
   function doWork(){
     var output =    {
-      id: this.state.clientId,
+      clientId: this.state.clientId,
       initTimeStamp: this.state.initTimeStamp
     };
     return  JSON.stringify( output);
@@ -188,7 +188,7 @@ function discovery_list (req, res)  {
   function doWork(){
 
     var output =    {
-      id: this.state.clientId,
+      clientId: this.state.clientId,
       initTimeStamp: this.state.initTimeStamp,
       discoveryList : this.state.discoveryList
     };

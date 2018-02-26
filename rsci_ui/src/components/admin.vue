@@ -1,7 +1,7 @@
 
 <template>
   <div class="admin">
-    <h3>RSCI Admin on {{ me.id }}</h3>
+    <h3>RSCI Admin on {{ me.clientId }}</h3>
 
     <button v-on:click="becomeServer">Become Server</button>
 
