@@ -102,7 +102,6 @@ this.addClient = function (client) {
 };
 
 function isClientActive(clientId, activeClientList) {
-
   for (var i = 0; i < activeClientList.length; i++) {
     if (activeClientList[i].clientId.toUpperCase() === clientId.toUpperCase()) {
       return true;
@@ -120,7 +119,7 @@ this.experimentsList = function () {
     var config = JSON.parse(JSON.stringify( this.state.experiments.configs[i].config));
     for (var j = 0; j < config.clientAssignments.length; j++) {
       var ca = config.clientAssignments[j];
-       ca.active = isClientActive(ca.id, this.state.clientList);
+       ca.active = isClientActive(ca.clientId, this.state.clientList);
     }
     output.push(config); 
   }

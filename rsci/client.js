@@ -135,7 +135,7 @@ this.registerServer = function (payload) {
   this.state.server = payload;
   this.state.clientList = [];
 
-  var payload = { ip: this.state.me.ip, id: this.state.me.clientId, initTimeStamp: this.state.me.initTimeStamp }
+  var payload = { ip: this.state.me.ip, clientId: this.state.me.clientId, initTimeStamp: this.state.me.initTimeStamp }
   this.registerWithServer(payload, this.state.server.ip, this.state.listeningPort);
 
 
