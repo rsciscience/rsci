@@ -18,9 +18,11 @@ async function search (interfaces,port) {
         try {
             partResults = await this.arpScanner({ interface: interface, sudo: true });
         }  catch(e) {
-            console.log(e);
-            debug('Failed on interface: ' + interface ,e);
-        }
+            if(e == 127){
+                console.log('check arp scanner is installed  (sudo apt-get install arp-scan)');
+            }
+            debug('Failed on interface: ' + interface  + ' err code:', e);
+        
         res = res.concat(partResults);
     }
 

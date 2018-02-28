@@ -14,8 +14,8 @@ module.exports = {
             name: 'davidvm',
             assignedRat:    'raty12'
         },{
-            clientId: 'id_192.168.100.137' ,
-            name: 'ferg',
+            clientId: 'majortom' ,
+            name: 'majortom',
             assignedRat: 'raty03'
         }
     ]
