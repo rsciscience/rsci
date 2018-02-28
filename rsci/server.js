@@ -9,6 +9,7 @@ var discovery = require('./discovery');
 var webpackConfig = require('./webpack.conf.js');
 const MemoryFS = require("memory-fs");
 const webpack = require("webpack");
+this.db = require('./db');
 
 //vue parser
 
@@ -82,10 +83,8 @@ this.startExperiment = async function (inputConfig) {
 
 };
 
-
 this.addClient = function (client) {
   debug('addClient');
-
   var isNewClient = true;
 
   for (var i = 0; i < this.state.clientList.length; i++) {
@@ -97,6 +96,7 @@ this.addClient = function (client) {
   if (isNewClient) {
     this.state.clientList.push(client);
   }
+
   return this.state.clientList;
 
 };
@@ -127,10 +127,13 @@ this.experimentsList = function () {
   return output;
 };
 
-this.register = function () {
+this.register = function (cb) {
   debug('register');
-
+  this.state.clientList = [];
   this.state.server = this.state.me;
+  this.state.isServer = true;
+
+  this.db.settings.save({ isServer: true }, function () { debug('Saved settings') });
 
   function gotDiscoveryList(discoveryList) {
     debug('gotDiscoveryList');
@@ -144,6 +147,7 @@ this.register = function () {
     };
 
     this.sendDiscoveryListNewServer(payload);
+    if(cb){cb();}
   }
   function err(e) {
     debug('error getting discovery list', e);
@@ -301,6 +305,42 @@ this.processExperimentSessionEvent = function(sessionId,expId , clientId, data){
   actions.push(data);
 
 
+}
+
+
+this.networkRescan = function (cb) {
+
+  debug('networkRescan');
+
+  function gotDiscoveryList(discoveryList) {
+    debug('gotDiscoveryList');
+
+    var rmv = [];
+    this.state.discoveryList = discoveryList;
+    for(var i =0 ; i< this.state.clientList.length;i++){
+      var client = this.state.clientList[i]; 
+      var found = false;
+      for(var j =0 ; j< this.state.discoveryList.length;j++){
+        if (client.ip == this.state.discoveryList[j].ip){
+          found = true;
+          break;
+        }
+      }
+      if (!found){
+          rmv.push(i);
+      }
+    }
+    debug('found '+ rmv.length + ' missing clients')
+    for(var i = rmv.length; i > 0; i--){
+      this.state.clientList.splice(rmv[i], 1);
+    }
+    cb();
+  }
+  function err(e) {
+    debug('error getting discovery list', e);
+  }
+
+  discovery.search(this.state.cpuInterface, this.state.listeningPort).then(gotDiscoveryList.bind(this));
 }
 
 module.exports = this;

@@ -20,11 +20,27 @@ this.onUpdateState = function (data) {
   //debug('Index - State Change');
 };
 
-this.start = function (discoveryList) {
-  debug('start');
-  debug('Received friend list');
+this.startServerSearch = function (discoveryList) {
+  debug('startServerSearch');
   debug('Discovery List has ' + discoveryList.length);
   this.state.discoveryList = discoveryList;
+  
+  this.state.server = discovery.findServer(this.state.discoveryList);
+  if (this.state.server &&   this.state.server.me == false) {
+    debug('registering');
+    var payload = { ip: me.ip, clientId: me.clientId, initTimeStamp: me.initTimeStamp }
+    this.client.registerWithServer(payload, this.state.server.ip, this.state.listeningPort);
+  }
+
+
+
+ 
+
+}.bind(this);
+
+this.initSettings = function (cb) {
+  debug('initSettings');
+
   let me = {
     ip: ip.address(),
     clientId: this.state.clientId,
@@ -32,36 +48,7 @@ this.start = function (discoveryList) {
   };
   this.state.me = me;
   me.me = true;
-  this.state.discoveryList.push(me);
 
-
-  this.state.server = discovery.findServer(this.state.discoveryList);
-  debug('server', this.state.server);
-  debug('server', this.state.server.ip);
-  if (this.state.server.me == true) {
-    debug('I\'m the server');
-  } else {
-    debug('I\'m the client');
-    var payload = { ip: me.ip, clientId: me.clientId, initTimeStamp: me.initTimeStamp }
-    this.client.registerWithServer(payload, this.state.server.ip, this.state.listeningPort);
-  }
-
-  this.state.clientList = [];
-
-  for (var i = 0, len = this.state.discoveryList; i < len; i++) {
-    var client = this.state.discoveryList[i];
-    if (client.ip != this.state.server.ip) {
-      this.state.clientList.push(client);
-    }
-  }
-
-  api.setProps(this.state);
-  this.state.experiments.configs = this.server.loadExperiments(this.state.experiments.configDir);
-
-}.bind(this);
-
-this.initSettings = function (cb) {
-  debug('initSettings');
   this.db.settings.read((data)=>{
     debug('Read settings')
     if (data && data.clientId) {
@@ -70,15 +57,28 @@ this.initSettings = function (cb) {
       this.state.clientId = 'id_' + ip.address();
       this.db.settings.save({ clientId: this.state.clientId }, function () { debug('Saved settings') });
     }
+    if (data && data.isServer) {
+      this.state.isServer = data.isServer;
+    } 
     cb();
   });
 }.bind(this);
 
 this.init = function () {
   debug('init')
+  
   this.initSettings(()=>{
-    api.init(this.state.listeningPort, this.state, this.onUpdateState, this.client, this.server)
-    discovery.search(this.state.cpuInterface, this.state.listeningPort).then(this.start);
+    this.state.experiments.configs = this.server.loadExperiments(this.state.experiments.configDir);
+    api.init(this.state.listeningPort, this.state, this.onUpdateState, this.client, this.server);
+    api.setProps(this.state);
+ 
+    if (this.state.isServer === true) {
+      debug('I\'m the server');
+      this.server.register();
+    } else {
+      discovery.search(this.state.cpuInterface, this.state.listeningPort).then(this.startServerSearch);
+    }
+    
   });
 }.bind(this);
 

@@ -1,47 +1,35 @@
-job vue 
-    Needs to load dffernt experaments/session infromation in to it 
+Admin
+update to socket.io
+make avilble exp clearly clickable
+Admin buttons
+Refresh network list button.
+realtime rat actvity on box
 
-install boot strap 
+save if isServer 
+on boot get clents if you are the server
 
-session need a config loaded in to them 
-
-instance of a round of experaments. 
-
-experaments     -> 'jakies experament'
-    session     -> 'rat in a box'
-        trial   -> 'pressing a button'
-
-experiments.config{
-    name:"jakies exp 12"
-    type:"5 choice"
-    boxAsignments[
-        {clientid: '12349' 
-        ratid: 'raty12'}
-    ]
-}
-
-experiment {
-    name
-session {
-    start time 
-    stop time. 
-clients[
-
-       clinetid {
-            total number of completed trials
-            total number correct responses 
-            total number incorrect 
-            total number ommisions 
-            results:[....]
-    }
-    ]
-}
-}
+client name change propagated to server
 
 
-createing a job 
+Persist all ExperimentSessions
+
+Add Export data
+by session 
+    CSV
+    SQL
+All sessions
+
+Save last config for experient to database
+
+Change more settings on start 
+    which ratis in box
+
+
+
+
+Createing a job 
     load variables 
-    slect boxes you want 
+    select boxes you want 
         load rat id in to box
             change varibles rat
 
@@ -55,9 +43,6 @@ session (job) 1
      
 
 
-
-Export data 
-    CSV
 
 
 Access 

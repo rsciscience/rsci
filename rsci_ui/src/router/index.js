@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import display from '@/components/display'
 import admin from '@/components/admin'
 import client from '@/components/client'
+import vexport from '@/components/export'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -25,6 +26,11 @@ export default new Router({
       path: '/client',
       name: 'client',
       component: client
+    },
+    {
+      path: '/export',
+      name: 'export',
+      component: vexport
     }
   ]
 })

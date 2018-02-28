@@ -60,6 +60,7 @@ this.app.post('/client/experiment/stop',client_experiment_stop.bind(this));
 this.app.post('/client/server/register',client_server_register.bind(this));
 
 this.app.get('/server/network',server_network.bind(this));
+this.app.post('/server/network/rescan',server_network_rescan.bind(this));
 this.app.get('/server/experiments/sessions',server_experiments_sessions.bind(this));
 this.app.get('/server/experiments/list',server_experiments_list.bind(this))
 this.app.post('/server/client/add',server_client_add.bind(this));
@@ -114,8 +115,6 @@ function client_state (req, res)  {
 function server_network (req, res)  {
   debug('API:server_network');
   function doWork(){
-
-
     var output = {
       server: this.state.server,
       me:this.state.me,
@@ -135,6 +134,35 @@ function server_network (req, res)  {
     return ;
   }
 
+  res.send(clientResponse);
+}
+
+function server_network_rescan (req, res)  {
+  debug('API:server_network');
+  function doWork(){
+    var output = this.serverFunctions.networkRescan(()=>{
+      debug('server_network_rescan post emit');
+      var updateNetworkData = {
+        server: this.state.server,
+        me:this.state.me,
+        discoveryList: this.state.discoveryList,
+        clientList: this.state.clientList,
+      };
+      this.io.emit('server_network_event',updateNetworkData );
+
+    });
+    return  JSON.stringify( output);
+  };
+
+  var clientResponse = {}
+
+  try{
+    clientResponse =  doWork.bind(this)();
+  }catch (ex) {
+    debug(ex);
+    res.status(500).send('Something broke!')
+    return ;
+  }
   res.send(clientResponse);
 }
 
@@ -194,6 +222,7 @@ function discovery_list (req, res)  {
     };
     return  JSON.stringify( output);
   }
+
 
   var clientResponse = {}
 
@@ -257,6 +286,15 @@ function client_server_register(req, res)  {
 
   function doWork(input){
     var output = this.clientFunctions.registerServer(input);
+      debug('client_server_register post emit');
+    var updateNetworkData = {
+      server: this.state.server,
+      me:this.state.me,
+      discoveryList: this.state.discoveryList,
+      clientList: this.state.clientList,
+    };
+    this.io.emit('server_network_event',updateNetworkData )
+    
     return  JSON.stringify( output);
   }
 
@@ -320,7 +358,16 @@ function server_register(req, res)  {
   debug('API:server_register');
 
   function doWork(input){
-    var output = this.serverFunctions.register();
+    var output = this.serverFunctions.register(()=>{
+      debug('server_register post emit');
+      var updateNetworkData = {
+        server: this.state.server,
+        me:this.state.me,
+        discoveryList: this.state.discoveryList,
+        clientList: this.state.clientList,
+      };
+      this.io.emit('server_network_event',updateNetworkData ) ;
+    });
     return  JSON.stringify( output);
   }
 
@@ -346,8 +393,15 @@ function server_client_add(req, res)  {
   debug('API:server_client_add');
 
   function doWork(input){
-
     var output = this.serverFunctions.addClient(input);
+    var updateNetworkData = {
+      server: this.state.server,
+      me:this.state.me,
+      discoveryList: this.state.discoveryList,
+      clientList: this.state.clientList,
+    };
+    this.io.emit('server_network_event',updateNetworkData ) ;
+
     return  JSON.stringify(output);
   }
 
@@ -387,7 +441,10 @@ function server_experiment_id_event(req, res)  {
 
   res.send(clientResponse);
 
-  this.io.emit('server_experiment_id_event', req.body);
+  this.io.emit('server_experimentsession_id_client_event', {
+    clientId:req.params.clientId,
+    data: req.body,
+  }) ;
 
   res.status(200).send();
 }

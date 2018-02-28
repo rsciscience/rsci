@@ -10,7 +10,7 @@ module.exports = {
     }, 
     clientAssignments:[
         {
-            clientId: 'id_192.168.100.134' ,
+            clientId: 'davidvm' ,
             name: 'davidvm',
             assignedRat:    'raty12'
         },{

@@ -7,16 +7,16 @@
       <div class="col-sm-3">
         <ul class="experimentslist">
           <li v-for="item in experimentsList" >
-            <span v-on:click="selectExperiment(item)"> {{item.name}} </span>
+            <span class="avaibleExperiment" v-on:click="selectExperiment(item)"> {{item.name}} </span>
           </li>
         </ul>
       </div>
       <div class="col-sm-9">
-         <div>
-           <h1>{{currentExperiment.name}} </h1>
-        <button v-on:click="startExperiment()">Start</button>
-        <div> duration:  <input v-model="currentExperiment.sessionConfig.duration" placeholder="edit me">  </div>
-        <div>timeOutDuration:<input v-model="currentExperiment.sessionConfig.timeOutDuration" placeholder="edit me">  </div>
+        <div v-if="hasCurrentExperiment">
+          <h1>{{currentExperiment.name}} </h1>
+          <button v-on:click="startExperiment()">Start</button>
+          <div> duration:  <input v-model="currentExperiment.sessionConfig.duration" placeholder="edit me">  </div>
+          <div>timeOutDuration:<input v-model="currentExperiment.sessionConfig.timeOutDuration" placeholder="edit me">  </div>
           <div class="client"  v-for="client in currentExperiment.clientAssignments">
             <div class="box" v-bind:class="{clientactive: isActive(client)}">
                {{client.assignedRat}}
@@ -24,10 +24,9 @@
             <div class="name">{{client.name}}</div>
             <div class="id">({{client.id}})</div>
           </div>
-
-     </div>
+        </div>
       </div>
-      </div>
+    </div>
 
     
 
@@ -47,10 +46,13 @@ export default {
     }
   },
   data () {
-    return {currentExperiment: {
-      sessionConfig: {},
-      clientAssignments: []
-    }}
+    return {
+      currentExperiment: {
+        sessionConfig: {},
+        clientAssignments: []
+      },
+      hasCurrentExperiment: false
+    }
   },
   methods: {
     isActive: function (client) {
@@ -58,6 +60,7 @@ export default {
     },
     selectExperiment (item) {
       this.currentExperiment = item
+      this.hasCurrentExperiment = true
     },
     startExperiment: function () {
       var config = this.currentExperiment
@@ -114,5 +117,17 @@ li {
     background: green;
     border: 5px solid rgb(1, 85, 1);
   }
+
+  .avaibleExperiment {
+     cursor:pointer;
+     color:#d58b8e;
+     text-decoration:none;
+  }
+  .avaibleExperiment:hover {
+     text-decoration:underline;
+     color:#a8987b;
+}
+
+
 
 </style>
