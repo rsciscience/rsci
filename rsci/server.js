@@ -135,13 +135,12 @@ this.getExperimentSessionOverview = function (id){
         var client = experimentSessions.clients[j];
         var action = client.actions[client.actions.length -1];  
 
-        var duration = now.diff(moment(actionTimeStamp));
-        var mins = duration.asMinutes();
+        var duration = moment().diff(moment(action.actionTimeStamp),'seconds');
         output.clients.push({
           clientId:client.clientId, 
-          lastAction: action.actionType,
+          lastActionType: action.actionType,
           lastActionTimeStamp:action.actionTimeStamp,
-          minsSinceAction:mins,
+          secondsSinceAction:duration,
         }
       );
       }

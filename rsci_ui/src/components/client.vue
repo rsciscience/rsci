@@ -14,7 +14,9 @@
         session: {{ sess.id }}
         <ul id="clients">
           <li v-for="(client, index) in sess.clients" :key='index'>
-            ClientId: {{ client.id }}
+            <div>
+            ClientId: {{ client.clientId }}
+            </div>
             <ul id="actions">
               <li v-for="(action, index) in client.actions" :key='index'>
                 {{ action.actionTimeStamp }} <b>{{ action.actionType }} </b>

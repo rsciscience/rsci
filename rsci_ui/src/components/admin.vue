@@ -29,27 +29,17 @@
         
         <div class="row">
           <div class="col-sm-2">
-            <h4>Last Action</h4>
+                session: {{ experimentSessionCurrent.id }}
            
           </div>
           <div class="col-sm-10">
-            <h2>Session Details</h2>
-            <ul id="experimentSessions">
-              <li v-for="(sess, index) in experimentSessions" :key='index'>
-                session: {{ sess.id }}
-
-                <div class="client"  v-for="client in sess.clients">
+                <div class="client"  v-for="client in experimentSessionCurrent.clients">
                     <div class="box" v-bind:class="{clientactive: isActiveRecient(client)}">
-                      {{client.assignedRat}}
+                      <div> {{ client.secondsSinceAction }} </div>
                     </div>
-                    <div class="name">{{client.name}}</div>
                     <div class="id">({{client.clientId}})</div>
-                    <div> {{ lastAction.actionTimeStamp }} </div>
-                    <div> {{ lastAction.actionType }} </div>
-                    <div class="id"> last <span >{{getLastActionEvntType(client)}}</span></div>
+                    <div> {{ client.lastActionType }} </div>
                   </div>
-              </li>
-            </ul>
           </div>
         </div>
       </div>
@@ -93,9 +83,9 @@ export default {
     connect: function () {
       console.log('socket connected')
     },
-    server_experimentsession_id_client_event: function (val) {
-      this.lastAction = val
-      console.log('server_experimentsession_id_client_event', val)
+    server_experimentsession_id_client_action: function (val) {
+      console.log('server_experimentsession_id_client_action', val)
+      this.experimentSessionCurrent = val
     },
     server_network_event: function (val) {
       console.log('server_network_event', val)
@@ -112,7 +102,10 @@ export default {
       discoveryList: [],
       clientList: [],
       experimentSessions: [],
-      lastAction: {},
+      experimentSessionCurrent: {
+        id: '',
+        clients: []
+      },
       experiments: []
     }
   },
@@ -167,9 +160,6 @@ export default {
       }
 
       HTTP.post('server/network/rescan', {}).then(success.bind(this)).catch(err.bind(this))
-    },
-    getLastActionEvntType: function (client) {
-      return client.actions[client.actions.length - 1].actionType
     },
     isActiveRecient: function (client) {
       return true
