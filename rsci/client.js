@@ -95,6 +95,8 @@ this.saveExperimentSessionEventOnClient = function (id,clientId,data){
   var client = {clientId:clientId,actions:[]}
   var knownClient = false;
   for (var i = 0, len = clients.length; i < len; i++) {
+    console.log(clientId)
+    console.log(clients[i])
     if(clientId == clients[i].id){
       client= clients[i];
       knownClient = true;
@@ -106,8 +108,6 @@ this.saveExperimentSessionEventOnClient = function (id,clientId,data){
   }
   var actions = client.actions;
   actions.push(data);
-
-
 }
 
 this.registerWithServer = async function (payload, serverip, port) {
