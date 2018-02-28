@@ -244,20 +244,5 @@ a {
     border: 5px solid rgb(1, 85, 1);
   }
 
-.btn {
-  -webkit-border-radius: 5;
-  -moz-border-radius: 5;
-  border-radius: 5px;
-  font-family: Arial;
-  color: #ffffff;
-  font-size: 15px;
-  background: #a8997c;
-  padding: 5px 10px 5px 10px;
-  text-decoration: none;
-}
 
-.btn:hover {
-  background: #d58b8e;
-  text-decoration: none;
-}
 </style>

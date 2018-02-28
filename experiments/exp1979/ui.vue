@@ -68,6 +68,7 @@ export default {
       this.ruunning = true
       console.log('client_experiment_session_start')
     },
+    
     client_experiment_session_stop: function (val) {
       this.running = false
       console.log('client_experiment_session_stop')
@@ -285,7 +286,6 @@ a {
 .nosepokeLargeOff {
   background-color: rgb(153,153,155); 
 }
-
 .flashing {
   background-color: white;
 }

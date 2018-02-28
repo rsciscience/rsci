@@ -2,7 +2,7 @@
   <div class="client">
     <h1>Client : {{ me.clientId }}</h1>
      <input v-model="me.clientId" placeholder="clientId"> 
-     <button v-on:click="updateSettings()"> update </button>
+     <button class = "btn" v-on:click="updateSettings()"> update </button>
     I'm here :)
       <div>
         connected to server  <a target="" :href="'http://' + server.ip + ':8080/#admin'" >{{ server.id }}</a>

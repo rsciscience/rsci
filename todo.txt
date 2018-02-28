@@ -2,8 +2,8 @@ Admin
 
 client name change propagated to server
 
-save cilent date differntly on state
-Persist all ExperimentSessions client and server
+Persist all ExperimentSessions client (local) and server
+check server data format
 
 Add Export data
 by session 
@@ -34,9 +34,6 @@ session (job) 1
     code ommisions
     realtime stats on a job 
      
-
-
-
 
 Access 
 create sql scripts to summarise client data

@@ -13,16 +13,17 @@
       </div>
       <div class="col-sm-9">
         <div v-if="hasCurrentExperiment">
-          <h1>{{currentExperiment.name}} </h1>
-          <button v-on:click="startExperiment()">Start</button>
-          <div> duration:  <input v-model="currentExperiment.sessionConfig.duration" placeholder="edit me">  </div>
-          <div>timeOutDuration:<input v-model="currentExperiment.sessionConfig.timeOutDuration" placeholder="edit me">  </div>
+          <p>
+          <button  class = "btn"  v-on:click="startExperiment()">Start</button> {{currentExperiment.name}}
+          </p>
+          <div><label>Duration:</label>         <input v-model="currentExperiment.sessionConfig.duration" placeholder="edit me">  </div>
+          <div><label>TimeOut Duration:</label> <input v-model="currentExperiment.sessionConfig.timeOutDuration" placeholder="edit me">  </div>
+          <h4>Boxes</h4>
           <div class="client"  v-for="client in currentExperiment.clientAssignments">
             <div class="box" v-bind:class="{clientactive: isActive(client)}">
                {{client.assignedRat}}
             </div>
-            <div class="name">{{client.name}}</div>
-            <div class="id">({{client.id}})</div>
+            <div class="id">{{client.clientId}}</div>
           </div>
         </div>
       </div>
@@ -88,6 +89,10 @@ li {
   margin: 0 10px;
 }
 
+label{
+  width :150px
+  }
+
 .experimentsList{
 }
 .experimentsList span:hover{
@@ -107,7 +112,6 @@ li {
     text-align:center;
   }
   .name{
-
     font-size :10px;
   }
   .id{
