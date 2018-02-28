@@ -94,11 +94,10 @@ this.saveExperimentSessionEventOnClient = function (id,clientId,data){
 
   var client = {clientId:clientId,actions:[]}
   var knownClient = false;
-  for (var i = 0, len = clients.length; i < len; i++) {
-  console.log(i,clients[i].id,(clientId == clients[i].id))
-
-    if(clientId == clients[i].id){
-      client = clients[i];
+  for (var i = 0, len = this.state.experimentSessionsLocal.clients.length; i < len; i++) {
+      var existingclient = this.state.experimentSessionsLocal.clients[i]
+    if(clientId == existingclient[i].id){
+      client = existingclient[i];
       knownClient = true;
       break;
     }
