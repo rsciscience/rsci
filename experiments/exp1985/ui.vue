@@ -19,10 +19,10 @@
           <button class= "nosepokeLarge nosepokeLargeOff Scene2PerseverativeTrialStartNosepoke"></button>
           <div class= "nosepokeholescontainer">
             <button v-on:click="Scene2nosepokestim1_onclick" class="nosepoke nosepoke1" v-bind:class="{nosepokeActive: NosePokeStimulus}" ></button>
-            <button v-on:click="Scene2nosepokestim2_onclick" class="nosepoke nosepoke2" v-bind:class="{nosepokeActive: nosepokeStimulus_2}" ></button>
-            <button v-on:click="Scene2nosepokestim3_onclick" class="nosepoke nosepoke3" v-bind:class="{nosepokeActive: nosepokeStimulus_3}" ></button>
-            <button v-on:click="Scene2nosepokestim4_onclick" class="nosepoke nosepoke4" v-bind:class="{nosepokeActive: nosepokeStimulus_4}" ></button>
-            <button v-on:click="Scene2nosepokestim5_onclick" class="nosepoke nosepoke5" v-bind:class="{nosepokeActive: nosepokeStimulus_5}" ></button>
+            <button v-on:click="Scene2nosepokestim2_onclick" class="nosepoke nosepoke2" v-bind:class="{nosepokeActive: NosePokeStimulus_2}" ></button>
+            <button v-on:click="Scene2nosepokestim3_onclick" class="nosepoke nosepoke3" v-bind:class="{nosepokeActive: NosePokeStimulus_3}" ></button>
+            <button v-on:click="Scene2nosepokestim4_onclick" class="nosepoke nosepoke4" v-bind:class="{nosepokeActive: NosePokeStimulus_4}" ></button>
+            <button v-on:click="Scene2nosepokestim5_onclick" class="nosepoke nosepoke5" v-bind:class="{nosepokeActive: NosePokeStimulus_5}" ></button>
           </div>
       </div>
       <div id="scene_3" class = "scene" v-bind:class="{currentScene: showScene3}" >
@@ -109,18 +109,18 @@ export default {
       }
     }
       
-    if (action.type.startsWith('nosepokeStimulus_')){
+    if (action.type.startsWith('NosePokeStimulus_')){
       this.NosePokeStimulus = false
-      this.nosepokeStimulus_2 = false
-      this.nosepokeStimulus_3 = false
-      this.nosepokeStimulus_4 = false
-      this.nosepokeStimulus_5 = false
+      this.NosePokeStimulus_2 = false
+      this.NosePokeStimulus_3 = false
+      this.NosePokeStimulus_4 = false
+      this.NosePokeStimulus_5 = false
       switch(action.type){
         case 'NosePokeStimulus' : this.NosePokeStimulus = true; break;
-        case 'nosepokeStimulus_2' : this.nosepokeStimulus_2 = true; break;
-        case 'nosepokeStimulus_3' : this.nosepokeStimulus_3 = true; break;
-        case 'nosepokeStimulus_4' : this.nosepokeStimulus_4 = true; break;
-        case 'nosepokeStimulus_5' : this.nosepokeStimulus_5 = true; break;
+        case 'NosePokeStimulus_2' : this.NosePokeStimulus_2 = true; break;
+        case 'NosePokeStimulus_3' : this.NosePokeStimulus_3 = true; break;
+        case 'NosePokeStimulus_4' : this.NosePokeStimulus_4 = true; break;
+        case 'NosePokeStimulus_5' : this.NosePokeStimulus_5 = true; break;
       }
     }
 
@@ -142,10 +142,10 @@ export default {
       showScene4: false,
       showScene5: false,
       NosePokeStimulus: false,
-      nosepokeStimulus_2: false,
-      nosepokeStimulus_3: false,
-      nosepokeStimulus_4: false,
-      nosepokeStimulus_5: false,
+      NosePokeStimulus_2: false,
+      NosePokeStimulus_3: false,
+      NosePokeStimulus_4: false,
+      NosePokeStimulus_5: false,
       ITIOn: false
     }
   },
@@ -159,11 +159,11 @@ export default {
     },
     
     Scene1TrialStartNosepoke_onclick: function () { this.event('Scene1TrialStartNosepoke_onclick') },
-    Scene1nosepokestim1_onclick: function () { this.event('prematureResponse2') },
-    Scene1nosepokestim2_onclick: function () { this.event('prematureResponse2') },
-    Scene1nosepokestim3_onclick: function () { this.event('prematureResponse3') },
-    Scene1nosepokestim4_onclick: function () { this.event('prematureResponse4') },
-    Scene1nosepokestim5_onclick: function () { this.event('prematureResponse5') },
+    Scene1nosepokestim1_onclick: function () { this.event('PrematureResponse2') },
+    Scene1nosepokestim2_onclick: function () { this.event('PrematureResponse2') },
+    Scene1nosepokestim3_onclick: function () { this.event('PrematureResponse3') },
+    Scene1nosepokestim4_onclick: function () { this.event('PrematureResponse4') },
+    Scene1nosepokestim5_onclick: function () { this.event('PrematureResponse5') },
     Scene2nosepokestim1_onclick: function () { this.event('Scene2nosepokestim1_onclick') },
     Scene2nosepokestim2_onclick: function () { this.event('Scene2nosepokestim2_onclick') },
     Scene2nosepokestim3_onclick: function () { this.event('Scene2nosepokestim3_onclick') },

@@ -19,7 +19,7 @@ var base = class base {
             //session starts on UI_onReady 
         };
 
-        var prematureResponse = function () {
+        var PrematureResponse = function () {
             clearTimeout(this.state.interTrialIntervalTimeOut);
             ChangeSceneTo(5);
             setTimeout(() => {
@@ -67,7 +67,7 @@ var base = class base {
             debug('sessionStopping');
             //server
             this.emit('Stop', { actionTimeStamp: new Date(), actionType: 'Stop' });
-            this.emit('Dispose', { actionTimeStamp: new Date(), actionType: 'Stop' });
+            this.emit('Dispose', { actionTimeStamp: new Date(), actionType: 'Dispose' });
             //client
             this.uiCalls.stop({ id: this.id });
             this.uiCalls.dispose({ id: this.id });
@@ -80,7 +80,7 @@ var base = class base {
                 ChangeSceneTo(2);
                 this.state.winningPokeHole = Math.floor(Math.random() * 5) + 1;
                 debug('Next winner is poke ' + this.state.winningPokeHole);
-                doEvent('nosepokeStimulus_' + this.state.winningPokeHole);
+                doEvent('NosePokeStimulus_' + this.state.winningPokeHole);
             }, 5000);
             doEvent('ITIOn');
         }.bind(this);
@@ -102,12 +102,12 @@ var base = class base {
                 case 'Scene2nosepokestim3_onclick': callAWinner(3); break;
                 case 'Scene2nosepokestim4_onclick': callAWinner(4); break;
                 case 'Scene2nosepokestim5_onclick': callAWinner(5); break;
-                case 'prematureResponse1':
-                case 'prematureResponse2':
-                case 'prematureResponse3':
-                case 'prematureResponse4':
-                case 'prematureResponse5':
-                    prematureResponse();
+                case 'PrematureResponse1':
+                case 'PrematureResponse2':
+                case 'PrematureResponse3':
+                case 'PrematureResponse4':
+                case 'PrematureResponse5':
+                    PrematureResponse();
                 break;
                 default: debug('unknown action recived ' + incomingMessage.type); break;
 

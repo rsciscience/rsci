@@ -97,7 +97,6 @@ this.saveExperimentSessionEventOnClient = function (id,clientId,data){
   var knownClient = false;
   for (var i = 0, len = session.clients.length; i < len; i++) {
       var existingClient = session.clients[i]
-      console.log(existingClient)
       if(clientId == existingClient.clientId){
         client = existingClient;
         knownClient = true;
