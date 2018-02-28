@@ -95,14 +95,15 @@ this.saveExperimentSessionEventOnClient = function (id,clientId,data){
   var client = {clientId:clientId,actions:[]}
   var knownClient = false;
   for (var i = 0, len = clients.length; i < len; i++) {
-    console.log(clientId)
-    console.log(clients[i])
+  console.log(i,clients[i].id,(clientId == clients[i].id))
+
     if(clientId == clients[i].id){
-      client= clients[i];
+      client = clients[i];
       knownClient = true;
       break;
     }
   }
+  console.log(knownClient)
   if(!knownClient){
     clients.push(client);
   }
