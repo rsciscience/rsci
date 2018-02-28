@@ -1,17 +1,9 @@
 Admin
-update to socket.io
-make avilble exp clearly clickable
-Admin buttons
-Refresh network list button.
-realtime rat actvity on box
-
-save if isServer 
-on boot get clents if you are the server
 
 client name change propagated to server
 
-
-Persist all ExperimentSessions
+save cilent date differntly on state
+Persist all ExperimentSessions client and server
 
 Add Export data
 by session 
@@ -24,6 +16,7 @@ Save last config for experient to database
 Change more settings on start 
     which ratis in box
 
+client screen conneted to sever not working
 
 
 

@@ -31,23 +31,10 @@ this.startServerSearch = function (discoveryList) {
     var payload = { ip: me.ip, clientId: me.clientId, initTimeStamp: me.initTimeStamp }
     this.client.registerWithServer(payload, this.state.server.ip, this.state.listeningPort);
   }
-
-
-
- 
-
 }.bind(this);
 
 this.initSettings = function (cb) {
   debug('initSettings');
-
-  let me = {
-    ip: ip.address(),
-    clientId: this.state.clientId,
-    initTimeStamp: this.state.initTimeStamp,
-  };
-  this.state.me = me;
-  me.me = true;
 
   this.db.settings.read((data)=>{
     debug('Read settings')
@@ -59,7 +46,16 @@ this.initSettings = function (cb) {
     }
     if (data && data.isServer) {
       this.state.isServer = data.isServer;
-    } 
+    }
+    
+    let me = {
+      ip: ip.address(),
+      clientId: this.state.clientId,
+      initTimeStamp: this.state.initTimeStamp,
+    };
+    this.state.me = me;
+    me.me = true;
+
     cb();
   });
 }.bind(this);
