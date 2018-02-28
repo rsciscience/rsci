@@ -154,8 +154,8 @@ export default {
     this.$socket.emit('client_experiment_onevent', { type: 'ui_onReady' })
   },
   methods: {
-    event: function (eventType) {
-        this.$socket.emit('client_experiment_onevent', { type: eventType})
+    event: function (actionType) {
+        this.$socket.emit('client_experiment_onevent', { type: actionType})
     },
     
     Scene1TrialStartNosepoke_onclick: function () { this.event('Scene1TrialStartNosepoke_onclick') },

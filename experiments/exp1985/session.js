@@ -15,7 +15,7 @@ var base = class base {
             this.state = {};
             this.state.ignoreExtraneousInputs = false;
             this.uiCalls.start({ id: this.id });
-            this.emit('init', { eventTimeStamp: new Date(), eventType: 'init' });
+            this.emit('init', { actionTimeStamp: new Date(), actionType: 'init' });
             //session starts on ui_onReady 
         };
 
@@ -58,15 +58,15 @@ var base = class base {
         var ui_onReady = function () {
             // on start after the ui is ready to go.
             this.uiCalls.start({ id: this.id });
-            this.emit('Start', { eventTimeStamp: new Date(), eventType: 'Start' });
+            this.emit('Start', { actionTimeStamp: new Date(), actionType: 'Start' });
             ChangeSceneTo(1);
             setTimeout(sessionStopping, this.config.duration);
         }.bind(this);
 
         var sessionStopping = function(){
             //server
-            this.emit('Stop', { eventTimeStamp: new Date(), eventType: 'Stop' });
-            this.emit('Dispose', { eventTimeStamp: new Date(), eventType: 'Stop' });
+            this.emit('Stop', { actionTimeStamp: new Date(), actionType: 'Stop' });
+            this.emit('Dispose', { actionTimeStamp: new Date(), actionType: 'Stop' });
             //client
             this.uiCalls.stop({ id: this.id });
             this.uiCalls.dispose({ id: this.id });
@@ -85,7 +85,7 @@ var base = class base {
 
         this.listen = function (incomingMessage) {
             debug('listen');
-            this.emit('Action', { eventTimeStamp: new Date(), eventType: incomingMessage.type });
+            this.emit('Action', { actionTimeStamp: new Date(), actionType: incomingMessage.type });
             this.state[incomingMessage.type]++;
             debug(incomingMessage.type);
 
@@ -112,10 +112,10 @@ var base = class base {
         }
         }.bind(this);
 
-        var doEvent = function (eventType) {
-            debug('doEvent:' + eventType);
-            this.emit('Action', { eventTimeStamp: new Date(), eventType: eventType });
-            this.uiCalls.emitAction({ type: eventType });
+        var doEvent = function (actionType) {
+            debug('doEvent:' + actionType);
+            this.emit('Action', { actionTimeStamp: new Date(), actionType: actionType });
+            this.uiCalls.emitAction({ type: actionType });
         }.bind(this);
     };
 

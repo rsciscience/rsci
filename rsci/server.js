@@ -10,6 +10,7 @@ var webpackConfig = require('./webpack.conf.js');
 const MemoryFS = require("memory-fs");
 const webpack = require("webpack");
 this.db = require('./db');
+const moment = require('moment');
 
 //vue parser
 
@@ -82,6 +83,75 @@ this.startExperiment = async function (inputConfig) {
   };
 
 };
+
+
+this.processExperimentSessionEvent = function(sessionId,expId , clientId, data){
+
+  var session = {
+    id: sessionId,
+    experimentId:expId, 
+    clients:[]
+  }
+  var known = false;
+  for (var i = 0, len = this.state.experimentSessions.length; i < len; i++) {
+    if(sessionId == this.state.experimentSessions[i].id){
+      session = this.state.experimentSessions[i];
+      known = true;
+      break;
+    }
+  }
+
+  if(!known){
+    this.state.experimentSessions.push(session);
+  }
+
+  var clients = session.clients;
+
+  var client = {clientId:clientId,actions:[]}
+  var knownClient = false;
+  for (var i = 0, len = clients.length; i < len; i++) {
+    if(clientId == clients[i].clientId){
+      client= clients[i];
+      knownClient = true;
+      break;
+    }
+  }
+  if(!knownClient){
+    clients.push(client);
+  }
+  var actions = client.actions;
+  actions.push(data);
+
+}
+this.getExperimentSessionOverview = function (id){
+  var output = {};
+  for (var i = 0, len = this.state.experimentSessions.length; i < len; i++) {
+    var experimentSessions = this.state.experimentSessions[i]; 
+    if(id == experimentSessions.id){
+      output.id = id;
+      output.clients = [];
+      
+      for (var j = 0, len = experimentSessions.clients.length; j < len; j++) {
+        var client = experimentSessions.clients[j];
+        var action = client.actions[client.actions.length -1];  
+
+        var duration = now.diff(moment(actionTimeStamp));
+        var mins = duration.asMinutes();
+        output.clients.push({
+          clientId:client.clientId, 
+          lastAction: action.actionType,
+          lastActionTimeStamp:action.actionTimeStamp,
+          minsSinceAction:mins,
+        }
+      );
+      }
+
+    }
+  }
+  return output ;
+
+};
+
 
 this.addClient = function (client) {
   debug('addClient');
@@ -267,45 +337,6 @@ this.loadExperiments = function (configDir) {
 };
 
 
-this.processExperimentSessionEvent = function(sessionId,expId , clientId, data){
-
-  var session = {
-    id: sessionId,
-    experimentId:expId, 
-    clients:[]
-  }
-  var known = false;
-  for (var i = 0, len = this.state.experimentSessions.length; i < len; i++) {
-    if(sessionId == this.state.experimentSessions[i].id){
-      session = this.state.experimentSessions[i];
-      known = true;
-      break;
-    }
-  }
-
-  if(!known){
-    this.state.experimentSessions.push(session);
-  }
-
-  var clients = session.clients;
-
-  var client = {clientId:clientId,actions:[]}
-  var knownClient = false;
-  for (var i = 0, len = clients.length; i < len; i++) {
-    if(clientId == clients[i].clientId){
-      client= clients[i];
-      knownClient = true;
-      break;
-    }
-  }
-  if(!knownClient){
-    clients.push(client);
-  }
-  var actions = client.actions;
-  actions.push(data);
-
-
-}
 
 
 this.networkRescan = function (cb) {

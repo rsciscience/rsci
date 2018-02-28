@@ -29,7 +29,7 @@ module.exports = {
 
         for (var k = 0, lenk = client.actions.length - 1; k < lenk; k++) {
           var action = client.actions[k]
-          debug('    ' + action.eventType);
+          debug('    ' + action.actionType);
 
         }
 

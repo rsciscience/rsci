@@ -30,8 +30,7 @@
         <div class="row">
           <div class="col-sm-2">
             <h4>Last Action</h4>
-            <div> {{ lastAction.eventTimeStamp }} </div>
-            <div> {{ lastAction.eventType }} </div>
+           
           </div>
           <div class="col-sm-10">
             <h2>Session Details</h2>
@@ -45,6 +44,8 @@
                     </div>
                     <div class="name">{{client.name}}</div>
                     <div class="id">({{client.clientId}})</div>
+                    <div> {{ lastAction.actionTimeStamp }} </div>
+                    <div> {{ lastAction.actionType }} </div>
                     <div class="id"> last <span >{{getLastActionEvntType(client)}}</span></div>
                   </div>
               </li>
@@ -168,7 +169,7 @@ export default {
       HTTP.post('server/network/rescan', {}).then(success.bind(this)).catch(err.bind(this))
     },
     getLastActionEvntType: function (client) {
-      return client.actions[client.actions.length - 1].eventType
+      return client.actions[client.actions.length - 1].actionType
     },
     isActiveRecient: function (client) {
       return true

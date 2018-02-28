@@ -10,7 +10,7 @@
             ClientId: {{ client.id }}
             <ul id="actions">
               <li v-for="(action, index) in client.actions" :key='index'>
-                {{ action.eventTimeStamp }} <b>{{ action.eventType }} </b>
+                {{ action.actionTimeStamp }} <b>{{ action.actionType }} </b>
               </li>
             </ul>
           </li>

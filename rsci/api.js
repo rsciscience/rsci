@@ -65,6 +65,7 @@ this.app.get('/server/experiments/sessions',server_experiments_sessions.bind(thi
 this.app.get('/server/experiments/list',server_experiments_list.bind(this))
 this.app.post('/server/client/add',server_client_add.bind(this));
 this.app.post('/server/register',server_register.bind(this))
+this.app.get('/server/experiment/:id',server_experiment_id.bind(this));
 this.app.post('/server/experiment/:id/start',server_experiment_start.bind(this));
 this.app.post('/server/experiment/:id/session/:sessionId/:clientId/event',server_experiment_id_event.bind(this));
 
@@ -163,6 +164,28 @@ function server_network_rescan (req, res)  {
     res.status(500).send('Something broke!')
     return ;
   }
+  res.send(clientResponse);
+}
+
+function server_experiment_id (req, res)  {
+  debug('API:server_experiment_id');
+  function doWork(sessionId){
+
+
+    var output = this.serverFunctions.getExperimentSessionOverview(id);
+    return  JSON.stringify( output);
+  };
+
+  var clientResponse = {}
+
+  try{
+    clientResponse =  doWork.bind(this)(req.params.id);
+  }catch (ex) {
+    debug(ex);
+    res.status(500).send('Something broke!')
+    return ;
+  }
+
   res.send(clientResponse);
 }
 
@@ -426,6 +449,7 @@ function server_experiment_id_event(req, res)  {
   function doWork(sessionId, expId, clientId, input){
 
     var output = this.serverFunctions.processExperimentSessionEvent(sessionId,expId , clientId, input);
+    this.io.emit('server_experimentsession_id_client_action',this.serverFunctions.getExperimentSessionOverview(sessionId) ) ;
     return  JSON.stringify(output);
   }
 
@@ -441,10 +465,6 @@ function server_experiment_id_event(req, res)  {
 
   res.send(clientResponse);
 
-  this.io.emit('server_experimentsession_id_client_event', {
-    clientId:req.params.clientId,
-    data: req.body,
-  }) ;
 
   res.status(200).send();
 }
