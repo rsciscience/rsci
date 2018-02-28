@@ -16,7 +16,7 @@ var base = class base {
             this.state.ignoreExtraneousInputs = false;
             this.uiCalls.start({ id: this.id });
             this.emit('init', { actionTimeStamp: new Date(), actionType: 'init' });
-            //session starts on ui_onReady 
+            //session starts on UI_onReady 
         };
 
         var prematureResponse = function () {
@@ -29,7 +29,7 @@ var base = class base {
 
         var ChangeSceneTo = function (newScene) {
             this.state.currentScene = newScene;
-            doEvent('changeToScene' + newScene);
+            doEvent('ChangeToScene' + newScene);
         }.bind(this);
 
         var CorrectResponseTime = function () {
@@ -55,7 +55,7 @@ var base = class base {
             }
         }.bind(this);
 
-        var ui_onReady = function () {
+        var UI_onReady = function () {
             // on start after the ui is ready to go.
             this.uiCalls.start({ id: this.id });
             this.emit('Start', { actionTimeStamp: new Date(), actionType: 'Start' });
@@ -95,7 +95,7 @@ var base = class base {
                 return;
             }
             switch (incomingMessage.type) {
-                case 'ui_onReady': ui_onReady(); break;
+                case 'UI_onReady': UI_onReady(); break;
                 case 'Scene1TrialStartNosepoke_onclick': Scene1TrialStartNosepoke_onclick(); break;
                 case 'Scene2nosepokestim1_onclick': callAWinner(1); break;
                 case 'Scene2nosepokestim2_onclick': callAWinner(2); break;

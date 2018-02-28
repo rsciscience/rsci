@@ -18,7 +18,7 @@
           <div class = "sceneLabel"> stimulus presentation scene </div>
           <button class= "nosepokeLarge nosepokeLargeOff Scene2PerseverativeTrialStartNosepoke"></button>
           <div class= "nosepokeholescontainer">
-            <button v-on:click="Scene2nosepokestim1_onclick" class="nosepoke nosepoke1" v-bind:class="{nosepokeActive: nosepokeStimulus_1}" ></button>
+            <button v-on:click="Scene2nosepokestim1_onclick" class="nosepoke nosepoke1" v-bind:class="{nosepokeActive: NosePokeStimulus}" ></button>
             <button v-on:click="Scene2nosepokestim2_onclick" class="nosepoke nosepoke2" v-bind:class="{nosepokeActive: nosepokeStimulus_2}" ></button>
             <button v-on:click="Scene2nosepokestim3_onclick" class="nosepoke nosepoke3" v-bind:class="{nosepokeActive: nosepokeStimulus_3}" ></button>
             <button v-on:click="Scene2nosepokestim4_onclick" class="nosepoke nosepoke4" v-bind:class="{nosepokeActive: nosepokeStimulus_4}" ></button>
@@ -77,7 +77,7 @@ export default {
     client_experiment_action: function (action) {
       console.log('client_experment_action', action)
     
-    if (action.type.startsWith('changeToScene')){
+    if (action.type.startsWith('ChangeToScene')){
       this.showScene1 = false
       this.showScene2 = false
       this.showScene3 = false
@@ -85,24 +85,24 @@ export default {
       this.showScene5 = false
    
       switch(action.type){
-        case 'changeToScene1':
+        case 'ChangeToScene1':
           this.currentScene = 1
           this.showScene1 = true
           this.ITIOn = false
         break;
-        case 'changeToScene2': 
+        case 'ChangeToScene2': 
           this.currentScene = 2
           this.showScene2 = true
         break;
-        case 'changeToScene3':  
+        case 'ChangeToScene3':  
           this.currentScene = 3
           this.showScene3 = true
         break;
-        case 'changeToScene4': 
+        case 'ChangeToScene4': 
           this.currentScene = 4
           this.showScene4 = true
         break;
-        case 'changeToScene5': 
+        case 'ChangeToScene5': 
           this.currentScene = 5
           this.showScene5 = true
         break;
@@ -110,13 +110,13 @@ export default {
     }
       
     if (action.type.startsWith('nosepokeStimulus_')){
-      this.nosepokeStimulus_1 = false
+      this.NosePokeStimulus = false
       this.nosepokeStimulus_2 = false
       this.nosepokeStimulus_3 = false
       this.nosepokeStimulus_4 = false
       this.nosepokeStimulus_5 = false
       switch(action.type){
-        case 'nosepokeStimulus_1' : this.nosepokeStimulus_1 = true; break;
+        case 'NosePokeStimulus' : this.NosePokeStimulus = true; break;
         case 'nosepokeStimulus_2' : this.nosepokeStimulus_2 = true; break;
         case 'nosepokeStimulus_3' : this.nosepokeStimulus_3 = true; break;
         case 'nosepokeStimulus_4' : this.nosepokeStimulus_4 = true; break;
@@ -141,7 +141,7 @@ export default {
       showScene3: false,
       showScene4: false,
       showScene5: false,
-      nosepokeStimulus_1: false,
+      NosePokeStimulus: false,
       nosepokeStimulus_2: false,
       nosepokeStimulus_3: false,
       nosepokeStimulus_4: false,
@@ -151,7 +151,7 @@ export default {
   },
   mounted () {
     console.log('mounted')
-    this.$socket.emit('client_experiment_onevent', { type: 'ui_onReady' })
+    this.$socket.emit('client_experiment_onevent', { type: 'UI_onReady' })
   },
   methods: {
     event: function (actionType) {
