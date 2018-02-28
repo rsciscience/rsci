@@ -18,6 +18,7 @@ async function search (interfaces,port) {
         try {
             partResults = await this.arpScanner({ interface: interface, sudo: true });
         }  catch(e) {
+            console.log(e);
             debug('Failed on interface: ' + interface ,e);
         }
         res = res.concat(partResults);
@@ -45,7 +46,7 @@ async function findFriends(networkDeviceList,port) {
 
             debug('   friend at ' + networkDevice.ip);
 
-            return   {
+            return {
                 ip: networkDevice.ip, 
                 clientId: res.clientId,
                 initTimeStamp: res.initTimeStamp
@@ -59,7 +60,7 @@ async function findFriends(networkDeviceList,port) {
 
     let friendsList = await Promise.all(networkDeviceList.map(callNetworkDevice,port));
 
-    function cleanFriendLIst(actual) {
+    function cleanFriendList(actual) {
         debug('Clean Debug List');
         var newArray = new Array();
         for (var i = 0; i < actual.length; i++) {
@@ -70,7 +71,7 @@ async function findFriends(networkDeviceList,port) {
         return newArray;
     }
 
-    return cleanFriendLIst(friendsList);  
+    return cleanFriendList(friendsList);  
 };
 
 this.findServer= function (networkDeviceList) {

@@ -79,6 +79,7 @@ this.saveExperimentSessionEventOnClient = function (id,clientId,data){
   }
   var known = false;
   for (var i = 0, len = this.state.experimentSessionsLocal.length; i < len; i++) {
+    
     if(id == this.state.experimentSessionsLocal[i].id){
       session = this.state.experimentSessionsLocal[i];
       known = true;
@@ -94,12 +95,12 @@ this.saveExperimentSessionEventOnClient = function (id,clientId,data){
 
   var client = {clientId:clientId,actions:[]}
   var knownClient = false;
-  for (var i = 0, len = this.state.experimentSessionsLocal.clients.length; i < len; i++) {
-      var existingclient = this.state.experimentSessionsLocal.clients[i]
-    if(clientId == existingclient[i].id){
-      client = existingclient[i];
-      knownClient = true;
-      break;
+  for (var i = 0, len = session.clients.length; i < len; i++) {
+      var existingclient = session.clients[i]
+      if(clientId == existingclient[i].id){
+        client = existingclient[i];
+        knownClient = true;
+        break;
     }
   }
   console.log(knownClient)
