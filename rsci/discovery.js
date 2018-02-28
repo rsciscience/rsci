@@ -22,7 +22,7 @@ async function search (interfaces,port) {
                 console.log('check arp scanner is installed  (sudo apt-get install arp-scan)');
             }
             debug('Failed on interface: ' + interface  + ' err code:', e);
-        
+        } 
         res = res.concat(partResults);
     }
 
