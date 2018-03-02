@@ -66,6 +66,7 @@ this.app.get('/server/experiments/list',server_experiments_list.bind(this))
 this.app.post('/server/client/add',server_client_add.bind(this));
 this.app.post('/server/register',server_register.bind(this))
 this.app.get('/server/experiment/:id',server_experiment_id.bind(this));
+this.app.get('/server/experiment/:id/export',server_experiment_id_export.bind(this));
 this.app.post('/server/experiment/:id/start',server_experiment_start.bind(this));
 this.app.post('/server/experiment/:id/session/:sessionId/:clientId/event',server_experiment_id_event.bind(this));
 
@@ -173,6 +174,27 @@ function server_experiment_id (req, res)  {
 
 
     var output = this.serverFunctions.getExperimentSessionOverview(id);
+    return  JSON.stringify( output);
+  };
+
+  var clientResponse = {}
+
+  try{
+    clientResponse =  doWork.bind(this)(req.params.id);
+  }catch (ex) {
+    debug(ex);
+    res.status(500).send('Something broke!')
+    return ;
+  }
+
+  res.send(clientResponse);
+}
+
+function server_experiment_id_export (req, res)  {
+  debug('API:server_experiment_id_export');
+  function doWork(sessionId){
+
+    var output = this.serverFunctions.getExperimentSessionExportAsCsv(sessionId);
     return  JSON.stringify( output);
   };
 

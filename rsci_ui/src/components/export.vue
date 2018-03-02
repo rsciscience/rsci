@@ -1,23 +1,7 @@
 <template>
   <div class="export">
-
+    <input v-model="experimentSessionId" placeholder="edit me" />
    <h2>Sessions</h2>
-    <ul id="experimentSessions">
-      <li v-for="(sess, index) in experimentSessions" :key='index'>
-        session: {{ sess.id }}
-        <ul id="clients">
-          <li v-for="(client, index) in sess.clients" :key='index'>
-            ClientId: {{ client.id }}
-            <ul id="actions">
-              <li v-for="(action, index) in client.actions" :key='index'>
-                {{ action.actionTimeStamp }} <b>{{ action.actionType }} </b>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-    </ul>
-
   </div>
 </template>
 
@@ -27,9 +11,7 @@
     name: 'client',
     data () {
       return {
-        me: {},
-        server: {},
-        experimentSessions: []
+        experimentSessionId: '970065603'
       }
     },
     mounted () {
@@ -39,12 +21,8 @@
 
       function success (response) {
         console.log(response)
-        this.me = response.data.me
-        this.server = response.data.server
-        this.experimentSessions = response.data.experimentSessionsLocal
       }
-
-      HTTP.get('client/state').then(success.bind(this)).catch(err.bind(this))
+      HTTP.get('/server/experiment/' + this.experimentSessionId + '/export').then(success.bind(this)).catch(err.bind(this))
     },
     methods: {
       updateSettings: function () {

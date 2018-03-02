@@ -123,10 +123,54 @@ this.processExperimentSessionEvent = function(sessionId,expId , clientId, data){
   actions.push(data);
 
 }
+
+this.getExperimentSessionExportAsCsv = function (id){
+  debug('getExperimentSessionExportAsCsv');
+  var fs = require('fs');
+  var str = fs.readFileSync("/Users/fergusmacconnell/experimentSession2.json", "utf8" );
+  let found = false;
+  var output = '';
+  // for (var i = 0, len = this.state.experimentSessions.length; i < len; i++) {
+  //   var experimentSessions = this.state.experimentSessions[i]; 
+  //   // if(id == experimentSessions.id){
+  //   //   found = true;
+  //   //   break;
+  //   // }
+  // }
+
+
+  // if (!found) {
+  //   return output;
+  // }
+  var experimentSession = eval(str);
+console.log(experimentSession);
+  for (var j = 0, len = experimentSession.clients.length; j < len; j++) {
+    var client = experimentSession.clients[j];
+    
+ console.log(client);
+
+  }
+  return output ;
+
+};
+
 this.getExperimentSessionOverview = function (id){
+  debug('getExperimentSessionOverview');
   var output = {};
   for (var i = 0, len = this.state.experimentSessions.length; i < len; i++) {
     var experimentSessions = this.state.experimentSessions[i]; 
+
+    let str = JSON.stringify(experimentSessions);
+
+    var fs = require('fs');
+    fs.writeFile("/Users/fergusmacconnell/experimentSession.json", str, function(err) {
+        if(err) {
+            return console.log(err);
+        }
+    
+        console.log("The file was saved!");
+    }); 
+
     if(id == experimentSessions.id){
       output.id = id;
       output.clients = [];
