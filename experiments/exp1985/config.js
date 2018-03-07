@@ -2,6 +2,7 @@
 
 module.exports = {
     id:'exp1985',
+    version: '1.0.0',
     name:'fergs exp 1985',
     type:"5 choice",
     sessionConfig:{

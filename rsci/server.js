@@ -67,12 +67,26 @@ this.startExperiment = async function (inputConfig) {
   }
   let calledClients = await Promise.all(this.state.clientList.map(sendClientInit));
 
-  this.state.experimentSessions.push({
+
+  let newSession = {
     id: payload.instanceId,
     experimentId: experimentId,
-    experimentConfig: experimentConfig,
+    sessionConfig: experimentConfig,
+    sessionStartTime: new Date(),
     clients: []
-  });
+  }
+
+  for (var i = 0; i < experimentConfig.config.clientAssignments.length; i++) {
+    let clientAssignment = experimentConfig.config.clientAssignments[i];
+    newSession.clients.push({
+      clientId: clientAssignment.clientId,
+      config: experimentConfig.config,
+      actions: [] 
+    });
+  }
+  
+
+  this.state.experimentSessions.push(newSession);
 
   return {
     clientList: calledClients,
@@ -122,62 +136,74 @@ this.processExperimentSessionEvent = function (sessionId, expId, clientId, data)
   actions.push(data);
 
 }
-
+function  quoteWrap(val) {
+  return '"' + val + '"';
+}
 this.getExperimentSessionExportAsCsv = function (id) {
   debug('getExperimentSessionExportAsCsv');
-  
-  var str = JSON.stringify(this.state.experimentSessions[0]);
-  console.log(helpers.printObjetStructure(this.state.experimentSessions[0]));
-  console.log(helpers.printObjetStructure(this.state));
-  var fs = require('fs');
-  fs.writeFileSync("/Users/d/experimentSession.json", str); 
-
-  /*
-    var fs = require('fs');
-    var str = fs.readFileSync("/Users/d/experimentSession.json", "utf8" );
-    let found = false;
-    var output = '';
-  */
-
-
-  /*
-  for (var i = 0, len = this.state.experimentSessions.length; i < len; i++) {
-     var experimentSessions = this.state.experimentSessions[i]; 
-     if(id == experimentSessions.id){
-        found = true;
-        break;
-      }
-   }
-
-
-   if (!found) {
-     return output;
-   }
-   */
-  var experimentSession = eval(str);
-      console.log(experimentSession);
-  for (var j = 0, len = experimentSession.clients.length; j < len; j++) {
-    var client = experimentSession.clients[j];
+  let sessionInfo = [];
+  let output = [];
+  id = this.state.experimentSessions[0].id;
+  for (var i = 0; i < this.state.experimentSessions.length; i++) {
+    var experimentSession = this.state.experimentSessions[i]; 
+    console.log(experimentSession.id);
+// experimentId	experimentName	sessionId	sessionStartTime	clientConfig	clientId	clientAction	clientActionTime
     
- console.log(client);
+    if(id != experimentSession.id) {
+      continue;
+    }
+    console.log('found exp ' + id);
+      output.id = id;
+      sessionInfo.push(quoteWrap(experimentSession.sessionConfig.config.id));
+      sessionInfo.push(quoteWrap(experimentSession.sessionConfig.config.name));
+      sessionInfo.push(quoteWrap(experimentSession.sessionConfig.config.version));
+      sessionInfo.push(quoteWrap(experimentSession.id));
+      sessionInfo.push(quoteWrap(experimentSession.sessionStartTime));
+      
+      let sessionInfoString = sessionInfo.join(',');
 
-  }
-  return output ;
 
+      for (var j = 0; j < experimentSession.clients.length; j++) {
+        let clientInfo = [];
+        var client = experimentSession.clients[j];
+        console.log(client.clientId);
+        clientInfo.push(sessionInfoString);
+        clientInfo.push(quoteWrap(client.clientId));
+        clientInfo.push(quoteWrap('config???'));
+
+        let clientInfoString  = clientInfo.join(','); 
+        
+        for (var k = 0; k < client.actions.length; k++) {
+          
+          var action = client.actions[k];
+          
+          let actionInfo = [];
+          actionInfo.push(clientInfoString);
+          actionInfo.push(quoteWrap(action.actionType));
+          actionInfo.push(quoteWrap(action.actionTimeStamp));
+
+          output.push(actionInfo.join(','));
+        }
+      }
+    }
+    console.log(output.join('\n'));
+    return output.join('\n');
 };
 
 this.getExperimentSessionOverview = function (id){
   debug('getExperimentSessionOverview');
   var output = {};
-  for (var i = 0, len = this.state.experimentSessions.length; i < len; i++) {
-    var experimentSessions = this.state.experimentSessions[i]; 
+  for (var i = 0; i < this.state.experimentSessions.length; i++) {
+    var experimentSession = this.state.experimentSessions[i]; 
 
-    if(id == experimentSessions.id){
+    if(id != experimentSession.id){
+      continue;
+    }
       output.id = id;
       output.clients = [];
       
-      for (var j = 0, len = experimentSessions.clients.length; j < len; j++) {
-        var client = experimentSessions.clients[j];
+      for (var j = 0; j < experimentSession.clients.length; j++) {
+        var client = experimentSession.clients[j];
         var action = client.actions[client.actions.length -1];  
 
         var duration = moment().diff(moment(action.actionTimeStamp),'seconds');
@@ -189,8 +215,6 @@ this.getExperimentSessionOverview = function (id){
         }
       );
       }
-
-    }
   }
   return output ;
 

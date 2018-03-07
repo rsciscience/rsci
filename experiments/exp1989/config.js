@@ -2,6 +2,7 @@
 
 module.exports = {
     id:'exp1989',
+    version: '1.0.0',
     name:'Jackies exp 1989',
     type:"5 choice",
     sessionConfig:{
