@@ -1,6 +1,6 @@
 "use strict";
 var ip = require('ip');
-const debug = require('debug')('RSCI.index.');
+const debug = require('debug')('RSCI.index');
 const request = require('request-promise');
 
 var api = require('./rsci/api');

@@ -103,7 +103,6 @@ this.saveExperimentSessionEventOnClient = function (id,clientId,data){
         break;
     }
   }
-  console.log(knownClient)
   if(!knownClient){
     clients.push(client);
   }

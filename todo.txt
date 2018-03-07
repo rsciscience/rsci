@@ -18,6 +18,7 @@ Change more settings on start
 
 client screen conneted to sever not working
 
+change discovery to event emiter to watch when network is discovering. dancig rat???
 
 
 Createing a job 

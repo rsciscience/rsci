@@ -1,4 +1,4 @@
-const debug = require('debug')('RSCI.discovery.');
+const debug = require('debug')('RSCI.discovery');
 const arpScanner = require('arpscan/promise');
 const request = require('request-promise');
 

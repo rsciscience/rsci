@@ -1,6 +1,6 @@
 "use strict";
 
-const debug = require('debug')('RSCI.API.');
+const debug = require('debug')('RSCI.API');
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -90,7 +90,7 @@ this.setProps = function(props) {
 
 
 function client_state (req, res)  {
-  debug('API:client_state');
+  debug('client_state');
   function doWork(){
 
     var output = {
@@ -115,7 +115,7 @@ function client_state (req, res)  {
 }
 
 function server_network (req, res)  {
-  debug('API:server_network');
+  debug('server_network');
   function doWork(){
     var output = {
       server: this.state.server,
@@ -140,7 +140,7 @@ function server_network (req, res)  {
 }
 
 function server_network_rescan (req, res)  {
-  debug('API:server_network');
+  debug('server_network');
   function doWork(){
     var output = this.serverFunctions.networkRescan(()=>{
       debug('server_network_rescan post emit');
@@ -169,7 +169,7 @@ function server_network_rescan (req, res)  {
 }
 
 function server_experiment_id (req, res)  {
-  debug('API:server_experiment_id');
+  debug('server_experiment_id');
   function doWork(sessionId){
 
 
@@ -191,7 +191,7 @@ function server_experiment_id (req, res)  {
 }
 
 function server_experiment_id_export (req, res)  {
-  debug('API:server_experiment_id_export');
+  debug('server_experiment_id_export');
   function doWork(sessionId){
 
     var output = this.serverFunctions.getExperimentSessionExportAsCsv(sessionId);
@@ -212,7 +212,7 @@ function server_experiment_id_export (req, res)  {
 }
 
 function server_experiments_sessions (req, res)  {
-  debug('API:server_experiments_sessions');
+  debug('server_experiments_sessions');
   function doWork(){
 
     var output = this.state.experimentSessions;
@@ -233,7 +233,7 @@ function server_experiments_sessions (req, res)  {
 }
 
 function discovery (req, res)  {
-  debug('API:discovery');
+  debug('discovery');
   function doWork(){
     var output =    {
       clientId: this.state.clientId,
@@ -257,7 +257,7 @@ function discovery (req, res)  {
 
 function discovery_list (req, res)  {
 
-  debug('API:discovery_list');
+  debug('discovery_list');
   function doWork(){
 
     var output =    {
@@ -284,7 +284,7 @@ function discovery_list (req, res)  {
 
 
 function client(req, res)  {
-  debug('API:client');
+  debug('client');
 
   function doWork(input){
     var output = this.clientFunctions.updateSettings(input);
@@ -306,7 +306,7 @@ function client(req, res)  {
 
 
 function client_experiment_init(req, res)  {
-  debug('API:client_experiment_init_event');
+  debug('client_experiment_init_event');
 
   function doWork(input){
     var output = this.clientFunctions.initExperimentSession(input);
@@ -327,7 +327,7 @@ function client_experiment_init(req, res)  {
 }
 
 function client_server_register(req, res)  {
-  debug('API:client_server_register');
+  debug('client_server_register');
 
   function doWork(input){
     var output = this.clientFunctions.registerServer(input);
@@ -357,7 +357,7 @@ function client_server_register(req, res)  {
 }
 
 function server_experiments_list(req, res)  {
-  debug('API:server_experiments_list');
+  debug('server_experiments_list');
 
   function doWork(input){
     var output = this.serverFunctions.experimentsList();
@@ -378,7 +378,7 @@ function server_experiments_list(req, res)  {
 }
 
 function server_experiment_start(req, res)  {
-  debug('API:server_experiment_start_event');
+  debug('server_experiment_start_event');
 
   function doWork(input){
 
@@ -400,7 +400,7 @@ function server_experiment_start(req, res)  {
 }
 
 function server_register(req, res)  {
-  debug('API:server_register');
+  debug('server_register');
 
   function doWork(input){
     var output = this.serverFunctions.register(()=>{
@@ -435,7 +435,7 @@ function client_experiment_stop(req, res) {
 }
 
 function server_client_add(req, res)  {
-  debug('API:server_client_add');
+  debug('server_client_add');
 
   function doWork(input){
     var output = this.serverFunctions.addClient(input);
@@ -466,7 +466,7 @@ function server_client_add(req, res)  {
 
 function server_experiment_id_event(req, res)  {
   //watch all client events
-  debug('API:server_experiment_id_event');
+  debug('server_experiment_id_event');
 
   function doWork(sessionId, expId, clientId, input){
 

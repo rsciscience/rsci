@@ -32,8 +32,8 @@ this.startExperiment = async function (inputConfig) {
     throw 'Can\'t find experiment ' + experimentId;
   }
 
-  if(!this.state.clientList || this.state.clientList.length < 1 ){
-    throw 'No clients'  ;
+  if (!this.state.clientList || this.state.clientList.length < 1) {
+    throw 'No clients';
   }
 
   //copy incoming config
@@ -65,14 +65,13 @@ this.startExperiment = async function (inputConfig) {
     }
     return null;
   }
-  debug(this.state.clientList)
   let calledClients = await Promise.all(this.state.clientList.map(sendClientInit));
 
   this.state.experimentSessions.push({
-    id:payload.instanceId,
+    id: payload.instanceId,
     experimentId: experimentId,
-    experimentConfig: experimentConfig, 
-    clients:[]
+    experimentConfig: experimentConfig,
+    clients: []
   });
 
   return {
@@ -85,38 +84,38 @@ this.startExperiment = async function (inputConfig) {
 };
 
 
-this.processExperimentSessionEvent = function(sessionId,expId , clientId, data){
+this.processExperimentSessionEvent = function (sessionId, expId, clientId, data) {
 
   var session = {
     id: sessionId,
-    experimentId:expId, 
-    clients:[]
+    experimentId: expId,
+    clients: []
   }
   var known = false;
   for (var i = 0, len = this.state.experimentSessions.length; i < len; i++) {
-    if(sessionId == this.state.experimentSessions[i].id){
+    if (sessionId == this.state.experimentSessions[i].id) {
       session = this.state.experimentSessions[i];
       known = true;
       break;
     }
   }
 
-  if(!known){
+  if (!known) {
     this.state.experimentSessions.push(session);
   }
 
   var clients = session.clients;
 
-  var client = {clientId:clientId,actions:[]}
+  var client = { clientId: clientId, actions: [] }
   var knownClient = false;
   for (var i = 0, len = clients.length; i < len; i++) {
-    if(clientId == clients[i].clientId){
-      client= clients[i];
+    if (clientId == clients[i].clientId) {
+      client = clients[i];
       knownClient = true;
       break;
     }
   }
-  if(!knownClient){
+  if (!knownClient) {
     clients.push(client);
   }
   var actions = client.actions;
@@ -124,26 +123,39 @@ this.processExperimentSessionEvent = function(sessionId,expId , clientId, data){
 
 }
 
-this.getExperimentSessionExportAsCsv = function (id){
+this.getExperimentSessionExportAsCsv = function (id) {
   debug('getExperimentSessionExportAsCsv');
+  
+  var str = JSON.stringify(this.state.experimentSessions[0]);
+  console.log(helpers.printObjetStructure(this.state.experimentSessions[0]));
+  console.log(helpers.printObjetStructure(this.state));
   var fs = require('fs');
-  var str = fs.readFileSync("/Users/fergusmacconnell/experimentSession2.json", "utf8" );
-  let found = false;
-  var output = '';
-  // for (var i = 0, len = this.state.experimentSessions.length; i < len; i++) {
-  //   var experimentSessions = this.state.experimentSessions[i]; 
-  //   // if(id == experimentSessions.id){
-  //   //   found = true;
-  //   //   break;
-  //   // }
-  // }
+  fs.writeFileSync("/Users/d/experimentSession.json", str); 
+
+  /*
+    var fs = require('fs');
+    var str = fs.readFileSync("/Users/d/experimentSession.json", "utf8" );
+    let found = false;
+    var output = '';
+  */
 
 
-  // if (!found) {
-  //   return output;
-  // }
+  /*
+  for (var i = 0, len = this.state.experimentSessions.length; i < len; i++) {
+     var experimentSessions = this.state.experimentSessions[i]; 
+     if(id == experimentSessions.id){
+        found = true;
+        break;
+      }
+   }
+
+
+   if (!found) {
+     return output;
+   }
+   */
   var experimentSession = eval(str);
-console.log(experimentSession);
+      console.log(experimentSession);
   for (var j = 0, len = experimentSession.clients.length; j < len; j++) {
     var client = experimentSession.clients[j];
     
@@ -159,17 +171,6 @@ this.getExperimentSessionOverview = function (id){
   var output = {};
   for (var i = 0, len = this.state.experimentSessions.length; i < len; i++) {
     var experimentSessions = this.state.experimentSessions[i]; 
-
-    let str = JSON.stringify(experimentSessions);
-
-    var fs = require('fs');
-    fs.writeFile("/Users/fergusmacconnell/experimentSession.json", str, function(err) {
-        if(err) {
-            return console.log(err);
-        }
-    
-        console.log("The file was saved!");
-    }); 
 
     if(id == experimentSessions.id){
       output.id = id;
