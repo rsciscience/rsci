@@ -3,8 +3,9 @@
 const debug = require('debug')('RSCI.API.client');
 this.state = require('./state');
 
-this.init = function(clientFunctions){
+this.init = function(clientFunctions,io){
   this.clientFunctions = clientFunctions;
+  this.io = io;
 }
 
 this.getState  = (req, res) => {

@@ -79,7 +79,7 @@ this.app.post('/server/experiment/:id/session/:sessionId/:clientId/event',api_se
 this.init = function(port,  clientFunctions, serverFunctions ) {
   this.clientFunctions = clientFunctions;
   this.serverFunctions = serverFunctions;
-  api_client.init(this.clientFunctions); 
+  api_client.init(this.clientFunctions,this.io); 
   api_server.init(this.serverFunctions,this.io); 
   this.server.listen(port,  '0.0.0.0', function() {
     debug("... API up");
@@ -88,8 +88,8 @@ this.init = function(port,  clientFunctions, serverFunctions ) {
 
 
 function discovery (req, res)  {
-  debug('discovery');`:w
-  `
+  debug('discovery');
+  
   function doWork(){
     var output =    {
       clientId: this.state.clientId,
