@@ -239,6 +239,18 @@ this.addClient = function (client) {
 
 };
 
+this.updateClientName = function (oldName,newName) {
+  debug('updateClientName');
+
+  for (var i = 0; i < this.state.clientList.length; i++) {
+    if (this.state.clientList[i].name === oldName) {
+      this.state.clientList[i].name = newName; 
+      return true;
+    }
+  }
+  return false;
+}
+
 function isClientActive(clientId, activeClientList) {
   for (var i = 0; i < activeClientList.length; i++) {
     if (activeClientList[i].clientId.toUpperCase() === clientId.toUpperCase()) {

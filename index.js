@@ -15,10 +15,6 @@ this.server = require('./rsci/server');
 this.state = require('./rsci/state');
 this.helpers = require('./rsci/helpers')
 
-this.onUpdateState = function (data) {
-  this.state = data;
-  //debug('Index - State Change');
-};
 
 this.startServerSearch = function (discoveryList) {
   debug('startServerSearch');
@@ -65,8 +61,7 @@ this.init = function () {
   
   this.initSettings(()=>{
     this.state.experiments.configs = this.server.loadExperiments(this.state.experiments.configDir);
-    api.init(this.state.listeningPort, this.state, this.onUpdateState, this.client, this.server);
-    api.setProps(this.state);
+    api.init(this.state.listeningPort,  this.client, this.server);
  
     if (this.state.isServer === true) {
       debug('I\'m the server');

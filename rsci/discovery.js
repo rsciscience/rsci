@@ -59,7 +59,6 @@ async function findFriends(networkDeviceList,port) {
         }
     }
 
-
     let friendsList = await Promise.all(networkDeviceList.map(callNetworkDevice,port));
 
     function cleanFriendList(actual) {
