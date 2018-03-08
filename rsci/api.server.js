@@ -3,8 +3,9 @@
 const debug = require('debug')('RSCI.API.server');
 this.state = require('./state');
 
-this.init = function (serverFunctions) {
+this.init = function (serverFunctions,io) {
   this.serverFunctions = serverFunctions;
+  this.io = io;
 }
 
 
