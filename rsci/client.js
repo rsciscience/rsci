@@ -160,15 +160,15 @@ this.updateSettings = function (payload) {
   db.settings.save({ clientId: this.state.clientId }, () => { debug('Saved settings') })
 
   if (change.newClientId != change.oldClientId ){
-    updateServerOnClientIdChange(change); 
+    updateServerOnClientIdChange(change,this.state.server.ip, this.state.listeningPort); 
   }
 
   return { clientId: this.state.clientId };
 };
 
-async function updateServerOnClientIdChange(change){
+async function updateServerOnClientIdChange(change,serverip, port, ){
   var options = {
-    uri: 'http://' + serverip + ':' + port + '/server/client/namechange',
+    uri: 'http://' + serverip + ':' + port + '/server/client/updateClientID',
     json: true,
     method: 'POST',
     body: change
