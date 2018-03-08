@@ -236,7 +236,7 @@ this.client_add = (req, res) => {
   debug('server_client_add');
 
   function doWork(input){
-    var output = this.serverFunctions.updateClientName(input.oldName,input.newName);
+    var output = this.serverFunctions.updateClientName(input.oldClientId,input.newClientId);
     var updateNetworkData = {
       server: this.state.server,
       me:this.state.me,

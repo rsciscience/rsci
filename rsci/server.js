@@ -239,12 +239,12 @@ this.addClient = function (client) {
 
 };
 
-this.updateClientName = function (oldName,newName) {
+this.updateClientID = function (oldclientId,newclientId) {
   debug('updateClientName');
 
   for (var i = 0; i < this.state.clientList.length; i++) {
-    if (this.state.clientList[i].name === oldName) {
-      this.state.clientList[i].name = newName; 
+    if (this.state.clientList[i].clientId === oldclientId) {
+      this.state.clientList[i].clientId = newclientId; 
       return true;
     }
   }

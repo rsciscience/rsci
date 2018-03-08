@@ -16,10 +16,10 @@ this.initExperimentSession = function (experimentRequest) {
   };
 
   this.state.experimentSessionsLocal.push({
-    id:requestConfig.instanceId,
+    id: requestConfig.instanceId,
     experimentId: requestConfig.experimentId,
-    experimentConfig: requestConfig.experimentConfig, 
-    clients:[]
+    experimentConfig: requestConfig.experimentConfig,
+    clients: []
   });
 
   requestConfig.experimentConfig.session = eval(experimentRequest.experimentConfig.session);
@@ -34,11 +34,11 @@ this.initExperimentSession = function (experimentRequest) {
       this.state.currentExperimentSession.experimentId,
       this.state.currentExperimentSession.instanceId);
 
-      this.saveExperimentSessionEventOnClient(
-        this.state.currentExperimentSession.instanceId,
-        this.state.clientId,
-        data
-      );
+    this.saveExperimentSessionEventOnClient(
+      this.state.currentExperimentSession.instanceId,
+      this.state.clientId,
+      data
+    );
 
   }
 
@@ -70,40 +70,40 @@ this.initExperimentSession = function (experimentRequest) {
 }
 
 
-this.saveExperimentSessionEventOnClient = function (id,clientId,data){
+this.saveExperimentSessionEventOnClient = function (id, clientId, data) {
   debug('saveExperimentSessionEventOnClient');
 
   var session = {
     id: id,
-    clients:[]
+    clients: []
   }
   var known = false;
   for (var i = 0, len = this.state.experimentSessionsLocal.length; i < len; i++) {
-    
-    if(id == this.state.experimentSessionsLocal[i].id){
+
+    if (id == this.state.experimentSessionsLocal[i].id) {
       session = this.state.experimentSessionsLocal[i];
       known = true;
       break;
     }
   }
 
-  if(!known){
+  if (!known) {
     this.state.experimentSessionsLocal.push(session);
   }
 
   var clients = session.clients;
 
-  var client = {clientId:clientId,actions:[]}
+  var client = { clientId: clientId, actions: [] }
   var knownClient = false;
   for (var i = 0, len = session.clients.length; i < len; i++) {
-      var existingClient = session.clients[i]
-      if(clientId == existingClient.clientId){
-        client = existingClient;
-        knownClient = true;
-        break;
+    var existingClient = session.clients[i]
+    if (clientId == existingClient.clientId) {
+      client = existingClient;
+      knownClient = true;
+      break;
     }
   }
-  if(!knownClient){
+  if (!knownClient) {
     clients.push(client);
   }
   var actions = client.actions;
@@ -146,16 +146,41 @@ this.registerServer = function (payload) {
 
 this.updateSettings = function (payload) {
   debug('updateSettings');
-  if (!payload.clientId){
-    throw('no supplied client id');
+  if (!payload.clientId) {
+    throw ('no supplied client id');
   }
+  var change = {
+    oldClientId: this.state.clientId,
+    newClientId: payload.clientId
+  };
+
   this.state.clientId = payload.clientId;
-  this.state.me.clientId = this.state.clientId; 
-  db.settings.save({clientId: this.state.clientId },()=>{debug('Saved settings')})
+  this.state.me.clientId = this.state.clientId;
+
+  db.settings.save({ clientId: this.state.clientId }, () => { debug('Saved settings') })
+
+  if (change.newClientId != change.oldClientId ){
+    updateServerOnClientIdChange(change); 
+  }
 
   return { clientId: this.state.clientId };
 };
 
+async function updateServerOnClientIdChange(change){
+  var options = {
+    uri: 'http://' + serverip + ':' + port + '/server/client/namechange',
+    json: true,
+    method: 'POST',
+    body: change
+  };
+
+  try {
+    let res = await request(options);
+  } catch (e) {
+    debug('Error sending experiment session event');
+  }
+
+}
 
 
 async function sendServerExperimentSessionEvent(data, serverip, port, clientId, experimentId, instanceId, ) {
