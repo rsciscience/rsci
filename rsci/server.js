@@ -136,59 +136,7 @@ this.processExperimentSessionEvent = function (sessionId, expId, clientId, data)
   actions.push(data);
 
 }
-function  quoteWrap(val) {
-  return '"' + val + '"';
-}
-this.getExperimentSessionExportAsCsv = function (id) {
-  debug('getExperimentSessionExportAsCsv');
-  let sessionInfo = [];
-  let output = [];
-  id = this.state.experimentSessions[0].id;
-  for (var i = 0; i < this.state.experimentSessions.length; i++) {
-    var experimentSession = this.state.experimentSessions[i]; 
-    console.log(experimentSession.id);
-// experimentId	experimentName	sessionId	sessionStartTime	clientConfig	clientId	clientAction	clientActionTime
-    
-    if(id != experimentSession.id) {
-      continue;
-    }
-    console.log('found exp ' + id);
-      output.id = id;
-      sessionInfo.push(quoteWrap(experimentSession.sessionConfig.config.id));
-      sessionInfo.push(quoteWrap(experimentSession.sessionConfig.config.name));
-      sessionInfo.push(quoteWrap(experimentSession.sessionConfig.config.version));
-      sessionInfo.push(quoteWrap(experimentSession.id));
-      sessionInfo.push(quoteWrap(experimentSession.sessionStartTime));
-      
-      let sessionInfoString = sessionInfo.join(',');
 
-
-      for (var j = 0; j < experimentSession.clients.length; j++) {
-        let clientInfo = [];
-        var client = experimentSession.clients[j];
-        console.log(client.clientId);
-        clientInfo.push(sessionInfoString);
-        clientInfo.push(quoteWrap(client.clientId));
-        clientInfo.push(quoteWrap('config???'));
-
-        let clientInfoString  = clientInfo.join(','); 
-        
-        for (var k = 0; k < client.actions.length; k++) {
-          
-          var action = client.actions[k];
-          
-          let actionInfo = [];
-          actionInfo.push(clientInfoString);
-          actionInfo.push(quoteWrap(action.actionType));
-          actionInfo.push(quoteWrap(action.actionTimeStamp));
-
-          output.push(actionInfo.join(','));
-        }
-      }
-    }
-    console.log(output.join('\n'));
-    return output.join('\n');
-};
 
 this.getExperimentSessionOverview = function (id){
   debug('getExperimentSessionOverview');
@@ -204,16 +152,20 @@ this.getExperimentSessionOverview = function (id){
       
       for (var j = 0; j < experimentSession.clients.length; j++) {
         var client = experimentSession.clients[j];
-        var action = client.actions[client.actions.length -1];  
-
-        var duration = moment().diff(moment(action.actionTimeStamp),'seconds');
-        output.clients.push({
+        var clientOverview =  {
           clientId:client.clientId, 
-          lastActionType: action.actionType,
-          lastActionTimeStamp:action.actionTimeStamp,
-          secondsSinceAction:duration,
+          lastActionType: null,
+          lastActionTimeStamp: null,
+          secondsSinceAction: null,
+        };
+        var action = client.actions[client.actions.length -1];
+        if (action != null) {
+          var duration = moment().diff(moment(action.actionTimeStamp),'seconds');
+          clientOverview.lastActionType = action.actionType;
+          clientOverview.lastActionTimeStamp = action.actionTimeStamp;
+          clientOverview.secondsSinceAction = duration;
         }
-      );
+        output.clients.push(clientOverview);
       }
   }
   return output ;

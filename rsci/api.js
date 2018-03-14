@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const api_client = require('./api.client');
 const api_server = require('./api.server');
+const api_export = require('./api.export');
 this.state = require('./state');
 
 this.app= express();
@@ -71,16 +72,18 @@ this.app.post('/server/client/add',api_server.client_add);
 this.app.post('/server/client/updateClientID',api_server.updateClientID);
 this.app.post('/server/register',api_server.register);
 this.app.get('/server/experiment/:id',api_server.experiment_id);
-this.app.get('/server/experiment/:id/export',api_server.experiment_id_export);
 this.app.post('/server/experiment/:id/start',api_server.experiment_start);
 this.app.post('/server/experiment/:id/session/:sessionId/:clientId/event',api_server.experiment_id_event);
+this.app.get('/server/export/session/:id',api_export.session_id);
+this.app.get('/server/export/sessions/list',api_export.experiment_sessions_list);
 
-
-this.init = function(port,  clientFunctions, serverFunctions ) {
+this.init = function(port,  clientFunctions, serverFunctions, exportFunctions ) {
   this.clientFunctions = clientFunctions;
   this.serverFunctions = serverFunctions;
+  this.exportFunctions = exportFunctions;
   api_client.init(this.clientFunctions,this.io); 
-  api_server.init(this.serverFunctions,this.io); 
+  api_server.init(this.serverFunctions,this.io);
+  api_export.init(this.exportFunctions,this.io); 
   this.server.listen(port,  '0.0.0.0', function() {
     debug("... API up");
   });

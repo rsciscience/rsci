@@ -1,8 +1,24 @@
 <template>
-  <div class="export">
-    <input v-model="experimentSessionId" placeholder="edit me" />
-   <h2>Sessions</h2>
+  <div>
+    <div class="export">
+      <!-- <input v-model="experimentSessionId" placeholder="edit me" /> -->
+    <h2>Sessions</h2>
+    </div>
+    <div class="container">
+    <div class="row experiment-sessions"  v-for="session in experimentSessionList">
+      <div class="col-sm">
+        {{ session.id}}
+      </div>
+      <div class="col-sm">
+        {{ session.name }} {{ session.type }}
+      </div>
+      <div class="col-sm">
+        {{ session.sessionStartTime }}
+      </div>
+      <a :href="HTTP.baseURL + 'server/export/session/' + session.id" target="_blank">CSV</a>
+    </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -11,7 +27,8 @@
     name: 'client',
     data () {
       return {
-        experimentSessionId: '10136576'
+        experimentSessionList: [],
+        HTTP: HTTP
       }
     },
     mounted () {
@@ -20,9 +37,9 @@
       }
 
       function success (response) {
-        console.log(response)
+        this.experimentSessionList = response.data
       }
-      HTTP.get('/server/experiment/' + this.experimentSessionId + '/export').then(success.bind(this)).catch(err.bind(this))
+      HTTP.get('/server/export/sessions/list').then(success.bind(this)).catch(err.bind(this))
     },
     methods: {
       updateSettings: function () {
