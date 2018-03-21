@@ -63,7 +63,7 @@ this.getExperimentSessions = function (){
   var output = [];
   for (var i = 0; i < this.state.experimentSessions.length; i++) {
     var experimentSession = this.state.experimentSessions[i]; 
-    console.log(helpers.printObjetStructure(experimentSession));
+
     output.push({
       id: experimentSession.id,
       name: experimentSession.sessionConfig.config.name,

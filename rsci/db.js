@@ -12,6 +12,12 @@ var settings_schema = new Schema({
 });
 
 var experimentSessions_schema = new Schema({
+    experimentSessionId: String,
+    experimentId: String,
+    experimentConfig: Object, 
+    clientId: String,
+    sessionStartTime: String,
+    actions: Array,
 });
 
 var m_settings = mongoose.model('settings', settings_schema);
@@ -46,23 +52,26 @@ function settingsRead(cb) {
    );
 }
 
-function experimentSessionsSave (cb){
+function experimentSessionLocalCreate (data) {
+    return new m_settings(data);
+
 }
 
-function experimentSessionsRead (){
-    m_experimentSessions.find( function (err, data) {
-        if (err) { debug(); return; }
-        if (data != null) {
-            cb(data);
-        }
-    })
-}
+function experimentSessionLocalSave (data, cb) {
 
+    function saved(err, savedData){
+        if (err) { debug(err); return  }
+        cb(savedData);
+    }
+
+    data.update().then(saved);
+   
+}
 
 module.exports = {
     experimentSessions: {
         read: experimentSessionsRead,
-        save: experimentSessionsSave
+        save: experimentSessionLocalSave
     },
     settings:{
         read: settingsRead,

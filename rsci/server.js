@@ -140,6 +140,7 @@ this.processExperimentSessionEvent = function (sessionId, expId, clientId, data)
 
 this.getExperimentSessionOverview = function (id){
   debug('getExperimentSessionOverview');
+  helpers.printObjetStructure(this.state.experimentSessions);
   var output = {};
   for (var i = 0; i < this.state.experimentSessions.length; i++) {
     var experimentSession = this.state.experimentSessions[i]; 

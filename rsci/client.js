@@ -15,27 +15,31 @@ this.initExperimentSession = function (experimentRequest) {
     experimentConfig: experimentRequest.experimentConfig,
   };
 
-  this.state.experimentSessionsLocal.push({
-    id: requestConfig.instanceId,
+  var esl = db.experimentSessions.save({
+    experimentSessionId: requestConfig.instanceId,
     experimentId: requestConfig.experimentId,
     experimentConfig: requestConfig.experimentConfig,
-    clients: []
+    clientId: this.state.clientId,
+    sessionStartTime: new Date(),
+    actions: []
   });
+
+  db.experimentSessionLocalUpdate(esl);
 
   requestConfig.experimentConfig.session = eval(experimentRequest.experimentConfig.session);
 
   this.state.currentExperimentSession = requestConfig;
 
-  function watchEvents(data) {
+  function watchEvents(currentExperimentSession, data) {
     sendServerExperimentSessionEvent(data,
       this.state.server.ip,
       this.state.listeningPort,
       this.state.clientId,
-      this.state.currentExperimentSession.experimentId,
-      this.state.currentExperimentSession.instanceId);
+      currentExperimentSession.experimentId,
+      currentExperimentSession.instanceId);
 
     this.saveExperimentSessionEventOnClient(
-      this.state.currentExperimentSession.instanceId,
+      currentExperimentSession,
       this.state.clientId,
       data
     );
@@ -44,12 +48,12 @@ this.initExperimentSession = function (experimentRequest) {
 
   var sess = new requestConfig.experimentConfig.session(requestConfig.instanceId, requestConfig.experimentConfig.config);
 
-  sess.on('Init', watchEvents.bind(this));
-  sess.on('Dispose', watchEvents.bind(this));
-  sess.on('Start', watchEvents.bind(this));
-  sess.on('Stop', watchEvents.bind(this));
-  sess.on('Event', watchEvents.bind(this));
-  sess.on('Action', watchEvents.bind(this));
+  sess.on('Init', watchEvents.bind(this, esl));
+  sess.on('Dispose', watchEvents.bind(this, esl));
+  sess.on('Start', watchEvents.bind(this, esl));
+  sess.on('Stop', watchEvents.bind(this, esl));
+  sess.on('Event', watchEvents.bind(this, esl));
+  sess.on('Action', watchEvents.bind(this, esl));
 
   var comms = api.getClientCommunicationFunctions(sess.listen);
 
@@ -62,52 +66,19 @@ this.initExperimentSession = function (experimentRequest) {
   sess.init(comms);
 
   return {
-    clientId: this.state.clientId,
-    startDate: new Date(),
-    experimentId: experimentRequest.experimentId,
-    instanceId: experimentRequest.instanceId,
+    clientId: esl.clientId,
+    startDate: esl.date,
+    experimentId: esl.experimentId,
+    instanceId: esl.experimentSessionId,
   };
 }
 
 
-this.saveExperimentSessionEventOnClient = function (id, clientId, data) {
+this.saveExperimentSessionEventOnClient = function (currentExperimentSession, clientId, data) {
   debug('saveExperimentSessionEventOnClient');
 
-  var session = {
-    id: id,
-    clients: []
-  }
-  var known = false;
-  for (var i = 0, len = this.state.experimentSessionsLocal.length; i < len; i++) {
-
-    if (id == this.state.experimentSessionsLocal[i].id) {
-      session = this.state.experimentSessionsLocal[i];
-      known = true;
-      break;
-    }
-  }
-
-  if (!known) {
-    this.state.experimentSessionsLocal.push(session);
-  }
-
-  var clients = session.clients;
-
-  var client = { clientId: clientId, actions: [] }
-  var knownClient = false;
-  for (var i = 0, len = session.clients.length; i < len; i++) {
-    var existingClient = session.clients[i]
-    if (clientId == existingClient.clientId) {
-      client = existingClient;
-      knownClient = true;
-      break;
-    }
-  }
-  if (!knownClient) {
-    clients.push(client);
-  }
-  var actions = client.actions;
-  actions.push(data);
+  currentExperimentSession.actions.push(data);
+  db.experimentSessionLocalUpdate(esl);
 }
 
 this.registerWithServer = async function (payload, serverip, port) {
