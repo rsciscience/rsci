@@ -76,9 +76,8 @@ this.initExperimentSession = function (experimentRequest) {
 
 this.saveExperimentSessionEventOnClient = function (currentExperimentSession, clientId, data) {
   debug('saveExperimentSessionEventOnClient');
-
   currentExperimentSession.actions.push(data);
-  db.experimentSessionLocalUpdate(esl);
+  db.experimentSessions.save(currentExperimentSession);
 }
 
 this.registerWithServer = async function (payload, serverip, port) {
