@@ -128,7 +128,7 @@ this.updateSettings = function (payload) {
   this.state.clientId = payload.clientId;
   this.state.me.clientId = this.state.clientId;
 
-  db.settings.save({ clientId: this.state.clientId }, () => { debug('Saved settings') })
+  db.settings.save({ clientId: this.state.clientId }, (res) => { debug('Saved settings',res) })
 
   if (change.newClientId != change.oldClientId ){
     updateServerOnClientIdChange(change,this.state.server.ip, this.state.listeningPort); 
