@@ -15,16 +15,16 @@ this.initExperimentSession = function (experimentRequest) {
     experimentConfig: experimentRequest.experimentConfig,
   };
 
-  var esl = db.experimentSessions.save({
+  var esl = {
     experimentSessionId: requestConfig.instanceId,
     experimentId: requestConfig.experimentId,
     experimentConfig: requestConfig.experimentConfig,
     clientId: this.state.clientId,
     sessionStartTime: new Date(),
     actions: []
-  });
-
-  db.experimentSessionLocalUpdate(esl);
+  }
+  
+  db.experimentSessions.save(esl);
 
   requestConfig.experimentConfig.session = eval(experimentRequest.experimentConfig.session);
 
