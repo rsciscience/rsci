@@ -1,6 +1,6 @@
 <template>
   <div class="experiments">
-    <h2>Avaible Experiments</h2>
+    <h2>Available Experiments</h2>
     
 
     <div class="row">

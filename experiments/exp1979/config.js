@@ -19,6 +19,11 @@ module.exports = {
             name: 'majortom',
             assignedRat: 'raty03'
         }
+        ,{
+            clientId: 'Box4' ,
+            name: 'Box4',
+            assignedRat: 'raty04'
+        }
     ]
 };
 
