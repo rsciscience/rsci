@@ -1,6 +1,6 @@
 "use strict";
 var ee = require('event-emitter');
-const debug = require('debug')('RSCI.session.exp1985');
+const debug = require('debug')('RSCI.session.AdoTHC_5CSRT1');
 
 var base = class base {
     constructor(sessionId, experiment) {

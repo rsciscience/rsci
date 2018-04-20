@@ -1,9 +1,9 @@
 "use strict";
 
 module.exports = {
-    id:'AdoTHC_5CSRT1',
+    id:'exp1979',
     version: '1.0.0',
-    name:'AdoTHC_5CSRT1',
+    name:'exp1979',
     type:"5 choice",
     sessionVariables:{
         duration:60000,
