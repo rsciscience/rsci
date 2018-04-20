@@ -22,9 +22,9 @@ this.getExperimentSessionExportAsCsv = function (id) {
     }
     console.log('found exp ' + id);
       output.id = id;
-      sessionInfo.push(quoteWrap(experimentSession.sessionConfig.config.id));
-      sessionInfo.push(quoteWrap(experimentSession.sessionConfig.config.name));
-      sessionInfo.push(quoteWrap(experimentSession.sessionConfig.config.version));
+      sessionInfo.push(quoteWrap(experimentSession.sessionVariables.config.id));
+      sessionInfo.push(quoteWrap(experimentSession.sessionVariables.config.name));
+      sessionInfo.push(quoteWrap(experimentSession.sessionVariables.config.version));
       sessionInfo.push(quoteWrap(experimentSession.id));
       sessionInfo.push(quoteWrap(experimentSession.sessionStartTime));
       
@@ -66,8 +66,8 @@ this.getExperimentSessions = function (){
     console.log(helpers.printObjetStructure(experimentSession));
     output.push({
       id: experimentSession.id,
-      name: experimentSession.sessionConfig.config.name,
-      type: experimentSession.sessionConfig.config.type,
+      name: experimentSession.sessionVariables.config.name,
+      type: experimentSession.sessionVariables.config.type,
       sessionStartTime: experimentSession.sessionStartTime
     });
   }

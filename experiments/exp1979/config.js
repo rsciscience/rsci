@@ -1,11 +1,11 @@
 "use strict";
 
 module.exports = {
-    id:'exp1979',
+    id:'AdoTHC_5CSRT1',
     version: '1.0.0',
-    name:'davids exp 1979',
+    name:'AdoTHC_5CSRT1',
     type:"5 choice",
-    sessionConfig:{
+    sessionVariables:{
         duration:60000,
         timeOutDuration:3000,
     }, 

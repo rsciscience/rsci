@@ -71,7 +71,7 @@ this.startExperiment = async function (inputConfig) {
   let newSession = {
     id: payload.instanceId,
     experimentId: experimentId,
-    sessionConfig: experimentConfig,
+    sessionVariables: experimentConfig,
     sessionStartTime: new Date(),
     clients: []
   }

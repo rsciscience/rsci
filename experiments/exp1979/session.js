@@ -6,7 +6,7 @@ var base = class base {
     constructor(sessionId, experiment) {
         this.id = sessionId;
         this.init = initialize;
-        this.config = experiment.sessionConfig;
+        this.config = experiment.sessionVariables;
         this.experiment = experiment
 
         function initialize(clientCommunicationFunctions) {

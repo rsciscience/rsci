@@ -5,7 +5,7 @@ module.exports = {
     version: '1.0.0',
     name:'fergs exp 1985',
     type:"5 choice",
-    sessionConfig:{
+    sessionVariables:{
         duration:30000,
         timeOutDuration:3000,
     }, 

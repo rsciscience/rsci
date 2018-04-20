@@ -16,8 +16,8 @@
           <p>
           <button  class = "btn"  v-on:click="startExperiment()">Start</button> {{currentExperiment.name}}
           </p>
-          <div><label>Duration:</label>         <input v-model="currentExperiment.sessionConfig.duration" placeholder="edit me">  </div>
-          <div><label>TimeOut Duration:</label> <input v-model="currentExperiment.sessionConfig.timeOutDuration" placeholder="edit me">  </div>
+          <div><label>Duration:</label>         <input v-model="currentExperiment.sessionVariables.duration" placeholder="edit me">  </div>
+          <div><label>TimeOut Duration:</label> <input v-model="currentExperiment.sessionVariables.timeOutDuration" placeholder="edit me">  </div>
           <h4>Boxes</h4>
           <div class="client"  v-for="client in currentExperiment.clientAssignments">
             <div class="box" v-bind:class="{clientactive: isActive(client)}">
@@ -49,7 +49,7 @@ export default {
   data () {
     return {
       currentExperiment: {
-        sessionConfig: {},
+        sessionVariables: {},
         clientAssignments: []
       },
       hasCurrentExperiment: false
