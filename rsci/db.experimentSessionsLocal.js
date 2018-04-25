@@ -1,4 +1,4 @@
-const debug = require('debug')('RSCI.db.experimentSessions');
+const debug = require('debug')('RSCI.db.experimentSessionsLocal');
 
 const helpers = require('./helpers');
 
@@ -14,7 +14,7 @@ function init(db, provider) {
         actions: Array,
     });
 
-    this.model = provider.model('experimentSessions', schema);
+    this.model = provider.model('experimentSessionsLocal', schema);
 
     function save(data, cb) {
         debug('save');
@@ -23,25 +23,41 @@ function init(db, provider) {
             data,
             { upsert: true, 'new': true },
             function (err, newData) {
+                console.log('saved', err, newData);
                 if (err) { debug('error Saving', err); return }
+
                 if (cb){
+
                     cb(newData);
+
                 }
-            });
+            }
+        );
     }
 
     function read(experimentSessionId, cb) {
         debug('read');
-        model.findOne({ experimentSessionId: experimentSessionI }, function (err, data) {
+        model.findOne({ experimentSessionId: experimentSessionId }, function (err, data) {
             if (err) { debug(err); return; }
             cb(data);
-        }
+            }
         );
     }
+
+    function getList(cb) {
+        debug('getList');
+        model.find({}, function (err, data) {
+            console.log(err, data);
+            if (err) { debug(err); return; }
+            cb(data);
+            }
+        );
+    };
     
     return {
         read: read,
         save: save,
+        getList: getList,
     };
 }
 module.exports = init;

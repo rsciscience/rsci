@@ -6,6 +6,7 @@ const db = mongoose.connect('mongodb://127.0.0.1/rsci');
 var Schema = mongoose.Schema;
 
 this.settings = require('./db.settings')(db, mongoose);;
-this.experimentSessions = require('./db.experimentSessions')(db,mongoose);
+this.experimentSessionsLocal = require('./db.experimentSessionsLocal')(db,mongoose);
+this.experimentSessionsServer = require('./db.experimentSessionsServer')(db,mongoose);
 
 module.exports = this;

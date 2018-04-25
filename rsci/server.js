@@ -9,7 +9,7 @@ var discovery = require('./discovery');
 var webpackConfig = require('./webpack.conf.js');
 const MemoryFS = require("memory-fs");
 const webpack = require("webpack");
-this.db = require('./db');
+const db = require('./db');
 const moment = require('moment');
 
 //vue parser
@@ -101,21 +101,22 @@ this.startExperiment = async function (inputConfig) {
 this.processExperimentSessionEvent = function (sessionId, expId, clientId, data) {
 
   var session = {
-    id: sessionId,
+    experimentSessionId: sessionId,
     experimentId: expId,
+    sessionStartTime: new Date(),
     clients: []
   }
   var known = false;
-  for (var i = 0, len = this.state.experimentSessions.length; i < len; i++) {
-    if (sessionId == this.state.experimentSessions[i].id) {
-      session = this.state.experimentSessions[i];
+  for (var i = 0, len = this.state.experimentSessionsServer.length; i < len; i++) {
+    if (sessionId == this.state.experimentSessionsServer[i].id) {
+      session = this.state.experimentSessionsServer[i];
       known = true;
       break;
     }
   }
 
   if (!known) {
-    this.state.experimentSessions.push(session);
+    this.state.experimentSessionsServer.push(session);
   }
 
   var clients = session.clients;
@@ -134,21 +135,26 @@ this.processExperimentSessionEvent = function (sessionId, expId, clientId, data)
   }
   var actions = client.actions;
   actions.push(data);
+  saveExperimentSession(session);
 
 }
 
+function saveExperimentSession(data) {
+    db.experimentSessionsServer.save(data);
+}
 
-this.getExperimentSessionOverview = function (id){
+
+this.getExperimentSessionOverview = function (experimentSessionId){
   debug('getExperimentSessionOverview');
-  helpers.printObjetStructure(this.state.experimentSessions);
+  helpers.printObjetStructure(this.state.experimentSessionsServer);
   var output = {};
-  for (var i = 0; i < this.state.experimentSessions.length; i++) {
-    var experimentSession = this.state.experimentSessions[i]; 
+  for (var i = 0; i < this.state.experimentSessionsServer.length; i++) {
+    var experimentSession = this.state.experimentSessionsServer[i]; 
 
-    if(id != experimentSession.id){
+    if(experimentSessionId != experimentSession.experimentSessionId){
       continue;
     }
-      output.id = id;
+      output.experimentSessionId = experimentSessionId;
       output.clients = [];
       
       for (var j = 0; j < experimentSession.clients.length; j++) {
@@ -167,9 +173,12 @@ this.getExperimentSessionOverview = function (id){
           clientOverview.secondsSinceAction = duration;
         }
         output.clients.push(clientOverview);
+        saveExperimentSession(experimentSession);
       }
   }
-  return output ;
+  return output;
+
+
 
 };
 
@@ -236,7 +245,7 @@ this.register = function (cb) {
   this.state.server = this.state.me;
   this.state.isServer = true;
 
-  this.db.settings.save({ isServer: true }, function () { debug('Saved settings') });
+  db.settings.save({ isServer: true }, function () { debug('Saved settings') });
 
   function gotDiscoveryList(discoveryList) {
     debug('gotDiscoveryList');

@@ -10,13 +10,30 @@ this.init = function(clientFunctions,io){
 
 this.getState  = (req, res) => {
   debug('client_state');
+  function doWork(cb){
+   this.clientFunctions.getState(cb);
+  };
+
+  function cb(data) {
+    console.log('result of client response');
+    const clientResponse = JSON.stringify(data);
+    res.send(clientResponse);
+  }
+  
+  try{
+    doWork.bind(this)(cb);
+  }catch (ex) {
+    debug(ex);
+    res.status(500).send('Something broke!')
+    return ;
+  }
+}
+
+this.getStateOne  = (req, res) => {
+  debug('client_state');
   function doWork(){
 
-    var output = {
-      server: this.state.server,
-      me:this.state.me,
-      experimentSessionsLocal:this.state.experimentSessionsLocal
-    };
+    var output = this.clientFunctions.getState();
     return  JSON.stringify( output);
   };
 

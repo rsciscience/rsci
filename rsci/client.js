@@ -24,7 +24,7 @@ this.initExperimentSession = function (experimentRequest) {
     actions: []
   }
   
-  db.experimentSessions.save(esl);
+  db.experimentSessionsLocal.save(esl);
 
   requestConfig.experimentConfig.session = eval(experimentRequest.experimentConfig.session);
 
@@ -77,7 +77,7 @@ this.initExperimentSession = function (experimentRequest) {
 this.saveExperimentSessionEventOnClient = function (currentExperimentSession, clientId, data) {
   debug('saveExperimentSessionEventOnClient');
   currentExperimentSession.actions.push(data);
-  db.experimentSessions.save(currentExperimentSession);
+  db.experimentSessionsLocal.save(currentExperimentSession);
 }
 
 this.registerWithServer = async function (payload, serverip, port) {
@@ -134,6 +134,21 @@ this.updateSettings = function (payload) {
   }
 
   return { clientId: this.state.clientId };
+};
+
+this.getState = function (cb) {
+  debug('getState');
+  function dbResults(cb, data) {
+    console.log('database results');
+
+    cb({
+      server: this.state.server,
+      me:this.state.me,
+      experimentSessionsLocal: data
+    }); 
+
+  }
+  return db.experimentSessionsLocal.getList(dbResults.bind(this, cb));
 };
 
 async function updateServerOnClientIdChange(change,serverip, port, ){
