@@ -7,15 +7,15 @@
     <div class="container">
     <div class="row experiment-sessions"  v-for="session in experimentSessionList">
       <div class="col-sm">
-        {{ session.id}}
+        {{ session.experimentSessionId}}
       </div>
       <div class="col-sm">
-        {{ session.name }} {{ session.type }}
+        {{ session.experimentId }} 
       </div>
       <div class="col-sm">
         {{ session.sessionStartTime }}
       </div>
-      <a :href="HTTP.baseURL + 'server/export/session/' + session.id" target="_blank">CSV</a>
+      <a :href="HTTP.baseURL + 'server/export/session/' + session.experimentSessionId" target="_blank">CSV</a>
     </div>
   </div>
 </div>

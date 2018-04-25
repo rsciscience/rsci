@@ -65,11 +65,11 @@ this.startExperiment = async function (inputConfig) {
     }
     return null;
   }
+  
   let calledClients = await Promise.all(this.state.clientList.map(sendClientInit));
 
-
   let newSession = {
-    id: payload.instanceId,
+    experimentSessionId: payload.instanceId,
     experimentId: experimentId,
     sessionConfig: experimentConfig,
     sessionStartTime: new Date(),
@@ -86,7 +86,7 @@ this.startExperiment = async function (inputConfig) {
   }
   
 
-  this.state.experimentSessions.push(newSession);
+  this.state.experimentSessionsServer.push(newSession);
 
   return {
     clientList: calledClients,
@@ -98,17 +98,17 @@ this.startExperiment = async function (inputConfig) {
 };
 
 
-this.processExperimentSessionEvent = function (sessionId, expId, clientId, data) {
-
+this.processExperimentSessionEvent = function (experimentSessionId, experimentId, clientId, data) {
+  debug('processExperimentSessionEvent');
   var session = {
-    experimentSessionId: sessionId,
-    experimentId: expId,
+    experimentSessionId: experimentSessionId,
+    experimentId: experimentId,
     sessionStartTime: new Date(),
     clients: []
   }
   var known = false;
   for (var i = 0, len = this.state.experimentSessionsServer.length; i < len; i++) {
-    if (sessionId == this.state.experimentSessionsServer[i].id) {
+    if (experimentSessionId == this.state.experimentSessionsServer[i].experimentSessionId) {
       session = this.state.experimentSessionsServer[i];
       known = true;
       break;

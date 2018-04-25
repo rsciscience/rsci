@@ -10,48 +10,45 @@ this.init = function (exportFunctions,io) {
 
 this.session_id = (req, res) =>  {
   debug('session_id');
-  function doWork(sessionId){
+  function doWork(experimentSessionId,cb){
+    this.exportFunctions.getExperimentSessionExportAsCsv(experimentSessionId,cb);
+  }
 
-    var output = this.exportFunctions.getExperimentSessionExportAsCsv(sessionId);
-    return  output;
-
-};
-
-  var clientResponse = {}
+  function cb(data){
+    res.status(200).send(data);
+  }
 
   try{
-    clientResponse =  doWork.bind(this)(req.params.id);
-
+     doWork.bind(this)(req.params.id,cb);
   }catch (ex) {
     debug(ex);
     res.status(500).send('Something broke!')
     return ;
   }
-
   res.setHeader('Content-disposition', 'attachment; filename=experiment_session_'+ req.params.id +'.csv');
   res.set('Content-Type', 'text/csv');
-  res.status(200).send(clientResponse);
+
 }
 
 this.experiment_sessions_list = (req, res) =>  {
   debug('experiment_sessions_list');
-  function doWork(){
 
-    var output = this.exportFunctions.getExperimentSessions();
-    return  JSON.stringify( output);
-};
+  function doWork(cb){
+    this.exportFunctions.getExperimentSessions(cb);
+  }
 
-  var clientResponse = {}
+  function cb(data){
+    res.status(200).send(JSON.stringify( data));
+  }
 
   try{
-    clientResponse =  doWork.bind(this)();
+     doWork.bind(this)(cb);
   }catch (ex) {
     debug(ex);
     res.status(500).send('Something broke!')
     return ;
   }
 
-  res.send(clientResponse);
 }
 
 module.exports = this;
