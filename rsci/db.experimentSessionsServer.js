@@ -46,11 +46,33 @@ function init(db, provider) {
             }
         );
     };
+
+    function insertClientAction(experimentSessionId, clientId, clientAction, cb) {
+        debug('insertClientAction');
+
+        function cb_update(err, data) {
+            console.log(data);
+            if (err) { debug(err); return; }
+            cb(data);
+        }
+
+        model.update(
+            {"experimentSessionId": experimentSessionId, "clients.clientId": clientId },
+            {
+                "$push":
+                    {
+                        "clients.$.clientAction": clientAction
+                    }
+            }, 
+            cb_update
+        )
+    }
     
     return {
         read: read,
         save: save,
         getList: getList,
+        insertClientAction: insertClientAction,
     };
 }
 module.exports = init;

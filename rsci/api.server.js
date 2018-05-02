@@ -65,24 +65,21 @@ this.network_rescan = (req, res) => {
 
 this.experiment_id = (req, res) => {
   debug('server_experiment_id');
-  function doWork(sessionId){
-
-
-    var output = this.serverFunctions.getExperimentSessionOverview(id);
-    return  JSON.stringify( output);
+  function doWork(sessionId, cb){
+   this.serverFunctions.getExperimentSessionOverview(id, cb);
   };
 
-  var clientResponse = {}
+  function cb(data){
+    res.status(200).send(JSON.stringify(data));
+  }
 
   try{
-    clientResponse =  doWork.bind(this)(req.params.id);
+    doWork.bind(this)(req.params.id, cb);
   }catch (ex) {
     debug(ex);
     res.status(500).send('Something broke!')
     return ;
   }
-
-  res.send(clientResponse);
 }
 
 this.experiment_id_export = (req, res) =>  {
@@ -267,27 +264,27 @@ this.experiment_id_event = (req, res) => {
   //watch all client events
   debug('server_experiment_id_event');
 
-  function doWork(sessionId, expId, clientId, input){
+  function doWork(sessionId, expId, clientId, input, cb){
 
-    var output = this.serverFunctions.processExperimentSessionEvent(sessionId,expId , clientId, input);
-    this.io.emit('server_experimentsession_id_client_action',this.serverFunctions.getExperimentSessionOverview(sessionId) ) ;
-    return  JSON.stringify(output);
+    this.serverFunctions.processExperimentSessionEvent(sessionId,expId , clientId, input, cb);
+    // Send the admin page an update of the session data
+    this.serverFunctions.getExperimentSessionOverview(sessionId, (data) => {
+      this.io.emit('server_experimentsession_id_client_action', data);
+
+    });
   }
 
-  var clientResponse = {}
+  function cb(data){
+    res.status(200).send(JSON.stringify(data));
+  }
 
   try{
-    clientResponse =  doWork.bind(this,req.params.sessionId ,req.params.id,req.params.clientId, req.body)();
+    doWork.bind(this,req.params.sessionId ,req.params.id,req.params.clientId, req.body, cb)();
   }catch (ex) {
     debug(ex);
     res.status(500).send('Something broke!')
     return;
   }
-
-  res.send(clientResponse);
-
-
-  res.status(200).send();
 }
 
 module.exports = this;

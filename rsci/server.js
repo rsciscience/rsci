@@ -46,27 +46,30 @@ this.startExperiment = async function (inputConfig) {
   };
   var port = this.state.listeningPort;
 
-  async function sendClientInit(client) {
-    debug('sendClientInit');
-
-    var options = {
-      uri: 'http://' + client.ip + ':' + port + '/client/experiment/init',
-      json: true,
-      method: 'POST',
-      body: payload
-    };
-
-    try {
-      let res = await request(options);
-      return res;
-    } catch (e) {
-      console.log(e)
-      debug('Error sending experiment start event');
-    }
-    return null;
-  }
+  async function cb_save() {
+    async function sendClientInit(client) {
+      debug('sendClientInit');
   
-  let calledClients = await Promise.all(this.state.clientList.map(sendClientInit));
+      var options = {
+        uri: 'http://' + client.ip + ':' + port + '/client/experiment/init',
+        json: true,
+        method: 'POST',
+        body: payload
+      };
+  
+      try {
+        let res = await request(options);
+        return res;
+      } catch (e) {
+        console.log(e)
+        debug('Error sending experiment start event');
+      }
+      return null;
+    }
+    
+    let calledClients = await Promise.all(this.state.clientList.map(sendClientInit));
+    
+  }
 
   let newSession = {
     experimentSessionId: payload.instanceId,
@@ -76,17 +79,16 @@ this.startExperiment = async function (inputConfig) {
     clients: []
   }
 
-  for (var i = 0; i < experimentConfig.config.clientAssignments.length; i++) {
-    let clientAssignment = experimentConfig.config.clientAssignments[i];
+  for (var i = 0; i < this.state.clientList.length; i++) {
+    let clientAssignment = this.state.clientList[i];
     newSession.clients.push({
       clientId: clientAssignment.clientId,
       config: experimentConfig.config,
       actions: [] 
     });
   }
-  
 
-  this.state.experimentSessionsServer.push(newSession);
+  db.experimentSessionsServer.save(newSession, cb_save.bind(this));
 
   return {
     clientList: calledClients,
@@ -98,88 +100,82 @@ this.startExperiment = async function (inputConfig) {
 };
 
 
-this.processExperimentSessionEvent = function (experimentSessionId, experimentId, clientId, data) {
+this.processExperimentSessionEvent = function (experimentSessionId, experimentId, clientId, clientAction, cb) {
   debug('processExperimentSessionEvent');
+
+
+ function cb_read(experimentSessionId, experimentId, clientId, clientAction, cb, data) {
+  
+  console.log('cb_read');
+  console.log(data);
+
   var session = {
     experimentSessionId: experimentSessionId,
     experimentId: experimentId,
     sessionStartTime: new Date(),
     clients: []
-  }
-  var known = false;
-  for (var i = 0, len = this.state.experimentSessionsServer.length; i < len; i++) {
-    if (experimentSessionId == this.state.experimentSessionsServer[i].experimentSessionId) {
-      session = this.state.experimentSessionsServer[i];
-      known = true;
-      break;
-    }
-  }
+ }
+
+  var known = (data === null) 
 
   if (!known) {
-    this.state.experimentSessionsServer.push(session);
+    db.experimentSessionsServer.save(session, saveAction);
+    
+  } else {
+    saveAction();
   }
-
-  var clients = session.clients;
-
-  var client = { clientId: clientId, actions: [] }
-  var knownClient = false;
-  for (var i = 0, len = clients.length; i < len; i++) {
-    if (clientId == clients[i].clientId) {
-      client = clients[i];
-      knownClient = true;
-      break;
+  function saveAction() {
+    function cb_insert() {
+      console.log('cb_insert');
+      cb();
     }
+  
+    db.experimentSessionsServer.insertClientAction(experimentSessionId, clientId, clientAction, cb_insert);
   }
-  if (!knownClient) {
-    clients.push(client);
-  }
-  var actions = client.actions;
-  actions.push(data);
-  saveExperimentSession(session);
+
+ }
+
+ db.experimentSessionsServer.read(experimentSessionId, cb_read.bind(this, experimentSessionId, experimentId, clientId, clientAction, cb));
 
 }
 
 function saveExperimentSession(data) {
+  debug('saveExperimentSession');
     db.experimentSessionsServer.save(data);
 }
 
 
-this.getExperimentSessionOverview = function (experimentSessionId){
+this.getExperimentSessionOverview = function (experimentSessionId, cb){
   debug('getExperimentSessionOverview');
-  helpers.printObjetStructure(this.state.experimentSessionsServer);
-  var output = {};
-  for (var i = 0; i < this.state.experimentSessionsServer.length; i++) {
-    var experimentSession = this.state.experimentSessionsServer[i]; 
+  
 
-    if(experimentSessionId != experimentSession.experimentSessionId){
-      continue;
-    }
-      output.experimentSessionId = experimentSessionId;
-      output.clients = [];
-      
-      for (var j = 0; j < experimentSession.clients.length; j++) {
-        var client = experimentSession.clients[j];
-        var clientOverview =  {
-          clientId:client.clientId, 
-          lastActionType: null,
-          lastActionTimeStamp: null,
-          secondsSinceAction: null,
-        };
-        var action = client.actions[client.actions.length -1];
-        if (action != null) {
-          var duration = moment().diff(moment(action.actionTimeStamp),'seconds');
-          clientOverview.lastActionType = action.actionType;
-          clientOverview.lastActionTimeStamp = action.actionTimeStamp;
-          clientOverview.secondsSinceAction = duration;
-        }
-        output.clients.push(clientOverview);
-        saveExperimentSession(experimentSession);
+
+
+  function cb_read(data) {
+    var output = {};
+    output.experimentSessionId = data.experimentSessionId;
+    output.clients = [];
+    
+    for (var j = 0; j < data.clients.length; j++) {
+      var client = data.experimentSession.clients[j];
+      var clientOverview =  {
+        clientId:client.clientId, 
+        lastActionType: null,
+        lastActionTimeStamp: null,
+        secondsSinceAction: null,
+      };
+      var action = client.actions[client.actions.length -1];
+      if (action != null) {
+        var duration = moment().diff(moment(action.actionTimeStamp),'seconds');
+        clientOverview.lastActionType = action.actionType;
+        clientOverview.lastActionTimeStamp = action.actionTimeStamp;
+        clientOverview.secondsSinceAction = duration;
       }
+      output.clients.push(clientOverview);
+    }
+    cb(output);
   }
-  return output;
-
-
-
+  db.experimentSessionsServer.read(experimentSessionId, cb_read);
 };
 
 
