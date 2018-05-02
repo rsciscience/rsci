@@ -3,3 +3,4 @@ mongo needs installled
 
 npm innstall in root 
 npm install root/rsci_ui
+

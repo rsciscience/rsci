@@ -35,6 +35,7 @@ this.initSettings = function (cb) {
 
   this.db.settings.read((data)=>{
     debug('Read settings')
+    
     if (data && data.clientId) {
       this.state.clientId = data.clientId;
     } else {

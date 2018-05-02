@@ -1,0 +1,54 @@
+Requirements:
+
+virtual-box
+raspbian stretch linux distro
+node >  8
+mongo
+git
+arp-scan
+
+
+VM setup:
+
+Setting Up VM with Debian:
+
+DL virtual box
+
+New	- add name - linux - other 32-bit
+
+create virtual hard disk
+
+VDI
+
+Dynamically allocated HD
+
+Then: go to Storage tab and add Disk (2017-11-16-rpd-x86-stretch.iso) dl’d from https://www.raspberrypi.org/downloads/raspberry-pi-desktop/
+
+Then: go to Network tab and set attached to: Bridged adapter (so that we aren’t NAT’d and we can see and talk to either other on the network)
+
+Then Start VM, install and run defaults except with rooter step
+
+Optional, Makes it easier to work on VM headless:
+Set up ssh: ifconfig on pi to get ip address
+on local machine run ssh pi@ip address - now you can run commands for the pi on local machine
+
+Application Setup:
+
+install node on pi
+https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
+
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+Mongo:
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get
+
+other dependencies to install:
+sudo apt-get install arp-scan (scans network to see what devices are available)
+
+clone git repo
+git clone https://github.com/ivanthemonkey/rsci.git
+
+npm install in pi work/rsci and work/rsci/rsci_ui

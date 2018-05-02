@@ -1,7 +1,7 @@
 <template>
   <div class="client">
     <h1>Client : {{ me.clientId }}</h1>
-     <input v-model="me.clientId" placeholder="clientId"> 
+     <input v-model="me.clientId" placeholder="clientId">
      <button class = "btn" v-on:click="updateSettings()"> update </button>
     I'm here :)
       <div>
@@ -11,17 +11,10 @@
    <h2>My Session Details</h2>
     <ul id="experimentSessions">
       <li v-for="(sess, index) in experimentSessions" :key='index'>
-        session: {{ sess.id }}
-        <ul id="clients">
-          <li v-for="(client, index) in sess.clients" :key='index'>
-            <div>
-            ClientId: {{ client.clientId }}
-            </div>
-            <ul id="actions">
-              <li v-for="(action, index) in client.actions" :key='index'>
-                {{ action.actionTimeStamp }} <b>{{ action.actionType }} </b>
-              </li>
-            </ul>
+       <h3> {{ sess.experimentId }} : {{ sess.experimentSessionId }} ( {{ sess.sessionStartTime }} )</h3>
+        <ul id="actions">
+          <li v-for="(action, index) in sess.actions" :key='index'>
+            {{ action.actionTimeStamp }} <b>{{ action.actionType }} </b>
           </li>
         </ul>
       </li>
@@ -29,6 +22,8 @@
 
   </div>
 </template>
+
+
 
 <script>
   import {HTTP} from '../http-common'
