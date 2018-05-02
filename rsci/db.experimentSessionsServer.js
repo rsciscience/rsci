@@ -13,50 +13,59 @@ function init(db, provider) {
     });
 
     this.model = provider.model('experimentSessionsServer', schema);
-
-    function save(data, cb) {
+    //no cb return promise
+    async function save(data, cb) {
         debug('save');
-        model.findOneAndUpdate(
-            { experimentSessionId: data.experimentSessionId },
-            data,
-            { upsert: true, 'new': true },
-            function (err, newData) {
+
+        var cb_data = undefined;
+        if(cb ){
+            cb_data =  function (err, newData) {
                 if (err) { debug('error Saving', err); return }
                 if (cb){
                     cb(newData);
                 }
             }
-        );
-    }
-
-    function read(experimentSessionId, cb) {
-        debug('read');
-        model.findOne({ experimentSessionId: experimentSessionId }, function (err, data) {
-            if (err) { debug(err); return; }
-            cb(data);
-            }
-        );
-    }
-
-    function getList(cb) {
-        debug('getList');
-        model.find({}, function (err, data) {
-            if (err) { debug(err); return; }
-            cb(data);
-            }
-        );
-    };
-
-    function insertClientAction(experimentSessionId, clientId, clientAction, cb) {
-        debug('insertClientAction');
-
-        function cb_update(err, data) {
-            console.log(data);
-            if (err) { debug(err); return; }
-            cb(data);
         }
 
-        model.update(
+        return model.findOneAndUpdate(
+            { experimentSessionId: data.experimentSessionId },
+            data,
+            { upsert: true, 'new': true },
+            cb_data
+        );
+    }
+
+    async function read(experimentSessionId, cb) {
+        debug('read');
+        var cb_data = undefined;
+        if(cb ){
+            cb_data =  function (err, newData) {
+                   if (err) { debug('error reading ', err); return }
+                   if (cb){
+                       cb(newData);
+                   }
+               }
+           } 
+       return model.findOne({ experimentSessionId: experimentSessionId }, cb_data);
+    };
+
+    async function getList(cb) {
+        debug('getList');
+        if(cb ){
+            cb_data =  function (err, newData) {
+                   if (err) { debug('error reading list ', err); return }
+                   if (cb){
+                       cb(newData);
+                   }
+               }
+           } 
+        return model.find({}, cb_data);
+    };
+
+    async function insertClientAction(experimentSessionId, clientId, clientAction) {
+        debug('insertClientAction');
+        console.log(experimentSessionId, clientId, clientAction);
+        return model.update(
             {"experimentSessionId": experimentSessionId, "clients.clientId": clientId },
             {
                 "$push":
@@ -64,7 +73,7 @@ function init(db, provider) {
                         "clients.$.clientAction": clientAction
                     }
             }, 
-            cb_update
+            
         )
     }
     

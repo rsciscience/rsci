@@ -41,38 +41,13 @@ this.startExperiment = async function (inputConfig) {
   experimentConfig.config = cpy;
   var payload = {
     experimentId: experimentId,
-    instanceId: helpers.generateId(),
+    experimentSessionId: helpers.generateId(),
     experimentConfig: experimentConfig,
-  };
-  var port = this.state.listeningPort;
-
-  async function cb_save() {
-    async function sendClientInit(client) {
-      debug('sendClientInit');
-  
-      var options = {
-        uri: 'http://' + client.ip + ':' + port + '/client/experiment/init',
-        json: true,
-        method: 'POST',
-        body: payload
-      };
-  
-      try {
-        let res = await request(options);
-        return res;
-      } catch (e) {
-        console.log(e)
-        debug('Error sending experiment start event');
-      }
-      return null;
-    }
-    
-    let calledClients = await Promise.all(this.state.clientList.map(sendClientInit));
-    
   }
 
+
   let newSession = {
-    experimentSessionId: payload.instanceId,
+    experimentSessionId: payload.experimentSessionId,
     experimentId: experimentId,
     sessionVariables: experimentConfig,
     sessionStartTime: new Date(),
@@ -84,74 +59,80 @@ this.startExperiment = async function (inputConfig) {
     newSession.clients.push({
       clientId: clientAssignment.clientId,
       config: experimentConfig.config,
-      actions: [] 
+      actions: []
     });
   }
 
-  db.experimentSessionsServer.save(newSession, cb_save.bind(this));
+
+  await db.experimentSessionsServer.save(newSession);
+
+  var port = this.state.listeningPort;
+  async function sendClientInit(client) {
+    debug('sendClientInit');
+
+    var options = {
+      uri: 'http://' + client.ip + ':' + port + '/client/experiment/init',
+      json: true,
+      method: 'POST',
+      body: payload
+    };
+
+    try {
+      let res = await request(options);
+      return res;
+    } catch (e) {
+      console.log(e)
+      debug('Error sending experiment start event');
+    }
+    return null;
+  }
+
+  let calledClients = await Promise.all(this.state.clientList.map(sendClientInit));
 
   return {
     clientList: calledClients,
     startDate: new Date(),
     experimentId: experimentId,
-    instanceId: payload.instanceId,
+    experimentSessionId: payload.experimentSessionId,
   };
 
 };
 
 
-this.processExperimentSessionEvent = function (experimentSessionId, experimentId, clientId, clientAction, cb) {
+this.processExperimentSessionEvent = async function (experimentSessionId, experimentId, clientId, clientAction, cb) {
   debug('processExperimentSessionEvent');
-
-
- function cb_read(experimentSessionId, experimentId, clientId, clientAction, cb, data) {
-  
-  console.log('cb_read');
-  console.log(data);
 
   var session = {
     experimentSessionId: experimentSessionId,
     experimentId: experimentId,
     sessionStartTime: new Date(),
     clients: []
- }
+  }
 
-  var known = (data === null) 
+  var data = await db.experimentSessionsServer.read(experimentSessionId);
+  var known = (data === null)
 
   if (!known) {
-    db.experimentSessionsServer.save(session, saveAction);
-    
-  } else {
-    saveAction();
-  }
-  function saveAction() {
-    function cb_insert() {
-      console.log('cb_insert');
-      cb();
-    }
-  
-    db.experimentSessionsServer.insertClientAction(experimentSessionId, clientId, clientAction, cb_insert);
+    await db.experimentSessionsServer.save(session);
   }
 
- }
+  function cb_insert() {
+    console.log('cb_insert');
+    cb();
+  }
 
- db.experimentSessionsServer.read(experimentSessionId, cb_read.bind(this, experimentSessionId, experimentId, clientId, clientAction, cb));
+  db.experimentSessionsServer.insertClientAction(experimentSessionId, clientId, clientAction, cb_insert);
+
+
+
 
 }
 
-function saveExperimentSession(data) {
-  debug('saveExperimentSession');
-    db.experimentSessionsServer.save(data);
-}
 
-
-this.getExperimentSessionOverview = function (experimentSessionId, cb){
+this.getExperimentSessionOverview = async function (experimentSessionId, cb){
   debug('getExperimentSessionOverview');
   
-
-
-
-  function cb_read(data) {
+  var data = await db.experimentSessionsServer.read(experimentSessionId);
     var output = {};
     output.experimentSessionId = data.experimentSessionId;
     output.clients = [];
@@ -174,8 +155,7 @@ this.getExperimentSessionOverview = function (experimentSessionId, cb){
       output.clients.push(clientOverview);
     }
     cb(output);
-  }
-  db.experimentSessionsServer.read(experimentSessionId, cb_read);
+
 };
 
 

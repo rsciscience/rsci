@@ -279,6 +279,7 @@ this.experiment_id_event = (req, res) => {
   }
 
   try{
+    console.log(req.params);
     doWork.bind(this,req.params.sessionId ,req.params.id,req.params.clientId, req.body, cb)();
   }catch (ex) {
     debug(ex);

@@ -11,12 +11,12 @@ this.initExperimentSession = function (experimentRequest) {
 
   var requestConfig = {
     experimentId: experimentRequest.experimentId,
-    instanceId: experimentRequest.instanceId,
+    experimentSessionId: experimentRequest.experimentSessionId,
     experimentConfig: experimentRequest.experimentConfig,
   };
 
   var esl = {
-    experimentSessionId: requestConfig.instanceId,
+    experimentSessionId: requestConfig.experimentSessionId,
     experimentId: requestConfig.experimentId,
     experimentConfig: requestConfig.experimentConfig,
     clientId: this.state.clientId,
@@ -36,7 +36,7 @@ this.initExperimentSession = function (experimentRequest) {
       this.state.listeningPort,
       this.state.clientId,
       currentExperimentSession.experimentId,
-      currentExperimentSession.instanceId);
+      currentExperimentSession.experimentSessionId);
 
     this.saveExperimentSessionEventOnClient(
       currentExperimentSession,
@@ -46,7 +46,7 @@ this.initExperimentSession = function (experimentRequest) {
 
   }
 
-  var sess = new requestConfig.experimentConfig.session(requestConfig.instanceId, requestConfig.experimentConfig.config);
+  var sess = new requestConfig.experimentConfig.session(requestConfig.experimentSessionId, requestConfig.experimentConfig.config);
 
   sess.on('Init', watchEvents.bind(this, esl));
   sess.on('Dispose', watchEvents.bind(this, esl));
@@ -59,7 +59,7 @@ this.initExperimentSession = function (experimentRequest) {
 
   comms.init({
     experimentId: requestConfig.experimentId,
-    instanceId: requestConfig.instanceId,
+    experimentSessionId: requestConfig.experimentSessionId,
     ui: requestConfig.experimentConfig.ui
   });
 
@@ -69,7 +69,7 @@ this.initExperimentSession = function (experimentRequest) {
     clientId: esl.clientId,
     startDate: esl.date,
     experimentId: esl.experimentId,
-    instanceId: esl.experimentSessionId,
+    experimentSessionId: esl.experimentSessionId,
   };
 }
 
@@ -168,10 +168,10 @@ async function updateServerOnClientIdChange(change,serverip, port, ){
 }
 
 
-async function sendServerExperimentSessionEvent(data, serverip, port, clientId, experimentId, instanceId, ) {
+async function sendServerExperimentSessionEvent(data, serverip, port, clientId, experimentId, experimentSessionId, ) {
   debug('sendServerExperimentSessionEvent');
   var options = {
-    uri: 'http://' + serverip + ':' + port + '/server/experiment/' + experimentId + '/session/' + instanceId + '/' + clientId + '/event',
+    uri: 'http://' + serverip + ':' + port + '/server/experiment/' + experimentId + '/session/' + experimentSessionId + '/' + clientId + '/event',
     json: true,
     method: 'POST',
     body: data

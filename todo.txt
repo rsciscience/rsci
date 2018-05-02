@@ -1,5 +1,10 @@
 Admin
 
+add is ui running to client state. report back when the discovery is called
+
+fix what clients a called to run exp 
+
+
 client name change propagated to server
 
 Persist all ExperimentSessions client (local) and server
