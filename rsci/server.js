@@ -19,8 +19,16 @@ var vuetemplatecompiler = require("vue-template-compiler")
 this.startExperiment = async function (inputConfig) {
   debug('startExperiment');
   var experimentId = inputConfig.id;
-  var experimentConfig = null;
+  var experimentSessionId = helpers.generateId();
 
+  let newSession = {
+    experimentSessionId: experimentSessionId,
+    experimentId: experimentId,
+    sessionStartTime: new Date(),
+    clients: []
+  }
+
+  var experimentConfig = null;
   for (var i = 0; i < this.state.experiments.configs.length; i++) {
     var config = this.state.experiments.configs[i];
     if (config.config.id.toUpperCase() == experimentId.toUpperCase()) {
@@ -39,25 +47,14 @@ this.startExperiment = async function (inputConfig) {
   //copy incoming config
   const cpy = Object.assign(experimentConfig.config, inputConfig);
   experimentConfig.config = cpy;
-  var payload = {
-    experimentId: experimentId,
-    experimentSessionId: helpers.generateId(),
-    experimentConfig: experimentConfig,
-  }
-
-
-  let newSession = {
-    experimentSessionId: payload.experimentSessionId,
-    experimentId: experimentId,
-    sessionVariables: experimentConfig,
-    sessionStartTime: new Date(),
-    clients: []
-  }
+  experimentConfig.config.clientAssignments = null;
 
   for (var i = 0; i < this.state.clientList.length; i++) {
     let clientAssignment = this.state.clientList[i];
     newSession.clients.push({
       clientId: clientAssignment.clientId,
+      subjectId:"??? rat 20",
+      ip: clientAssignment.ip,
       config: experimentConfig.config,
       actions: []
     });
@@ -66,7 +63,14 @@ this.startExperiment = async function (inputConfig) {
 
   await db.experimentSessionsServer.save(newSession);
 
+
   var port = this.state.listeningPort;
+  var payload = {
+    experimentId: experimentId,
+    experimentSessionId: experimentSessionId,
+    experimentConfig: experimentConfig,
+  }
+
   async function sendClientInit(client) {
     debug('sendClientInit');
 
@@ -87,7 +91,7 @@ this.startExperiment = async function (inputConfig) {
     return null;
   }
 
-  let calledClients = await Promise.all(this.state.clientList.map(sendClientInit));
+  let calledClients = await Promise.all(newSession.clients.map(sendClientInit));
 
   return {
     clientList: calledClients,
@@ -99,46 +103,23 @@ this.startExperiment = async function (inputConfig) {
 };
 
 
-this.processExperimentSessionEvent = async function (experimentSessionId, experimentId, clientId, clientAction, cb) {
+this.processExperimentSessionEvent = async function (experimentSessionId, experimentId, clientId, clientAction) {
   debug('processExperimentSessionEvent');
-
-  var session = {
-    experimentSessionId: experimentSessionId,
-    experimentId: experimentId,
-    sessionStartTime: new Date(),
-    clients: []
-  }
-
-  var data = await db.experimentSessionsServer.read(experimentSessionId);
-  var known = (data === null)
-
-  if (!known) {
-    await db.experimentSessionsServer.save(session);
-  }
-
-  function cb_insert() {
-    console.log('cb_insert');
-    cb();
-  }
-
-  db.experimentSessionsServer.insertClientAction(experimentSessionId, clientId, clientAction, cb_insert);
-
-
-
-
+  await db.experimentSessionsServer.insertClientAction(experimentSessionId, clientId, clientAction);
 }
 
 
-this.getExperimentSessionOverview = async function (experimentSessionId, cb){
+this.getExperimentSessionOverview = async function (experimentSessionId){
   debug('getExperimentSessionOverview');
   
   var data = await db.experimentSessionsServer.read(experimentSessionId);
+
     var output = {};
     output.experimentSessionId = data.experimentSessionId;
     output.clients = [];
     
     for (var j = 0; j < data.clients.length; j++) {
-      var client = data.experimentSession.clients[j];
+      var client = data.clients[j];
       var clientOverview =  {
         clientId:client.clientId, 
         lastActionType: null,
@@ -154,7 +135,7 @@ this.getExperimentSessionOverview = async function (experimentSessionId, cb){
       }
       output.clients.push(clientOverview);
     }
-    cb(output);
+    return output;
 
 };
 

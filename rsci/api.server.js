@@ -65,8 +65,9 @@ this.network_rescan = (req, res) => {
 
 this.experiment_id = (req, res) => {
   debug('server_experiment_id');
-  function doWork(sessionId, cb){
-   this.serverFunctions.getExperimentSessionOverview(id, cb);
+  async function doWork(sessionId, cb){
+   var output  = this.serverFunctions.getExperimentSessionOverview(id);
+   cb( output);
   };
 
   function cb(data){
@@ -228,8 +229,6 @@ this.client_add = (req, res) => {
   res.send(clientResponse);
 }
 
-
-
  this.updateClientID =  (req, res) => {
   debug('server_client_add');
 
@@ -264,14 +263,13 @@ this.experiment_id_event = (req, res) => {
   //watch all client events
   debug('server_experiment_id_event');
 
-  function doWork(sessionId, expId, clientId, input, cb){
+  async function doWork(sessionId, expId, clientId, input,cb ){
 
-    this.serverFunctions.processExperimentSessionEvent(sessionId,expId , clientId, input, cb);
+    await this.serverFunctions.processExperimentSessionEvent(sessionId,expId , clientId, input);
     // Send the admin page an update of the session data
-    this.serverFunctions.getExperimentSessionOverview(sessionId, (data) => {
-      this.io.emit('server_experimentsession_id_client_action', data);
-
-    });
+    var  data = await this.serverFunctions.getExperimentSessionOverview(sessionId);
+    this.io.emit('server_experimentsession_id_client_action', data);
+    cb();
   }
 
   function cb(data){
@@ -279,7 +277,6 @@ this.experiment_id_event = (req, res) => {
   }
 
   try{
-    console.log(req.params);
     doWork.bind(this,req.params.sessionId ,req.params.id,req.params.clientId, req.body, cb)();
   }catch (ex) {
     debug(ex);

@@ -7,9 +7,9 @@ function quoteWrap(val) {
   return '"' + val + '"';
 }
 
-this.getExperimentSessionExportAsCsv = function (id, cb) {
+this.getExperimentSessionExportAsCsv = async  function (id, cb) {
   debug('getExperimentSessionExportAsCsv');
-  function doneRead(cb, id, data) {
+  var data = await db.experimentSessionsServer.getList();
 
     try {
       var output = processsExperimentSessionData(id, data);
@@ -19,8 +19,6 @@ this.getExperimentSessionExportAsCsv = function (id, cb) {
       debug(ex);
     }    
    
-  }
-  db.experimentSessionsServer.getList(doneRead.bind(this, cb, id));
 };
 
 function processsExperimentSessionData(id, data) {
@@ -70,9 +68,9 @@ function processsExperimentSessionData(id, data) {
   return output.join('\n');
 }
 
-this.getExperimentSessions = function (cb) {
+this.getExperimentSessions = async function (cb) {
   debug('getExperimentSessions');
-  function doneRead(cb, data) {
+  var data = await db.experimentSessionsServer.getList();
     var output = [];
     try {
       for (var i = 0; i < data.length; i++) {
@@ -87,8 +85,6 @@ this.getExperimentSessions = function (cb) {
     } catch (ex) {
       console.log(ex);
     }
-  }
-  db.experimentSessionsServer.getList(doneRead.bind(this,cb));
  
 
 };
