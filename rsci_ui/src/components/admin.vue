@@ -9,7 +9,7 @@
         <div class="col-sm-6">
           <button class ="btn" v-on:click="becomeServer">Become Server</button>
           <button class ="btn" v-on:click="networkRescan">Rescan Network</button>
-           | 
+           |
           <router-link to="/export">Export</router-link>
         </div>
         <div class="col-sm-2">
@@ -26,11 +26,11 @@
 
       <div class="section actvity">
         <h1>Current Session</h1>
-        
+
         <div class="row">
           <div class="col-sm-2">
                 session: {{ experimentSessionCurrent.id }}
-           
+
           </div>
           <div class="col-sm-10">
                 <div class="client"  v-for="client in experimentSessionCurrent.clients">
@@ -178,12 +178,12 @@ export default {
 }
 .section{
   margin-bottom:30px;
-  padding:5px;  
+  padding:5px;
 }
 
 .header{
   background-color: #323232;
-  color: white; 
+  color: white;
 }
 .header h1{
   margin:0;
@@ -193,7 +193,7 @@ export default {
   margin-top: 10px;
 }
 .clientId{
-  color: #d58b8e; 
+  color: #d58b8e;
 }
 .config{
 
@@ -229,7 +229,7 @@ a {
     border: 5px solid gray;
     width: 80px;
     height: 80px;
-    color: white; 
+    color: white;
     text-align:center;
   }
   .name{

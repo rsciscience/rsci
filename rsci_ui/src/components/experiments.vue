@@ -1,8 +1,8 @@
 <template>
   <div class="experiments">
     <h2>Available Experiments</h2>
-    
 
+  <clientList v-bind:clientList="clientList"></clientList>
     <div class="row">
       <div class="col-sm-3">
         <ul class="experimentslist">
@@ -29,7 +29,7 @@
       </div>
     </div>
 
-    
+
 
   </div>
 
@@ -52,7 +52,44 @@ export default {
         sessionVariables: {},
         clientAssignments: []
       },
-      hasCurrentExperiment: false
+      hasCurrentExperiment: false,
+      clientList: [
+        {
+          active: true,
+          clientId: 'box1',
+          ratId: 'ratA',
+          selected: true,
+          unassigned: false
+        },
+        {
+          active: true,
+          clientId: 'box2',
+          ratId: 'ratB',
+          selected: true,
+          unassigned: false
+        },
+        {
+          active: false,
+          clientId: 'box3',
+          ratId: 'ratC',
+          selected: true,
+          unassigned: false
+        },
+        {
+          active: true,
+          clientId: 'box4',
+          ratId: '',
+          selected: true,
+          unassigned: true
+        },
+        {
+          active: true,
+          clientId: 'box5',
+          ratId: '',
+          selected: true,
+          unassigned: true
+        }
+      ]
     }
   },
   methods: {
@@ -108,7 +145,7 @@ label{
     border: 5px solid gray;
     width: 80px;
     height: 80px;
-    color: white; 
+    color: white;
     text-align:center;
   }
   .name{
