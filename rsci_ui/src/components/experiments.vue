@@ -27,9 +27,9 @@
              </td>
            </tr>
          </table>
-          
+
           <p />
-       
+
   <!--
           <div class="client"  v-for="client in currentExperiment.clientAssignments">
             <div class="box" v-bind:class="{clientactive: isActive(client)}">
@@ -38,7 +38,7 @@
             <div class="id">{{client.clientId}}</div>
           </div>
           -->
-           <clientList v-bind:clientList="clientList"></clientList>
+           <clientPicker v-bind:initalConfig="initialConfig"></clientPicker>
 
         </div>
       </div>
@@ -68,43 +68,7 @@ export default {
         clientAssignments: []
       },
       hasCurrentExperiment: false,
-      clientList: [
-        {
-          active: true,
-          clientId: 'box1',
-          ratId: 'ratA',
-          selected: true,
-          unassigned: false
-        },
-        {
-          active: true,
-          clientId: 'box2',
-          ratId: 'ratB',
-          selected: true,
-          unassigned: false
-        },
-        {
-          active: false,
-          clientId: 'box3',
-          ratId: 'ratC',
-          selected: true,
-          unassigned: false
-        },
-        {
-          active: true,
-          clientId: 'box4',
-          ratId: '',
-          selected: true,
-          unassigned: true
-        },
-        {
-          active: true,
-          clientId: 'box5',
-          ratId: '',
-          selected: true,
-          unassigned: true
-        }
-      ]
+      initialConfig: []
     }
   },
   methods: {
@@ -114,6 +78,19 @@ export default {
     selectExperiment (item) {
       this.currentExperiment = item
       this.hasCurrentExperiment = true
+      this.getExperimentInitialConfig()
+    },
+    getExperimentInitialConfig () {
+      var config = this.currentExperiment
+      function err (e) {
+        this.errors.push(e)
+      }
+      function success (response) {
+        this.initialConfig = response.data
+
+        console.log('Got Experiment Initial Config!')
+      }
+      HTTP.get('server/experiment/' + config.id + '/initialConfig', config).then(success.bind(this)).catch(err.bind(this))
     },
     startExperiment: function () {
       var config = this.currentExperiment
@@ -185,7 +162,7 @@ label{
 }
 
 .btn-start-exp{
-  background-color: green ;  
+  background-color: green ;
   font-size: 25px;
       width: 100px;
     height: 80px;
@@ -194,13 +171,13 @@ label{
 }
 
 .btn-stop-exp{
-  background-color: crimson;  
+  background-color: crimson;
   font-size: 25px;
       width: 100px;
     height: 80px;
     margin-left: 50px;
     box-shadow: 3px 5px #e4e4e4;
-    
+
 }
 
 </style>

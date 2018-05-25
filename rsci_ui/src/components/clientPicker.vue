@@ -5,7 +5,7 @@
       <div class="row">
         <div class="col-sm column-1">
            <h4>Expected</h4>
-          <div class="client"  v-for="client in clientsExperiment">
+          <div class="client"  v-for="client in initialConfig">
               <div class="box" v-bind:class="{clientactive: isActive(client)}" v-on:click="client.selected = !client.selected">
                <svg style='width: 100%; height: 100%;  position:relitive; left:0; top:0'>
                 <line x1="0" y1="100%" x2="100%" y2="0" style="stroke:rgb(191,188,188);stroke-width:2"/>
@@ -14,7 +14,7 @@
               </svg>
                 <img src="/src/assets/long-evans-2a.png" class="isSelectedRat" v-show="client.selected" />
               </div>
-              
+
               <div class="box-label" v-bind:class="{clientactive: isActive(client)}">
                 <div class="id">{{client.clientId}}</div>
                 <div class="ratId">{{client.ratId}}</div>
@@ -23,7 +23,7 @@
         </div>
         <div class="col-sm">
            <h4>Available</h4>
-          <div class="client"  v-for="client in clientsOther">
+          <div class="client"  v-for="client in initialConfig">
             <div class="box" v-bind:class="{clientactive: isActive(client)}">
                  <svg style='width: 100%; height: 100%;  position:relitive; left:0; top:0'>
                 <line x1="0" y1="100%" x2="100%" y2="0" style="stroke:rgb(191,188,188);stroke-width:2"/>
@@ -35,7 +35,7 @@
                 <div class="id">{{client.clientId}}</div>
                 <div class="ratId">{{client.ratId}}</div>
               </div>
-              
+
           </div>
         </div>
       </div>
@@ -52,16 +52,16 @@
         </svg>
 
           <img src="/src/assets/logoActive.png" class="isRecientActiveRat" v-show="client.recientActvity" />
-          <img src="/src/assets/logo.png" class="isNotRecientActiveRat" v-show="!client.recientActvity" /> 
+          <img src="/src/assets/logo.png" class="isNotRecientActiveRat" v-show="!client.recientActvity" />
 
         </div>
-        
+
         <div class="box-label" v-bind:class="{clientactive: isActive(client)}">
           <div class="id">{{client.clientId}}</div>
           <div class="ratId">{{client.ratId}}</div>
         </div>
-        <div class="last-action"> {{client.lastaction}}</div> 
-             
+        <div class="last-action"> {{client.lastaction}}</div>
+
     </div>
 
   </div>
@@ -82,100 +82,17 @@ export default {
   },
   data () {
     return {
-      clientsExperiment: [{
-          active: true,
-          clientId: 'box1',
-          ratId: 'ratA',
-          selected: true,
-          unassigned: false
-        },
-        {
-          active: true,
-          clientId: 'box2',
-          ratId: 'ratB',
-          selected: true,
-          unassigned: false
-        },
-        {
-          active: false,
-          clientId: 'box3',
-          ratId: 'ratC',
-          selected: false,
-          unassigned: false
-        },
-        {
-          active: true,
-          clientId: 'box1',
-          ratId: 'ratA',
-          selected: true,
-          unassigned: false
-        },
-        {
-          active: true,
-          clientId: 'box2',
-          ratId: 'ratB',
-          selected: false,
-          unassigned: false
-        },
-        {
-          active: false,
-          clientId: 'box3',
-          ratId: 'ratC',
-          selected: true,
-          unassigned: false
-        },{
-          active: false,
-          clientId: 'box3',
-          ratId: 'ratC',
-          selected: false,
-          unassigned: false
-        },
-        {
-          active: true,
-          clientId: 'box1',
-          ratId: 'ratA',
-          selected: true,
-          unassigned: false
-        },
-        {
-          active: true,
-          clientId: 'box2',
-          ratId: 'ratB',
-          selected: false,
-          unassigned: false
-        },
-        {
-          active: false,
-          clientId: 'box3',
-          ratId: 'ratC',
-          selected: true,
-          unassigned: false
-        }],
-      clientsOther: [
-        {
-          active: true,
-          clientId: 'box4',
-          ratId: '',
-          selected: true,
-          unassigned: true
-        },
-        {
-          active: true,
-          clientId: 'box5',
-          ratId: '',
-          selected: true,
-          unassigned: true
-        }],
-         clientsRunning: [
+      initialConfig: [],
+      clientsRunning: [
         {
           active: true,
           clientId: 'box10',
           ratId: 'ratG',
           selected: true,
           unassigned: true,
-          running :true,
-          lastaction:'timeout',
-          recientActvity:true,
+          running: true,
+          lastaction: 'timeout',
+          recientActvity: true
         },
         {
           active: true,
@@ -183,9 +100,9 @@ export default {
           ratId: 'ratJ',
           selected: true,
           unassigned: true,
-          running :true,
-          lastaction:'buttonpress',
-          recientActvity:true,
+          running: true,
+          lastaction: 'buttonpress',
+          recientActvity: true
         },
         {
           active: true,
@@ -193,11 +110,11 @@ export default {
           ratId: 'ratx',
           selected: true,
           unassigned: true,
-          running :true,
-          lastaction:'winner',
-          recientActvity:false,
+          running: true,
+          lastaction: 'winner',
+          recientActvity: false
         }
-        ]
+      ]
     }
   },
   methods: {
@@ -249,7 +166,7 @@ label{
   margin: 30px;
     border-top: black 1px solid;
     padding: 5px;
-   
+
 }
 .client{
     display: inline-block;
@@ -280,7 +197,7 @@ h4{
   }
    .clientactive.box-back {
     background: rgb(216, 211, 211);
-    
+
   }
   .name{
     font-size :10px;
@@ -305,7 +222,7 @@ h4{
     font-size :13px;
     text-align: center;
   }
-  
+
   .isSelectedRat {
         width: 61px;
     top: -36px;
@@ -324,7 +241,7 @@ h4{
     left: 0px;
     position: relative;
   }
-  
+
   .column-1 {
     border-right: 1px solid grey;
   }

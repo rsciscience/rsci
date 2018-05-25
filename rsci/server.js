@@ -373,6 +373,68 @@ this.networkRescan = function (cb) {
   discovery.search(this.state.cpuInterface, this.state.listeningPort).then(gotDiscoveryList.bind(this));
 }
 
+
+this.experiment_initialConfig = async function (experimentId){
+  debug('experiment_initialConfig');
+
+  var output = []
+
+  var experimentConfig = null;
+
+  for (var i = 0; i < this.state.experiments.configs.length; i++) {
+
+    var config = this.state.experiments.configs[i];
+    if (config.config.id.toUpperCase() == experimentId.toUpperCase()) {
+      experimentConfig = config;
+      break;
+    }
+  }
+  // helpers.printObjetStructure(experimentConfig)
+  for (var i = 0; i < experimentConfig.config.clientAssignments.length; i++) {
+
+    var ca = experimentConfig.config.clientAssignments[i];
+
+    var clientsExperiment = {
+      active: false,
+      clientId: ca.clientId,
+      ratId: ca.ratid,
+      selected: true,
+      unassigned: false
+    }
+    output.push(clientsExperiment);
+  }
+
+  for (var i = 0; i < this.state.clientList.length; i++) {
+
+    var c = this.state.clientList[i];
+
+    var found = false;
+
+    for (var j = 0; j < output.length; j++) {
+
+      var oc = output[j];
+
+      if (c.clientId === oc.clientId) {
+        oc.active = true;
+
+        var found = true;
+      }
+    }
+
+    if (found === false) {
+      output.push({
+        active: false,
+        clientId: c.clientId,
+        ratId: c.ratid,
+        selected: false,
+        unassigned: true
+      })
+    }
+
+  }
+  return output;
+};
+
 module.exports = this;
 
 

@@ -285,6 +285,29 @@ this.experiment_id_event = (req, res) => {
   }
 }
 
+this.experiment_initialConfig = (req, res) => {
+  //watch all client events
+  debug('server_experiment_initialConfig');
+
+  async function doWork(expId, cb ){
+
+    var data = await this.serverFunctions.experiment_initialConfig(expId);
+    cb(data);
+  }
+
+  function cb(data){
+    res.status(200).send(JSON.stringify(data));
+  }
+
+  try{
+    doWork.bind(this, req.params.id, cb)();
+  }catch (ex) {
+    debug(ex);
+    res.status(500).send('Something broke!')
+    return;
+  }
+}
+
 module.exports = this;
 
 
