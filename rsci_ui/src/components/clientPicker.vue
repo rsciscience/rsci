@@ -75,14 +75,13 @@
 export default {
   name: 'clientPicker',
   props: {
-    clientList: {
+    initialConfig: {
       default: function () { return [] },
       type: Array
     }
   },
   data () {
     return {
-      initialConfig: [],
       clientsRunning: [
         {
           active: true,
@@ -130,20 +129,7 @@ export default {
       client.selected = !client.selected
     }
   },
-  watch: {
-    clientList: function (newVal, oldVal) { // watch it
-      debugger
-      this.clientsExperiment = []
-      this.clientsOther = []
-      newVal.foreach(function (client) {
-        if (client.unassigned) {
-          this.clientsOther.push(client)
-        } else {
-          this.clientsExperiment.push(client)
-        }
-      })
-    }
-  }
+  
 }
 </script>
 

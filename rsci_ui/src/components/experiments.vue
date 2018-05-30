@@ -30,15 +30,7 @@
 
           <p />
 
-  <!--
-          <div class="client"  v-for="client in currentExperiment.clientAssignments">
-            <div class="box" v-bind:class="{clientactive: isActive(client)}">
-               {{client.assignedRat}}
-            </div>
-            <div class="id">{{client.clientId}}</div>
-          </div>
-          -->
-           <clientPicker v-bind:initalConfig="initialConfig"></clientPicker>
+           <clientPicker v-bind:initialConfig="initialConfig"></clientPicker>
 
         </div>
       </div>
