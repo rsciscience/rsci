@@ -18,8 +18,7 @@ var vuetemplatecompiler = require("vue-template-compiler")
 
 this.startExperiment = async function (experimentId, inputConfig) {
   debug('startExperiment');
-
-  var experimentSessionId = helpers.generateId();
+  var experimentSessionId = inputConfig.sessionVariables.experimentSessionId;
 
   let newSession = {
     experimentSessionId: experimentSessionId,
@@ -45,10 +44,11 @@ this.startExperiment = async function (experimentId, inputConfig) {
   }
 
   //copy incoming config
-  const cpy = Object.assign(experimentConfig.config, inputConfig);
-  experimentConfig.config = cpy;
-  experimentConfig.config.clientAssignments = null;
-  experimentConfig.config.clients = null;
+  const dispatchConfig = Object.assign(experimentConfig, inputConfig);
+  dispatchConfig.clientAssignments = null;
+  dispatchConfig.clients = null;
+
+  console.log(dispatchConfig.sessionVariables);
   
   for (var i = 0; i < this.state.clientList.length; i++) {
     let clientAssignment = this.state.clientList[i];
@@ -64,7 +64,7 @@ this.startExperiment = async function (experimentId, inputConfig) {
       clientId: clientAssignment.clientId,
       assignedRat: c.assignedRat,
       ip: clientAssignment.ip,
-      config: experimentConfig.config,
+      config: dispatchConfig,
       actions: []
     });
   }
@@ -77,7 +77,7 @@ this.startExperiment = async function (experimentId, inputConfig) {
   var payload = {
     experimentId: experimentId,
     experimentSessionId: experimentSessionId,
-    experimentConfig: experimentConfig,
+    experimentConfig: dispatchConfig,
   }
 
   async function sendClientInit(client) {
@@ -124,12 +124,15 @@ this.getExperimentSessionOverview = async function (experimentSessionId){
   var data = await db.experimentSessionsServer.read(experimentSessionId);
 
     var output = {};
+    output.running = true;
     output.experimentSessionId = data.experimentSessionId;
     output.clients = [];
     
     for (var j = 0; j < data.clients.length; j++) {
       var client = data.clients[j];
       var clientOverview =  {
+        isOnline:true,
+        assignedRat:client.assignedRat,
         clientId:client.clientId, 
         lastActionType: null,
         lastActionTimeStamp: null,
@@ -190,7 +193,6 @@ function isClientActive(clientId, activeClientList) {
 
 this.experimentsList = function () {
   debug('experimentsList');
-
   var output = [];
 
   for (var i = 0; i < this.state.experiments.configs.length; i++) {
@@ -199,6 +201,7 @@ this.experimentsList = function () {
       var ca = config.clientAssignments[j];
        ca.active = isClientActive(ca.clientId, this.state.clientList);
     }
+    config.sessionVariables.experimentSessionId = helpers.generateId();
     output.push(config); 
   }
 
@@ -386,12 +389,10 @@ this.networkRescan = function (cb) {
 this.experiment_initialConfig = async function (experimentId){
   debug('experiment_initialConfig');
 
-  var output = []
-
+  var output = [];
   var experimentConfig = null;
 
   for (var i = 0; i < this.state.experiments.configs.length; i++) {
-
     var config = this.state.experiments.configs[i];
     if (config.config.id.toUpperCase() == experimentId.toUpperCase()) {
       experimentConfig = config;
@@ -415,18 +416,13 @@ this.experiment_initialConfig = async function (experimentId){
   }
 
   for (var i = 0; i < this.state.clientList.length; i++) {
-
     var c = this.state.clientList[i];
-
     var found = false;
 
     for (var j = 0; j < output.length; j++) {
-
       var oc = output[j];
-
       if (c.clientId === oc.clientId) {
         oc.isOnline = true;
-
         var found = true;
       }
     }

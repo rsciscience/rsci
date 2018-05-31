@@ -5,7 +5,7 @@
     <h2>Sessions</h2>
     </div>
     <div class="container">
-    <div class="row experiment-sessions"  v-for="session in experimentSessionList">
+    <div class="row experiment-sessions"  v-for="session in experimentSessionList" v-bind:key="session.experimentSessionId">
       <div class="col-sm">
         {{ session.experimentSessionId}}
       </div>

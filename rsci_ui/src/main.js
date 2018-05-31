@@ -5,6 +5,7 @@ import BootstrapVue from 'bootstrap-vue'
 import App from './App'
 import experiments from './components/experiments.vue'
 import clientPicker from './components/clientPicker.vue'
+import experimentCurrent from './components/experiment.current.vue'
 import router from './router'
 import VueSocketio from 'vue-socket.io'
 import url from 'url'
@@ -17,6 +18,7 @@ Vue.use(VueSocketio, 'http://' + location.hostname + ':3003')
 Vue.use(BootstrapVue)
 Vue.component('experiments', experiments)
 Vue.component('clientPicker', clientPicker)
+Vue.component('experimentCurrent', experimentCurrent)
 
 Vue.config.productionTip = false
 /* eslint-disable no-new */

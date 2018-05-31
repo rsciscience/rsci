@@ -5,7 +5,7 @@
      <div class="row">
       <div class="col-sm-2">
         <ul class="experimentslist">
-          <li v-for="item in experimentsList" >
+          <li v-for="item in experimentsList" v-bind:key="item.name" >
             <span class="avaibleExperiment" v-on:click="selectExperiment(item)"> {{item.name}} </span>
           </li>
         </ul>
@@ -22,8 +22,6 @@
              </td>
              <td>
                   <button  class = "btn btn-start-exp"  v-on:click="startExperiment()">Start</button>
-                  <button  class = "btn btn-stop-exp"  v-on:click="alert('Yeah,,, not wired ')">Stop</button>
-
              </td>
            </tr>
          </table>
@@ -35,8 +33,6 @@
         </div>
       </div>
     </div>
-
-
 
   </div>
 
@@ -103,7 +99,6 @@ export default {
       function success (response) {
         console.log('Experiment Started!')
       }
-
       HTTP.post('server/experiment/' + config.id + '/start', config).then(success.bind(this)).catch(err.bind(this))
     }
 

@@ -107,7 +107,6 @@ this.experiment_id_export = (req, res) =>  {
 this.experiments_sessions = (req, res)  => {
   debug('server_experiments_sessions');
   function doWork(){
-
     var output = this.state.experimentSessions;
     return  JSON.stringify( output);
   };

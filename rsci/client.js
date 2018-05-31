@@ -3,6 +3,7 @@ const debug = require('debug')('RSCI.client');
 this.state = require('./state');
 const api = require('./api');
 const db = require('./db');
+var helpers = require('./helpers');
 
 const request = require('request-promise');
 

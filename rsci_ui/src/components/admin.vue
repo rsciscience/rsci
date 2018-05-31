@@ -25,23 +25,7 @@
       </div>
 
       <div class="section actvity">
-        <h1>Current Session</h1>
-
-        <div class="row">
-          <div class="col-sm-2">
-                session: {{ experimentSessionCurrent.id }}
-
-          </div>
-          <div class="col-sm-10">
-                <div class="client"  v-for="client in experimentSessionCurrent.clients">
-                    <div class="box" v-bind:class="{clientactive: isActiveRecient(client)}">
-                      <div> {{ client.secondsSinceAction }} </div>
-                    </div>
-                    <div class="id">({{client.clientId}})</div>
-                    <div> {{ client.lastActionType }} </div>
-                  </div>
-          </div>
-        </div>
+        <experimentCurrent v-bind:experimentSession="experimentSessionCurrent" v-show="experimentSessionCurrent.running"></experimentCurrent>
       </div>
     </div>
   <div class="section networkInfo">
@@ -50,8 +34,8 @@
     <div class="row">
       <div class="col-sm-6">
         <h2>Clients</h2>
-        <ul id="clientlist">
-          <li v-for="item in clientList" >
+        <ul id="clientlist" >
+          <li v-for="item in clientList" v-bind:key="item.clientId" >
             <a target="" :href="'http://' + item.ip + ':8080/#client'" >{{ item.clientId }}</a>
           </li>
         </ul>
@@ -60,7 +44,7 @@
       <div class="col-sm-6">
         <h2>Discovery Results</h2>
         <ul id="discoverylist">
-          <li v-for="item in discoveryList" >
+          <li v-for="item in discoveryList" v-bind:key="item.ip">
             {{ item.ip }}
             <span  v-if="item.me" >Me</span>
           </li>
@@ -103,7 +87,8 @@ export default {
       clientList: [],
       experimentSessions: [],
       experimentSessionCurrent: {
-        id: '',
+        running: false,
+        experimentSessionId: '',
         clients: []
       },
       experiments: []
