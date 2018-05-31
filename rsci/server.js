@@ -16,9 +16,9 @@ const moment = require('moment');
 
 var vuetemplatecompiler = require("vue-template-compiler")
 
-this.startExperiment = async function (inputConfig) {
+this.startExperiment = async function (experimentId, inputConfig) {
   debug('startExperiment');
-  var experimentId = inputConfig.id;
+
   var experimentSessionId = helpers.generateId();
 
   let newSession = {
@@ -48,12 +48,21 @@ this.startExperiment = async function (inputConfig) {
   const cpy = Object.assign(experimentConfig.config, inputConfig);
   experimentConfig.config = cpy;
   experimentConfig.config.clientAssignments = null;
-
+  experimentConfig.config.clients = null;
+  
   for (var i = 0; i < this.state.clientList.length; i++) {
     let clientAssignment = this.state.clientList[i];
+
+    var c = inputConfig.clients.find(((client) => { 
+      return client.clientId === clientAssignment.clientId; }))
+
+    if (!c) {
+      continue;
+    }
+
     newSession.clients.push({
       clientId: clientAssignment.clientId,
-      subjectId:"??? rat 20",
+      assignedRat: c.assignedRat,
       ip: clientAssignment.ip,
       config: experimentConfig.config,
       actions: []
@@ -395,11 +404,12 @@ this.experiment_initialConfig = async function (experimentId){
     var ca = experimentConfig.config.clientAssignments[i];
 
     var clientsExperiment = {
-      active: false,
+      isOnline: false,
       clientId: ca.clientId,
-      ratId: ca.ratid,
-      selected: true,
-      unassigned: false
+      assignedRat: ca.assignedRat,
+      isConfigClientAssignment: true,
+      isRatAssigned: true,
+      isIncludedInSession: true
     }
     output.push(clientsExperiment);
   }
@@ -415,7 +425,7 @@ this.experiment_initialConfig = async function (experimentId){
       var oc = output[j];
 
       if (c.clientId === oc.clientId) {
-        oc.active = true;
+        oc.isOnline = true;
 
         var found = true;
       }
@@ -423,11 +433,12 @@ this.experiment_initialConfig = async function (experimentId){
 
     if (found === false) {
       output.push({
-        active: false,
+        isOnline: true,
         clientId: c.clientId,
-        ratId: c.ratid,
-        selected: false,
-        unassigned: true
+        isConfigClientAssignment: false,
+        assignedRat: c.assignedRat,
+        isRatAssigned: false,
+        isIncludedInSession: false
       })
     }
 

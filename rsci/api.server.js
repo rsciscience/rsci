@@ -150,16 +150,16 @@ this.experiments_list = (req, res) => {
 this.experiment_start = (req, res) => {
   debug('server_experiment_start_event');
 
-  function doWork(input){
+  function doWork(experimentId, input){
 
-    var output = this.serverFunctions.startExperiment(input);
-    return  JSON.stringify( output);
+    var output = this.serverFunctions.startExperiment(experimentId, input);
+    return  JSON.stringify(output);
   }
 
   var clientResponse = {}
 
   try{
-    clientResponse =  doWork.bind(this, req.body)();
+    clientResponse =  doWork.bind(this, req.params.id, req.body)();
   }catch (ex) {
     debug(ex);
     res.status(500).send('Something broke!')

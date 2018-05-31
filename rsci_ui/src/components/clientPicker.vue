@@ -5,35 +5,35 @@
       <div class="row">
         <div class="col-sm column-1">
            <h4>Expected</h4>
-          <div class="client"  v-for="client in initialConfig">
-              <div class="box" v-bind:class="{clientactive: isActive(client)}" v-on:click="client.selected = !client.selected">
+          <div class="client"  v-for="client in filterExpected">
+              <div class="box" v-bind:class="{isOnline: isOnline(client)}" v-on:click="filterExpectedClient_OnClick(client)">
                <svg style='width: 100%; height: 100%;  position:relitive; left:0; top:0'>
                 <line x1="0" y1="100%" x2="100%" y2="0" style="stroke:rgb(191,188,188);stroke-width:2"/>
                 <line x1="0" y1="0" x2="100%" y2="100%" style="stroke:rgb(191,188,188);stroke-width:2"/>
                 <rect width="30" height="30" x="20" y="20" class="box-back" />
               </svg>
-                <img src="/src/assets/long-evans-2a.png" class="isSelectedRat" v-show="client.selected" />
+                <img src="/src/assets/long-evans-2a.png" class="isRatAssigned" v-show="client.isRatAssigned" />
               </div>
 
-              <div class="box-label" v-bind:class="{clientactive: isActive(client)}">
+              <div class="box-label" v-bind:class="{isOnline: isOnline(client)}">
                 <div class="id">{{client.clientId}}</div>
-                <div class="ratId">{{client.ratId}}</div>
+                <div class="ratId">{{client.assignedRat}}</div>
               </div>
           </div>
         </div>
         <div class="col-sm">
            <h4>Available</h4>
-          <div class="client"  v-for="client in initialConfig">
-            <div class="box" v-bind:class="{clientactive: isActive(client)}">
+          <div class="client"  v-for="client in filterAvailable">
+            <div class="box" v-bind:class="{isOnline: isOnline(client)}" v-on:click="filterAvailableClient_OnClick(client)">
                  <svg style='width: 100%; height: 100%;  position:relitive; left:0; top:0'>
                 <line x1="0" y1="100%" x2="100%" y2="0" style="stroke:rgb(191,188,188);stroke-width:2"/>
                 <line x1="0" y1="0" x2="100%" y2="100%" style="stroke:rgb(191,188,188);stroke-width:2"/>
                 <rect width="30" height="30" x="20" y="20" class="box-back" />
               </svg>
             </div>
-             <div class="box-label" v-bind:class="{clientactive: isActive(client)}">
+             <div class="box-label" v-bind:class="{isOnline: isOnline(client)}">
                 <div class="id">{{client.clientId}}</div>
-                <div class="ratId">{{client.ratId}}</div>
+                <div class="ratId">{{client.assignedRat}}</div>
               </div>
 
           </div>
@@ -44,7 +44,7 @@
 <div class="running">
    <h4>Running</h4>
     <div class="client"  v-for="client in clientsRunning">
-        <div class="box" v-bind:class="{clientactive: isActive(client)}" >
+        <div class="box" v-bind:class="{isOnline: isOnline(client)}" >
           <svg style='width: 100%; height: 100%;  position:relitive; left:0; top:0'>
           <line x1="0" y1="100%" x2="100%" y2="0" style="stroke:rgb(191,188,188);stroke-width:2"/>
           <line x1="0" y1="0" x2="100%" y2="100%" style="stroke:rgb(191,188,188);stroke-width:2"/>
@@ -56,9 +56,9 @@
 
         </div>
 
-        <div class="box-label" v-bind:class="{clientactive: isActive(client)}">
+        <div class="box-label" v-bind:class="{isOnline: isOnline(client)}">
           <div class="id">{{client.clientId}}</div>
-          <div class="ratId">{{client.ratId}}</div>
+          <div class="ratId">{{client.assignedRat}}</div>
         </div>
         <div class="last-action"> {{client.lastaction}}</div>
 
@@ -116,17 +116,55 @@ export default {
       ]
     }
   },
+      // isOnline: false,
+      // clientId: ca.clientId,
+      // isConfigClientAssignment,
+      // assignedRat: ca.assignedRat,
+      // isRatAssigned: true,
+      // isIncludedInSession: true
   methods: {
-    isActive: function (client) {
-      return client.active
+    isOnline: function (client) {
+      return client.isOnline
     },
     selectClient (item) {
     },
     isAssignedRat (client) {
-      return client.assigned
+      return client.isRatAssigned
     },
     isSelected (client) {
-      client.selected = !client.selected
+
+    },
+    filterExpectedClient_OnClick (client) {
+      client.isIncludedInSession = !client.isIncludedInSession
+
+      if (client.isConfigClientAssignment) {
+        client.isRatAssigned = !client.isRatAssigned
+      } else {
+        client.isRatAssigned = false
+      }
+    },
+    filterAvailableClient_OnClick (client) {
+      client.isIncludedInSession = !client.isIncludedInSession
+
+      if (!client.isConfigClientAssignment) {
+        client.isRatAssigned = true
+      }
+    }
+  },
+  computed: {
+    filterExpected: function () {
+      return this.initialConfig.filter(function (client) {
+        if (client.isConfigClientAssignment || client.isIncludedInSession) {
+          return client
+        }
+      })
+    },
+    filterAvailable: function () {
+      return this.initialConfig.filter(function (client) {
+        if (client.isIncludedInSession === false && !client.isConfigClientAssignment) {
+          return client
+        }
+      })
     }
   }
 }
@@ -176,11 +214,11 @@ h4{
     stroke-width:3;
     stroke:rgb(191,188,188)
   }
-  .clientactive {
+  .isOnline {
     background: rgb(216, 211, 211);
     border: 5px solid #bfbcbc;
   }
-   .clientactive.box-back {
+   .isOnline.box-back {
     background: rgb(216, 211, 211);
 
   }
@@ -199,7 +237,7 @@ h4{
     border: 0px solid #bfbcbc;
     width: 80px;
   }
-  .box-label.clientactive{
+  .box-label.isOnline{
     background-color: green !important;
     border: 0px solid #bfbcbc;
   }
@@ -208,8 +246,8 @@ h4{
     text-align: center;
   }
 
-  .isSelectedRat {
-        width: 61px;
+  .isRatAssigned {
+    width: 61px;
     top: -36px;
     left: -5px;
     position: relative;

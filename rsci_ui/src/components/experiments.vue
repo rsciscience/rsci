@@ -81,17 +81,29 @@ export default {
         this.initialConfig = response.data
 
         console.log('Got Experiment Initial Config!')
+        console.log(response)
       }
       HTTP.get('server/experiment/' + config.id + '/initialConfig', config).then(success.bind(this)).catch(err.bind(this))
     },
     startExperiment: function () {
-      var config = this.currentExperiment
+      var config = { ...this.currentExperiment, clients: [] }
+
+      config.clientAssignments = null
+
+      for (var i = 0; i < this.initialConfig.length; i++) {
+        var client = this.initialConfig[i]
+
+        if (client.isIncludedInSession && client.isOnline) {
+          config.clients.push(client)
+        }
+      }
       function err (e) {
         this.errors.push(e)
       }
       function success (response) {
         console.log('Experiment Started!')
       }
+
       HTTP.post('server/experiment/' + config.id + '/start', config).then(success.bind(this)).catch(err.bind(this))
     }
 
