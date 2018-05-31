@@ -128,8 +128,7 @@ export default {
     isSelected (client) {
       client.selected = !client.selected
     }
-  },
-  
+  }
 }
 </script>
 
