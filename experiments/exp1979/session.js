@@ -1,47 +1,56 @@
 "use strict";
-var ee = require('event-emitter');
+
+const base = require('../rsci/experiments.base');
 const debug = require('debug')('RSCI.session.exp1979');
 
-var base = class base {
+class session extends base {
     constructor(sessionId, experiment) {
-        this.id = sessionId;
-        this.init = initialize;
-        this.config = experiment.sessionVariables;
-        this.experiment = experiment
+        super(sessionId, experiment);
 
-        function initialize(clientCommunicationFunctions) {
-            debug('initialize');
-            this.uiCalls = clientCommunicationFunctions;
-            this.state = {};
-            this.state.ignoreExtraneousInputs = false;
-            this.uiCalls.start({ id: this.id });
-            this.emit('init', { actionTimeStamp: new Date(), actionType: 'init' });
-            //session starts on UI_onReady 
-        };
+        // Things you can do
+        // changeSceneTo(number)        : which screen to change to
+        // record(action)               : record any action in the log 
+        // despenseFood()               : dispense food 
+        // addListners(name,function)   : wire up things that hapen on the client
+        
+        // Things you need to rember attatch to this.state
+        // this.state.
 
-        var PrematureResponse = function () {
+        
+        // you need to listen to for the messages from the client when the screen is pressed 
+        addUIListner('Scene1TrialStartNosepoke_onclick', () => { scene1TrialStartNosepoke_onclick() });
+        addUIListner('Scene2nosepokestim1_onclick', () => { callAWinner(1) });
+        addUIListner('Scene2nosepokestim2_onclick', () => { callAWinner(2) });
+        addUIListner('Scene2nosepokestim3_onclick', () => { callAWinner(3) });
+        addUIListner('Scene2nosepokestim4_onclick', () => { callAWinner(4) });
+        addUIListner('Scene2nosepokestim5_onclick', () => { callAWinner(5) });
+        addUIListner('PrematureResponse1', () => { prematureResponse() });
+        addUIListner('PrematureResponse2', () => { prematureResponse() });
+        addUIListner('PrematureResponse3', () => { prematureResponse() });
+        addUIListner('PrematureResponse4', () => { prematureResponse() });
+        addUIListner('PrematureResponse5', () => { prematureResponse() });
+      
+        
+        var prematureResponse = function () {
             clearTimeout(this.state.interTrialIntervalTimeOut);
-            ChangeSceneTo(5);
+            changeSceneTo(5);
             setTimeout(() => {
                 ChangeSceneTo(1);
             }, 5000);
         }.bind(this);
 
-        var ChangeSceneTo = function (newScene) {
-            this.state.currentScene = newScene;
-            doEvent('ChangeToScene' + newScene);
-        }.bind(this);
-
         var CorrectResponseTime = function () {
             debug('Winner Winner Chicken Dinner !!!!');
-            ChangeSceneTo(3);
+            despenseFood();
+            this.emit('DespenseFood', { actionTimeStamp: new Date(), actionType: 'DespenseFood' });
+            changeSceneTo(3);
             setTimeout(() => {
                 ChangeSceneTo(1);
             }, 1000);
         }.bind(this);
 
         var IncorrectResponseTime = function () {
-            ChangeSceneTo(4);
+            changeSceneTo(4);
             setTimeout(() => {
                 ChangeSceneTo(1);
             }, 10000);
@@ -55,29 +64,10 @@ var base = class base {
             }
         }.bind(this);
 
-        var UI_onReady = function () {
-            // on start after the ui is ready to go.
-            this.uiCalls.start({ id: this.id });
-            this.emit('Start', { actionTimeStamp: new Date(), actionType: 'Start' });
-            ChangeSceneTo(1);
-            setTimeout(sessionStopping, this.config.duration);
-        }.bind(this);
-
-        var sessionStopping = function(){
-            debug('sessionStopping');
-            //server
-            this.emit('Stop', { actionTimeStamp: new Date(), actionType: 'Stop' });
-            this.emit('Dispose', { actionTimeStamp: new Date(), actionType: 'Dispose' });
-            //client
-            this.uiCalls.stop({ id: this.id });
-            this.uiCalls.dispose({ id: this.id });
-
-        }.bind(this);
-
-        var Scene1TrialStartNosepoke_onclick = function (poke) {
+        var scene1TrialStartNosepoke_onclick = function (poke) {
             this.state.interTrialIntervalTimeOut = setTimeout(() => {
                 this.state.interTrialInterval = new Date();
-                ChangeSceneTo(2);
+                changeSceneTo(2);
                 this.state.winningPokeHole = Math.floor(Math.random() * 5) + 1;
                 debug('Next winner is poke ' + this.state.winningPokeHole);
                 doEvent('NosePokeStimulus_' + this.state.winningPokeHole);
@@ -85,45 +75,11 @@ var base = class base {
             doEvent('ITIOn');
         }.bind(this);
 
-        this.listen = function (incomingMessage) {
-            debug('listen');
-            this.emit('Action', { actionTimeStamp: new Date(), actionType: incomingMessage.type });
-            this.state[incomingMessage.type]++;
-            debug(incomingMessage.type);
 
-            if (this.state.ignoreExtraneousInputs === true) {
-                return;
-            }
-            switch (incomingMessage.type) {
-                case 'UI_onReady': UI_onReady(); break;
-                case 'Scene1TrialStartNosepoke_onclick': Scene1TrialStartNosepoke_onclick(); break;
-                case 'Scene2nosepokestim1_onclick': callAWinner(1); break;
-                case 'Scene2nosepokestim2_onclick': callAWinner(2); break;
-                case 'Scene2nosepokestim3_onclick': callAWinner(3); break;
-                case 'Scene2nosepokestim4_onclick': callAWinner(4); break;
-                case 'Scene2nosepokestim5_onclick': callAWinner(5); break;
-                case 'PrematureResponse1':
-                case 'PrematureResponse2':
-                case 'PrematureResponse3':
-                case 'PrematureResponse4':
-                case 'PrematureResponse5':
-                    PrematureResponse();
-                break;
-                default: debug('unknown action recived ' + incomingMessage.type); break;
-
-        }
-        }.bind(this);
-
-        var doEvent = function (actionType) {
-            debug('doEvent:' + actionType);
-            this.emit('Action', { actionTimeStamp: new Date(), actionType: actionType });
-            this.uiCalls.emitAction({ type: actionType });
-        }.bind(this);
     };
 
 };
 
-ee(base.prototype); 
 
 
 module.exports = base;
