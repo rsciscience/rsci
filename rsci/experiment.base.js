@@ -11,7 +11,8 @@ var base = class base {
     this.config = experiment.sessionVariables;
     this.experiment = experiment
     this.uiListens = [];
-    this.sessionStopping  = function () {
+
+    this.sessionStopping = function () {
       debug('sessionStopping');
       //server
       this.state.ignoreExtraneousInputs = true;
@@ -21,18 +22,18 @@ var base = class base {
       this.uiCalls.stop({ id: this.id });
       this.uiCalls.dispose({ id: this.id });
     }.bind(this);
+
     this.listen = function (incomingMessage) {
       debug('listen');
-      
+
       this.record(incomingMessage.type);
       this.state[incomingMessage.type]++;
       debug('incomingMessage: ' + incomingMessage.type);
-  
+
       if (this.state.ignoreExtraneousInputs === true) {
         return;
       }
       //look for system actions
-      console.log(incomingMessage.type);
       switch (incomingMessage.type.toUpperCase()) {
         case 'UI_onReady'.toUpperCase(): this.UI_onReady(); break;
       }
@@ -43,8 +44,27 @@ var base = class base {
           debug('Found user function');
         }
       }
-  
+
     }.bind(this);
+
+
+    this.listen = function changeSceneTo(newScene) {
+      debug('changeSceneTo');
+      this.state.currentScene = newScene;
+    this.doEvent('ChangeToScene' + newScene);
+  }.bind(this);
+
+ 
+  this.record = function   (action) {
+    debug('record');
+    this.emit('Action', { actionTimeStamp: new Date(), actionType: action });
+  }.bind(this);
+
+  this.doEvent = function    (actionType) {
+    debug('doEvent:' + actionType);
+    this.record(actionType);
+    this.uiCalls.emitAction({ type: actionType });
+   }.bind(this);
   
   }
 
@@ -77,23 +97,6 @@ var base = class base {
     setTimeout(this.sessionStopping, this.config.duration);
   } 
 
-  changeSceneTo  (newScene) {
-    debug('changeSceneTo');
-    this.state.currentScene = newScene;
-    this.doEvent('ChangeToScene' + newScene);
-  }
-
- 
-  record  (action) {
-    debug('record');
-    this.emit('Action', { actionTimeStamp: new Date(), actionType: action });
-  }
-
-   doEvent  (actionType) {
-    debug('doEvent:' + actionType);
-    this.record(actionType);
-    this.uiCalls.emitAction({ type: actionType });
-   }
 
 };
 

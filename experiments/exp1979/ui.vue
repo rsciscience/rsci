@@ -143,7 +143,7 @@ export default {
       showScene3: false,
       showScene4: false,
       showScene5: false,
-      NosePokeStimulus: false,
+      NosePokeStimulus_1: false,
       NosePokeStimulus_2: false,
       NosePokeStimulus_3: false,
       NosePokeStimulus_4: false,
