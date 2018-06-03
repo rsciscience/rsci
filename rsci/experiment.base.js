@@ -21,6 +21,31 @@ var base = class base {
       this.uiCalls.stop({ id: this.id });
       this.uiCalls.dispose({ id: this.id });
     }.bind(this);
+    this.listen = function (incomingMessage) {
+      debug('listen');
+      
+      this.record(incomingMessage.type);
+      this.state[incomingMessage.type]++;
+      debug('incomingMessage: ' + incomingMessage.type);
+  
+      if (this.state.ignoreExtraneousInputs === true) {
+        return;
+      }
+      //look for system actions
+      console.log(incomingMessage.type);
+      switch (incomingMessage.type.toUpperCase()) {
+        case 'UI_onReady'.toUpperCase(): this.UI_onReady(); break;
+      }
+      //try to respond tou user defined actions
+      for (var i = 0; i < this.uiListens.length; i++) {
+        if (incomingMessage.type.toUpperCase() === this.uiListens[i].name.toUpperCase()) {
+          this.uiListens[i].fun();
+          debug('Found user function');
+        }
+      }
+  
+    }.bind(this);
+  
   }
 
   init(clientCommunicationFunctions) {
@@ -58,31 +83,7 @@ var base = class base {
     this.doEvent('ChangeToScene' + newScene);
   }
 
-   listen (incomingMessage) {
-     console.log(this);
-    debug('listen');
-    this.record(incomingMessage.type);
-    this.state[incomingMessage.type]++;
-    debug('incomingMessage: ' + incomingMessage.type);
-
-    if (this.state.ignoreExtraneousInputs === true) {
-      return;
-    }
-    //look for system actions
-    console.log(incomingMessage.type);
-    switch (incomingMessage.type.toUpperCase()) {
-      case 'UI_onReady'.toUpperCase(): this.UI_onReady(); break;
-    }
-    //try to respond tou user defined actions
-    for (var i = 0; i < this.uiListens.length; i++) {
-      if (incomingMessage.type.toUpperCase() === this.uiListens[i].name.toUpperCase()) {
-        this.uiListens[i].fun();
-        debug('Found user function');
-      }
-    }
-
-  }
-
+ 
   record  (action) {
     debug('record');
     this.emit('Action', { actionTimeStamp: new Date(), actionType: action });
