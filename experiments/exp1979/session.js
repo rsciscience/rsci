@@ -5,85 +5,105 @@ const debug = require('debug')('RSCI.session.exp1979');
 
 class session extends base {
     constructor(sessionId, experiment) {
+        // things to ignore : wire up 
         super(sessionId, experiment);
-
-        // Things you can do
-        // changeSceneTo(number)        : which screen to change to
-        // record(action)               : record any action in the log 
-        // despenseFood()               : dispense food 
-        // addUIListner(name,function)  : wire up things that hapen on the client
-        // doEvent(msg)                    : send message to ui 
-
-        // Things you need to rember attatch to this.state
-        // this.state.
+        var changeSceneTo = function (scene) { this.changeSceneTo(scene); }.bind(this);
+        var record = function (action) { this.record(action); }.bind(this);
+        var despenseFood = function () { this.despenseFood(); }.bind(this);
+        var addUIListner = function (name, fun) { this.addUIListner(name, fun); }.bind(this);
+        var doEvent = function (msg) { this.doEvent(msg); }.bind(this);
+        this.state = {};
+        // things to ignore : done
+           
         
-        // you need to listen to for the messages from the client when the screen is pressed 
-  
-        console.log('session construtor');
-        super.addUIListner('Scene1TrialStartNosepoke_onclick', () => { this.scene1TrialStartNosepoke_onclick() });
-        super.addUIListner('Scene2nosepokestim1_onclick', () => { this.callAWinner(1) });
-        super.addUIListner('Scene2nosepokestim2_onclick', () => { this.callAWinner(2) });
-        super.addUIListner('Scene2nosepokestim3_onclick', () => { this.callAWinner(3) });
-        super.addUIListner('Scene2nosepokestim4_onclick', () => { this.callAWinner(4) });
-        super.addUIListner('Scene2nosepokestim5_onclick', () => { this.callAWinner(5) });
-        super.addUIListner('PrematureResponse1', () => { this.prematureResponse() });
-        super.addUIListner('PrematureResponse2', () => { this.prematureResponse() });
-        super.addUIListner('PrematureResponse3', () => { this.prematureResponse() });
-        super.addUIListner('PrematureResponse4', () => { this.prematureResponse() });
-        super.addUIListner('PrematureResponse5', () => { this.prematureResponse() });
-        
-       
+        /*
 
-       
-       
-    }
+            __QQ
+           (_)_">  HELP
+          _)    
 
-     prematureResponse  () {
-        clearTimeout(this.state.interTrialIntervalTimeOut);
-        super.changeSceneTo(5);
-        setTimeout(() => {
-            super.changeSceneTo(1);
-        }, 5000);
-    }
+        Things you can do
+            changeSceneTo(scene)         : which screen to change to
+            record(action)               : record any action in the log 
+            despenseFood()               : dispense food 
+            addUIListner(name,function)  : wire up things that hapen on the client
+            doEvent(msg)                 : send message to ui 
 
-      correctResponseTime  () {
-        debug('Winner Winner Chicken Dinner !!!!');
-        super.despenseFood();
-        super.record('DespenseFood')
-        super.changeSceneTo(3);
-        setTimeout(() => {
-            super.changeSceneTo(1);
-        }, 1000);
-    }
+        Things you need to remember attach to this.state e.g
+            this.state.nextPoke = 3 ;
+            this.state.didWin = true;
 
-     incorrectResponseTime  () {
-        super.changeSceneTo(4);
-        setTimeout(() => {
-            super.changeSceneTo(1);
-        }, 10000);
-    }
+        */    
 
-     callAWinner  (poke) {
-        if (this.state.winningPokeHole === poke) {
-            this.correctResponseTime();
-        } else {
-            this.incorrectResponseTime();
+
+        /*
+                                          _        _               
+             _ _ ___ _ _ ___    ___ ___ _| |___   | |_ ___ ___ ___ 
+            | | | . | | |  _|  |  _| . | . | -_|  |   | -_|  _| -_|
+            |_  |___|___|_|    |___|___|___|___|  |_|_|___|_| |___|
+            |___|   
+
+        */
+        // You need to listen to for the messages from the client when the screen is pressed 
+        addUIListner('scene1TrialStartNosepoke_onclick', scene1TrialStartNosepoke_onclick.bind(this));
+        addUIListner('scene2nosepokestim1_onclick', callAWinner.bind(this,1));
+        addUIListner('scene2nosepokestim2_onclick', callAWinner.bind(this,2));
+        addUIListner('scene2nosepokestim3_onclick', callAWinner.bind(this,3));
+        addUIListner('scene2nosepokestim4_onclick', callAWinner.bind(this,4));
+        addUIListner('scene2nosepokestim5_onclick', callAWinner.bind(this,5));
+        addUIListner('prematureResponse1', prematureResponse.bind(this));
+        addUIListner('prematureResponse2', prematureResponse.bind(this));
+        addUIListner('prematureResponse3', prematureResponse.bind(this));
+        addUIListner('prematureResponse4', prematureResponse.bind(this));
+        addUIListner('prematureResponse5', prematureResponse.bind(this));
+
+        function prematureResponse() {
+            clearTimeout(this.state.interTrialIntervalTimeOut);
+            changeSceneTo(5);
+            setTimeout(() => {
+                changeSceneTo(1);
+            }, 5000);
         }
+
+        function correctResponseTime() {
+            debug('Winner Winner Chicken Dinner !!!!');
+            despenseFood();
+            record('DespenseFood')
+            changeSceneTo(3);
+            setTimeout(() => {
+                changeSceneTo(1);
+            }, 1000);
+        }
+
+        function incorrectResponseTime() {
+            changeSceneTo(4);
+            setTimeout(() => {
+                changeSceneTo(1);
+            }, 10000);
+        }
+
+        function callAWinner(poke) {
+            if (this.state.winningPokeHole === poke) {
+                despenseFood(); 
+                correctResponseTime();
+            } else {
+                incorrectResponseTime();
+            }
+        }
+
+        function scene1TrialStartNosepoke_onclick(poke) {
+            this.state.interTrialIntervalTimeOut = setTimeout(() => {
+                this.state.interTrialInterval = new Date();
+                changeSceneTo(2);
+                this.state.winningPokeHole = Math.floor(Math.random() * 5) + 1;
+                debug('Next winner is poke ' + this.state.winningPokeHole);
+                doEvent('NosePokeStimulus_' + this.state.winningPokeHole);
+            }, 5000);
+            doEvent('ITIOn');
+        }
+
+    
     }
-
-     scene1TrialStartNosepoke_onclick  (poke) {
-        this.state.interTrialIntervalTimeOut = setTimeout(() => {
-            this.state.interTrialInterval = new Date();
-            super.changeSceneTo(2);
-            this.state.winningPokeHole = Math.floor(Math.random() * 5) + 1;
-            debug('Next winner is poke ' + this.state.winningPokeHole);
-            super.doEvent('NosePokeStimulus_' + this.state.winningPokeHole);
-        }, 5000);
-        super.doEvent('ITIOn');
-    }
-
-
-
 };
 
 

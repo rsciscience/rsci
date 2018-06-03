@@ -94,8 +94,6 @@ var base = class base {
     this.uiCalls.emitAction({ type: actionType });
    }
 
-
-
 };
 
 ee(base.prototype); 
