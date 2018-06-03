@@ -11,7 +11,7 @@ var base = class base {
     this.config = experiment.sessionVariables;
     this.experiment = experiment
     var uiListens = [];
-    
+
     function initialize(clientCommunicationFunctions) {
       debug('initialize');
       this.uiCalls = clientCommunicationFunctions;
@@ -22,15 +22,15 @@ var base = class base {
       //session starts on UI_onReady 
     };
 
-    var addUIListner = function(name,fun){
+    var addUIListner = function (name, fun) {
       debug('addUIListner');
       console(name);
-      uiListens.push({name:name , fun: fun } );
-    } 
+      uiListens.push({ name: name, fun: fun });
+    }
 
-    var despenseFood = function(){
+    var despenseFood = function () {
       debug('despenseFood');
-      io.despenseFood(); 
+      io.despenseFood();
     }
 
     var UI_onReady = function () {
@@ -48,31 +48,31 @@ var base = class base {
       doEvent('ChangeToScene' + newScene);
     }.bind(this);
 
-     this.listen = function (incomingMessage) {
-            debug('listen');
-            record(incomingMessage.type)
-            this.state[incomingMessage.type]++;
-            debug('incomingMessage: ' +  incomingMessage.type);
+    this.listen = function (incomingMessage) {
+      debug('listen');
+      record(incomingMessage.type)
+      this.state[incomingMessage.type]++;
+      debug('incomingMessage: ' + incomingMessage.type);
 
-            if (this.state.ignoreExtraneousInputs === true) {
-                return;
-            }
-            //look for system actions
-            console.log(incomingMessage.type);
-            switch (incomingMessage.type.toUpperCase()) {
-                case 'UI_onReady'.toUpperCase(): UI_onReady(); break;
-            }
-            //try to respond tou user defined actions
-            console.log(uiListens);
-            for(var i = 0 ; i < uiListens.length; i++){
-            console.log(uiListens[i].name);
-              if(incomingMessage.toUpperCase() ===  uiListens[i].name.toUpperCase() ){
-                uiListens[i].fun();
-                debug('Found user function');
-              }
-            }
+      if (this.state.ignoreExtraneousInputs === true) {
+        return;
+      }
+      //look for system actions
+      console.log(incomingMessage.type);
+      switch (incomingMessage.type.toUpperCase()) {
+        case 'UI_onReady'.toUpperCase(): UI_onReady(); break;
+      }
+      //try to respond tou user defined actions
+      console.log(uiListens);
+      for (var i = 0; i < uiListens.length; i++) {
+        console.log(uiListens[i].name);
+        if (incomingMessage.toUpperCase() === uiListens[i].name.toUpperCase()) {
+          uiListens[i].fun();
+          debug('Found user function');
+        }
+      }
 
-      }.bind(this);
+    }.bind(this);
 
     var sessionStopping = function () {
       debug('sessionStopping');
@@ -92,9 +92,9 @@ var base = class base {
 
     var doEvent = function (actionType) {
       debug('doEvent:' + actionType);
-      record(actionType );
-          this.uiCalls.emitAction({ type: actionType });
-      }.bind(this);
+      record(actionType);
+      this.uiCalls.emitAction({ type: actionType });
+     }.bind(this);
 
   };
 
