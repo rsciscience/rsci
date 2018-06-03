@@ -53,6 +53,7 @@ var base = class base {
                 return;
             }
             //look for system actions
+            console.log(incomingMessage.type);
             switch (incomingMessage.type.toUpper()) {
                 case 'UI_onReady'.toUpperCase(): UI_onReady(); break;
             }
