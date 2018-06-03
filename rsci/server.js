@@ -48,7 +48,6 @@ this.startExperiment = async function (experimentId, inputConfig) {
   dispatchConfig.clientAssignments = null;
   dispatchConfig.clients = null;
 
-  console.log(dispatchConfig.sessionVariables);
   
   for (var i = 0; i < this.state.clientList.length; i++) {
     let clientAssignment = this.state.clientList[i];

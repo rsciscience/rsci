@@ -47,7 +47,7 @@ var base = class base {
             debug('listen');
             record(incomingMessage.type)
             this.state[incomingMessage.type]++;
-            debug(incomingMessage.type);
+            debug('incomingMessage: ' +  incomingMessage.type);
 
             if (this.state.ignoreExtraneousInputs === true) {
                 return;
@@ -60,6 +60,7 @@ var base = class base {
             for(var i = 0 ; i < uiListens.length; i++){
               if(incomingMessage ===  uiListens[i].name ){
                 uiListens[i].fun();
+                debug('Found user function');
               }
             }
 
@@ -78,7 +79,7 @@ var base = class base {
 
     var record = function (action) {
       this.emit('Action', { actionTimeStamp: new Date(), actionType: action });
-    }
+    }.bind(this)
 
     var doEvent = function (actionType) {
       debug('doEvent:' + actionType);
@@ -92,4 +93,4 @@ var base = class base {
 
 ee(base.prototype); 
 
-module.exports = init;
+module.exports = base;

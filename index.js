@@ -76,7 +76,6 @@ this.init = function () {
 }.bind(this);
 
 
-
 this.init();
 
 
