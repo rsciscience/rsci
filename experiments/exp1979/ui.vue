@@ -278,8 +278,8 @@ a {
 .nosepoke {
   height: 100px;
   width: 100px;
-  animation: color-me-in 5s;
   margin-left: 47px;
+  background-color: white;
 }
 .nosepokeActive {
   background-color: yellow;
@@ -294,6 +294,7 @@ a {
   height: 150px;
   width: 150px;
   margin-left: 325px;
+  animation: color-me-in 10s;
   background-color: yellow;
   position: absolute;
   top: 90px;
