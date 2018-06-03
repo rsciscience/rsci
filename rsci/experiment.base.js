@@ -53,12 +53,12 @@ var base = class base {
                 return;
             }
             //look for system actions
-            switch (incomingMessage.type) {
-                case 'UI_onReady': UI_onReady(); break;
+            switch (incomingMessage.type.toUpper()) {
+                case 'UI_onReady'.toUpperCase(): UI_onReady(); break;
             }
             //try to respond tou user defined actions
             for(var i = 0 ; i < uiListens.length; i++){
-              if(incomingMessage ===  uiListens[i].name ){
+              if(incomingMessage.toUpperCase() ===  uiListens[i].name.toUpperCase() ){
                 uiListens[i].fun();
                 debug('Found user function');
               }
