@@ -29,11 +29,11 @@
           <button class= "nosepokeLarge nosepokeLargeOff Scene3PerseverativeTrialStartNosepoke"></button>
           
           <div class= "nosepokeholescontainer">
-            <button v-on:click="Scene3nosepokestim1_onclick" class="nosepoke nosepoke1"></button>
-            <button v-on:click="Scene3nosepokestim2_onclick" class="nosepoke nosepoke2"></button>
-            <button v-on:click="Scene3nosepokestim3_onclick" class="nosepoke nosepoke3"></button>
-            <button v-on:click="Scene3nosepokestim4_onclick" class="nosepoke nosepoke4"></button>
-            <button v-on:click="Scene3nosepokestim5_onclick" class="nosepoke nosepoke5"></button>
+            <button class="nosepoke nosepoke1"></button>
+            <button class="nosepoke nosepoke2"></button>
+            <button class="nosepoke nosepoke3"></button>
+            <button class="nosepoke nosepoke4"></button>
+            <button class="nosepoke nosepoke5"></button>
           </div>
       </div>
       <div id="scene_4"  class = "scene" v-bind:class="{currentScene: showScene4}" >
@@ -41,11 +41,11 @@
             <button class= "nosepokeLarge nosepokeLargeOff Scene4PerseverativeTrialStartNosepoke"></button>
         
           <div class= "nosepokeholescontainer">
-            <button v-on:click="Scene4nosepokestim1_onclick" class="nosepoke nosepoke1"></button>
-            <button v-on:click="Scene4nosepokestim2_onclick" class="nosepoke nosepoke2"></button>
-            <button v-on:click="Scene4nosepokestim3_onclick" class="nosepoke nosepoke3"></button>
-            <button v-on:click="Scene4nosepokestim4_onclick" class="nosepoke nosepoke4"></button>
-            <button v-on:click="Scene4nosepokestim5_onclick" class="nosepoke nosepoke5"></button>
+            <button class="nosepoke nosepoke1"></button>
+            <button class="nosepoke nosepoke2"></button>
+            <button class="nosepoke nosepoke3"></button>
+            <button class="nosepoke nosepoke4"></button>
+            <button class="nosepoke nosepoke5"></button>
           </div>
       </div>
 
@@ -57,85 +57,94 @@
 
 <script>
 export default {
-  name: 'exp1979',
+  name: "exp1979",
   sockets: {
-    connect: function () {
-      console.log('session socket connected')
+    connect: function() {
+      console.log("session socket connected");
     },
 
-    client_experiment_session_start: function (val) {
-      this.config = val
-      this.running = true
-      console.log('client_experiment_session_start')
-    },
-    
-    client_experiment_session_stop: function (val) {
-      this.running = false
-      console.log('client_experiment_session_stop')
+    client_experiment_session_start: function(val) {
+      this.config = val;
+      this.running = true;
+      console.log("client_experiment_session_start");
     },
 
-    client_experiment_action: function (action) {
-      console.log('client_experment_action', action)
-      
-      if (action.type.startsWith('ChangeToScene')){
-        this.showScene1 = false
-        this.showScene2 = false
-        this.showScene3 = false
-        this.showScene4 = false
-        this.showScene5 = false
-    
-        switch(action.type){
-          case 'ChangeToScene1':
-            this.currentScene = 1
-            this.showScene1 = true
-            this.ITIOn = false
-          break;
-          case 'ChangeToScene2': 
-            this.currentScene = 2
-            this.showScene2 = true
-          break;
-          case 'ChangeToScene3':  
-            this.currentScene = 3
-            this.showScene3 = true
-          break;
-          case 'ChangeToScene4': 
-            this.currentScene = 4
-            this.showScene4 = true
-          break;
-          case 'ChangeToScene5': 
-            this.currentScene = 5
-            this.showScene5 = true
-          break;
-        }
-      }
-        
-      if (action.type.startsWith('NosePokeStimulus_')){
-        this.NosePokeStimulus_1   = false
-        this.NosePokeStimulus_2 = false
-        this.NosePokeStimulus_3 = false
-        this.NosePokeStimulus_4 = false
-        this.NosePokeStimulus_5 = false
-        switch(action.type){
-          case 'NosePokeStimulus_1' : this.NosePokeStimulus_1 = true; break;
-          case 'NosePokeStimulus_2' : this.NosePokeStimulus_2 = true; break;
-          case 'NosePokeStimulus_3' : this.NosePokeStimulus_3 = true; break;
-          case 'NosePokeStimulus_4' : this.NosePokeStimulus_4 = true; break;
-          case 'NosePokeStimulus_5' : this.NosePokeStimulus_5 = true; break;
+    client_experiment_session_stop: function(val) {
+      this.running = false;
+      console.log("client_experiment_session_stop");
+    },
+
+    client_experiment_action: function(action) {
+      console.log("client_experment_action", action);
+
+      if (action.type.startsWith("ChangeToScene")) {
+        this.showScene1 = false;
+        this.showScene2 = false;
+        this.showScene3 = false;
+        this.showScene4 = false;
+        this.showScene5 = false;
+
+        switch (action.type) {
+          case "ChangeToScene1":
+            this.currentScene = 1;
+            this.showScene1 = true;
+            this.ITIOn = false;
+            break;
+          case "ChangeToScene2":
+            this.currentScene = 2;
+            this.showScene2 = true;
+            break;
+          case "ChangeToScene3":
+            this.currentScene = 3;
+            this.showScene3 = true;
+            break;
+          case "ChangeToScene4":
+            this.currentScene = 4;
+            this.showScene4 = true;
+            break;
+          case "ChangeToScene5":
+            this.currentScene = 5;
+            this.showScene5 = true;
+            break;
         }
       }
 
-      if (action.type === 'ITIOn') {
-          this.ITIOn = true
+      if (action.type.startsWith("NosePokeStimulus_")) {
+        this.NosePokeStimulus_1 = false;
+        this.NosePokeStimulus_2 = false;
+        this.NosePokeStimulus_3 = false;
+        this.NosePokeStimulus_4 = false;
+        this.NosePokeStimulus_5 = false;
+        switch (action.type) {
+          case "NosePokeStimulus_1":
+            this.NosePokeStimulus_1 = true;
+            break;
+          case "NosePokeStimulus_2":
+            this.NosePokeStimulus_2 = true;
+            break;
+          case "NosePokeStimulus_3":
+            this.NosePokeStimulus_3 = true;
+            break;
+          case "NosePokeStimulus_4":
+            this.NosePokeStimulus_4 = true;
+            break;
+          case "NosePokeStimulus_5":
+            this.NosePokeStimulus_5 = true;
+            break;
         }
       }
-      
+
+      if (action.type === "ITIOn") {
+        this.ITIOn = true;
+      }
+    }
   },
-  data () {
+  data() {
     return {
       config: {
-        id: 'Placeholder'
+        id: "Placeholder"
       },
-      ruunning :false,
+      ruunning: false,
       isFlashing: false,
       currentScene: 0,
       showScene1: false,
@@ -149,32 +158,52 @@ export default {
       NosePokeStimulus_4: false,
       NosePokeStimulus_5: false,
       ITIOn: false
-    }
+    };
   },
-  mounted () {
-    console.log('mounted')
-    this.$socket.emit('client_experiment_onevent', { type: 'UI_onReady' })
+  mounted() {
+    console.log("mounted");
+    this.$socket.emit("client_experiment_onevent", { type: "UI_onReady" });
   },
   methods: {
-    
-    event: function (actionType) {
-        this.$socket.emit('client_experiment_onevent', { type: actionType})
+    event: function(actionType) {
+      this.$socket.emit("client_experiment_onevent", { type: actionType });
     },
-    
-    Scene1TrialStartNosepoke_onclick: function () { this.event('Scene1TrialStartNosepoke_onclick') },
-    Scene1nosepokestim1_onclick:      function () { this.event('PrematureResponse2') },
-    Scene1nosepokestim2_onclick:      function () { this.event('PrematureResponse2') },
-    Scene1nosepokestim3_onclick:      function () { this.event('PrematureResponse3') },
-    Scene1nosepokestim4_onclick:      function () { this.event('PrematureResponse4') },
-    Scene1nosepokestim5_onclick:      function () { this.event('PrematureResponse5') },
-    Scene2nosepokestim1_onclick:      function () { this.event('Scene2nosepokestim1_onclick') },
-    Scene2nosepokestim2_onclick:      function () { this.event('Scene2nosepokestim2_onclick') },
-    Scene2nosepokestim3_onclick:      function () { this.event('Scene2nosepokestim3_onclick') },
-    Scene2nosepokestim4_onclick:      function () { this.event('Scene2nosepokestim4_onclick') },
-    Scene2nosepokestim5_onclick:      function () { this.event('Scene2nosepokestim5_onclick') },
-  }
 
-}
+    Scene1TrialStartNosepoke_onclick: function() {
+      this.event("Scene1TrialStartNosepoke_onclick");
+    },
+    Scene1nosepokestim1_onclick: function() {
+      this.event("PrematureResponse2");
+    },
+    Scene1nosepokestim2_onclick: function() {
+      this.event("PrematureResponse2");
+    },
+    Scene1nosepokestim3_onclick: function() {
+      this.event("PrematureResponse3");
+    },
+    Scene1nosepokestim4_onclick: function() {
+      this.event("PrematureResponse4");
+    },
+    Scene1nosepokestim5_onclick: function() {
+      this.event("PrematureResponse5");
+    },
+    Scene2nosepokestim1_onclick: function() {
+      this.event("Scene2nosepokestim1_onclick");
+    },
+    Scene2nosepokestim2_onclick: function() {
+      this.event("Scene2nosepokestim2_onclick");
+    },
+    Scene2nosepokestim3_onclick: function() {
+      this.event("Scene2nosepokestim3_onclick");
+    },
+    Scene2nosepokestim4_onclick: function() {
+      this.event("Scene2nosepokestim4_onclick");
+    },
+    Scene2nosepokestim5_onclick: function() {
+      this.event("Scene2nosepokestim5_onclick");
+    }
+  }
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -219,19 +248,17 @@ a {
 .currentScene {
   display: block;
 }
-.aversiveLight{
+.aversiveLight {
   width: 200px;
-	height: 200px;
-	-moz-border-radius: 100px;
-	-webkit-border-radius: 100px;
-	border-radius: 100px;
+  height: 200px;
+  -moz-border-radius: 100px;
+  -webkit-border-radius: 100px;
+  border-radius: 100px;
   position: absolute;
   top: 50px;
-  left: 50px; 
-  background-color:white; 
+  left: 50px;
+  background-color: white;
 }
-
-
 
 @keyframes color-me-in {
   /* You could think of as "step 1" */
@@ -270,10 +297,9 @@ a {
   background-color: yellow;
   position: absolute;
   top: 90px;
- 
 }
 .nosepokeLargeOff {
-  background-color: rgb(153,153,155); 
+  background-color: rgb(153, 153, 155);
 }
 .flashing {
   background-color: white;
