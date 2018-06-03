@@ -1,6 +1,6 @@
 "use strict";
 
-const base = require('../rsci/experiments.base');
+const base = require('../rsci/experiment.base.js');
 const debug = require('debug')('RSCI.session.exp1979');
 
 class session extends base {
