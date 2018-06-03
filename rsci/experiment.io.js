@@ -1,7 +1,7 @@
 "use strict";
 const debug = require('debug')('RSCI.experiment.io');
 const Gpio = require('onoff').Gpio;
-var helpers = require('./helpers');
+var helpers = require('../helpers');
 
 var pin_food = new Gpio(1, 'out');
 var pin_drug= new Gpio(2, 'out');
