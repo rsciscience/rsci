@@ -11,71 +11,78 @@ class session extends base {
         // changeSceneTo(number)        : which screen to change to
         // record(action)               : record any action in the log 
         // despenseFood()               : dispense food 
-        // addListners(name,function)   : wire up things that hapen on the client
-        
+        // addUIListner(name,function)  : wire up things that hapen on the client
+        // doEvent(msg)                    : send message to ui 
+
         // Things you need to rember attatch to this.state
         // this.state.
         
         // you need to listen to for the messages from the client when the screen is pressed 
   
         console.log('session construtor');
-        addUIListner('Scene1TrialStartNosepoke_onclick', () => { scene1TrialStartNosepoke_onclick() });
-        addUIListner('Scene2nosepokestim1_onclick', () => { callAWinner(1) });
-        addUIListner('Scene2nosepokestim2_onclick', () => { callAWinner(2) });
-        addUIListner('Scene2nosepokestim3_onclick', () => { callAWinner(3) });
-        addUIListner('Scene2nosepokestim4_onclick', () => { callAWinner(4) });
-        addUIListner('Scene2nosepokestim5_onclick', () => { callAWinner(5) });
-        addUIListner('PrematureResponse1', () => { prematureResponse() });
-        addUIListner('PrematureResponse2', () => { prematureResponse() });
-        addUIListner('PrematureResponse3', () => { prematureResponse() });
-        addUIListner('PrematureResponse4', () => { prematureResponse() });
-        addUIListner('PrematureResponse5', () => { prematureResponse() });
+        super.addUIListner('Scene1TrialStartNosepoke_onclick', () => { this.scene1TrialStartNosepoke_onclick() });
+        super.addUIListner('Scene2nosepokestim1_onclick', () => { this.callAWinner(1) });
+        super.addUIListner('Scene2nosepokestim2_onclick', () => { this.callAWinner(2) });
+        super.addUIListner('Scene2nosepokestim3_onclick', () => { this.callAWinner(3) });
+        super.addUIListner('Scene2nosepokestim4_onclick', () => { this.callAWinner(4) });
+        super.addUIListner('Scene2nosepokestim5_onclick', () => { this.callAWinner(5) });
+        super.addUIListner('PrematureResponse1', () => { this.prematureResponse() });
+        super.addUIListner('PrematureResponse2', () => { this.prematureResponse() });
+        super.addUIListner('PrematureResponse3', () => { this.prematureResponse() });
+        super.addUIListner('PrematureResponse4', () => { this.prematureResponse() });
+        super.addUIListner('PrematureResponse5', () => { this.prematureResponse() });
         
-        var prematureResponse = function () {
-            clearTimeout(this.state.interTrialIntervalTimeOut);
-            changeSceneTo(5);
-            setTimeout(() => {
-                ChangeSceneTo(1);
-            }, 5000);
-        }.bind(this);
+       
 
-        var CorrectResponseTime = function () {
-            debug('Winner Winner Chicken Dinner !!!!');
-            despenseFood();
-            this.emit('DespenseFood', { actionTimeStamp: new Date(), actionType: 'DespenseFood' });
-            changeSceneTo(3);
-            setTimeout(() => {
-                ChangeSceneTo(1);
-            }, 1000);
-        }.bind(this);
+       
+       
+    }
 
-        var IncorrectResponseTime = function () {
-            changeSceneTo(4);
-            setTimeout(() => {
-                ChangeSceneTo(1);
-            }, 10000);
-        }.bind(this);
+     prematureResponse  () {
+        clearTimeout(this.state.interTrialIntervalTimeOut);
+        super.changeSceneTo(5);
+        setTimeout(() => {
+            super.changeSceneTo(1);
+        }, 5000);
+    }
 
-        var callAWinner = function (poke) {
-            if (this.state.winningPokeHole === poke) {
-                CorrectResponseTime();
-            } else {
-                IncorrectResponseTime();
-            }
-        }.bind(this);
+      correctResponseTime  () {
+        debug('Winner Winner Chicken Dinner !!!!');
+        super.despenseFood();
+        super.record('DespenseFood')
+        super.changeSceneTo(3);
+        setTimeout(() => {
+            super.changeSceneTo(1);
+        }, 1000);
+    }
 
-        var scene1TrialStartNosepoke_onclick = function (poke) {
-            this.state.interTrialIntervalTimeOut = setTimeout(() => {
-                this.state.interTrialInterval = new Date();
-                changeSceneTo(2);
-                this.state.winningPokeHole = Math.floor(Math.random() * 5) + 1;
-                debug('Next winner is poke ' + this.state.winningPokeHole);
-                doEvent('NosePokeStimulus_' + this.state.winningPokeHole);
-            }, 5000);
-            doEvent('ITIOn');
-        }.bind(this);
+     incorrectResponseTime  () {
+        super.changeSceneTo(4);
+        setTimeout(() => {
+            super.changeSceneTo(1);
+        }, 10000);
+    }
 
-    };
+     callAWinner  (poke) {
+        if (this.state.winningPokeHole === poke) {
+            this.correctResponseTime();
+        } else {
+            this.incorrectResponseTime();
+        }
+    }
+
+     scene1TrialStartNosepoke_onclick  (poke) {
+        this.state.interTrialIntervalTimeOut = setTimeout(() => {
+            this.state.interTrialInterval = new Date();
+            super.changeSceneTo(2);
+            this.state.winningPokeHole = Math.floor(Math.random() * 5) + 1;
+            debug('Next winner is poke ' + this.state.winningPokeHole);
+            super.doEvent('NosePokeStimulus_' + this.state.winningPokeHole);
+        }, 5000);
+        super.doEvent('ITIOn');
+    }
+
+
 
 };
 
