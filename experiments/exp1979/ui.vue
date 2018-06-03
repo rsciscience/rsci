@@ -294,8 +294,8 @@ a {
   height: 150px;
   width: 150px;
   margin-left: 325px;
+  animation-iteration-count: infinite;
   animation: color-me-in 10s;
-  background-color: yellow;
   position: absolute;
   top: 90px;
 }
