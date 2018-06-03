@@ -23,14 +23,18 @@ var base = class base {
     };
 
     var addUIListner = function(name,fun){
+      debug('addUIListner');
+      console(name);
       uiListens.push({name:name , fun: fun } );
     } 
 
     var despenseFood = function(){
+      debug('despenseFood');
       io.despenseFood(); 
     }
 
     var UI_onReady = function () {
+      debug('UI_onReady');
       // on start after the ui is ready to go.
       this.uiCalls.start({ id: this.id });
       this.emit('Start', { actionTimeStamp: new Date(), actionType: 'Start' });
@@ -39,6 +43,7 @@ var base = class base {
     }.bind(this);
 
     var changeSceneTo = function (newScene) {
+      debug('changeSceneTo');
       this.state.currentScene = newScene;
       doEvent('ChangeToScene' + newScene);
     }.bind(this);
@@ -81,6 +86,7 @@ var base = class base {
     }.bind(this);
 
     var record = function (action) {
+      debug('record');
       this.emit('Action', { actionTimeStamp: new Date(), actionType: action });
     }.bind(this)
 

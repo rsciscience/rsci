@@ -65,7 +65,7 @@ export default {
 
     client_experiment_session_start: function (val) {
       this.config = val
-      this.ruunning = true
+      this.running = true
       console.log('client_experiment_session_start')
     },
     
