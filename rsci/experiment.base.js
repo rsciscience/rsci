@@ -48,7 +48,7 @@ var base = class base {
     }.bind(this);
 
 
-    this.listen = function changeSceneTo(newScene) {
+    this.changeSceneTo = function (newScene) {
       debug('changeSceneTo');
       this.state.currentScene = newScene;
     this.doEvent('ChangeToScene' + newScene);
