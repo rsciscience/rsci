@@ -58,7 +58,9 @@ var base = class base {
                 case 'UI_onReady'.toUpperCase(): UI_onReady(); break;
             }
             //try to respond tou user defined actions
+            console.log(uiListens);
             for(var i = 0 ; i < uiListens.length; i++){
+            console.log(uiListens[i].name);
               if(incomingMessage.toUpperCase() ===  uiListens[i].name.toUpperCase() ){
                 uiListens[i].fun();
                 debug('Found user function');
