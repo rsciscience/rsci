@@ -59,6 +59,7 @@ var base = class base {
   }
 
    listen (incomingMessage) {
+     console.log(this);
     debug('listen');
     this.record(incomingMessage.type);
     this.state[incomingMessage.type]++;
@@ -81,8 +82,6 @@ var base = class base {
     }
 
   }
-
-
 
   record  (action) {
     debug('record');
