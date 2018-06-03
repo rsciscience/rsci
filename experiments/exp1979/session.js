@@ -5,19 +5,7 @@ const debug = require('debug')('RSCI.session.exp1979');
 
 class session extends base {
     constructor(sessionId, experiment) {
-        super(sessionId, experiment);
 
-        // Things you can do
-        // changeSceneTo(number)        : which screen to change to
-        // record(action)               : record any action in the log 
-        // despenseFood()               : dispense food 
-        // addListners(name,function)   : wire up things that hapen on the client
-        
-        // Things you need to rember attatch to this.state
-        // this.state.
-
-        
-        // you need to listen to for the messages from the client when the screen is pressed 
         addUIListner('Scene1TrialStartNosepoke_onclick', () => { scene1TrialStartNosepoke_onclick() });
         addUIListner('Scene2nosepokestim1_onclick', () => { callAWinner(1) });
         addUIListner('Scene2nosepokestim2_onclick', () => { callAWinner(2) });
@@ -31,6 +19,19 @@ class session extends base {
         addUIListner('PrematureResponse5', () => { prematureResponse() });
       
         
+       
+        // Things you can do
+        // changeSceneTo(number)        : which screen to change to
+        // record(action)               : record any action in the log 
+        // despenseFood()               : dispense food 
+        // addListners(name,function)   : wire up things that hapen on the client
+        
+        // Things you need to rember attatch to this.state
+        // this.state.
+
+        
+        // you need to listen to for the messages from the client when the screen is pressed 
+   
         var prematureResponse = function () {
             clearTimeout(this.state.interTrialIntervalTimeOut);
             changeSceneTo(5);
@@ -75,7 +76,7 @@ class session extends base {
             doEvent('ITIOn');
         }.bind(this);
 
-
+        super(sessionId, experiment);
     };
 
 };
