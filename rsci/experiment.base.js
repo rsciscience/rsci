@@ -54,7 +54,7 @@ var base = class base {
             }
             //look for system actions
             console.log(incomingMessage.type);
-            switch (incomingMessage.type.toUpper()) {
+            switch (incomingMessage.type.toUpperCase()) {
                 case 'UI_onReady'.toUpperCase(): UI_onReady(); break;
             }
             //try to respond tou user defined actions
