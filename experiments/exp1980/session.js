@@ -25,7 +25,7 @@ class session extends base {
         Things you can do
             changeSceneTo(scene)         : which screen to change to
             record(action)               : record any action in the log 
-            despenseFood()               : dispense food 
+            dispenseFood()               : dispense food 
             addUIListner(name,function)  : wire up things that hapen on the client
             doEvent(msg)                 : send message to ui 
 
@@ -67,8 +67,8 @@ class session extends base {
 
         function correctResponseTime() {
             debug('Winner Winner Chicken Dinner !!!!');
-            despenseFood();
-            record('DespenseFood')
+            dispenseFood();
+            record('dispenseFood')
             changeSceneTo(3);
             setTimeout(() => {
                 changeSceneTo(1);
