@@ -11,7 +11,7 @@ console.log(' (__   ');
 console.log(' _  )_ ');
 console.log('(_)_(_)');
 console.log(' (o o) ');
-console.log(' ==\o/==');
+console.log('==\\o/==');
 console.log('');
 
 

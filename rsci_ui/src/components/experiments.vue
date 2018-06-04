@@ -22,7 +22,7 @@
               <div><label>TimeOut Duration:</label> <input v-model="currentExperiment.sessionVariables.timeOutDuration" placeholder="edit me">  </div>
 
 
-        <div  v-for=”property in currentExperiment.sessionVariables>
+        <div  v-for="property in currentExperiment.sessionVariables">
            {{property.name}}
            {{property}}
            {{property.value}}
