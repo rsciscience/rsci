@@ -85,6 +85,7 @@ var base = class base {
 
   despenseFood() {
     debug('despenseFood');
+    
     io.despenseFood();
   }
 
