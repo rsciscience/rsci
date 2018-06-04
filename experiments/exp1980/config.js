@@ -1,9 +1,9 @@
 "use strict";
 
 module.exports = {
-    id:'exp1979',
+    id:'exp1978',
     version: '1.0.0',
-    name:'exp1979',
+    name:'exp1978',
     type:"5 choice",
     sessionVariables:{
         duration:60000,

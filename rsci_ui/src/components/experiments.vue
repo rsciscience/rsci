@@ -17,8 +17,17 @@
              <td>
               <h3>{{currentExperiment.name}}</h3>
               <div><label>Session Id:</label>         <input v-model="currentExperiment.sessionVariables.experimentSessionId" placeholder="edit me">  </div>
+             
               <div><label>Duration:</label>         <input v-model="currentExperiment.sessionVariables.duration" placeholder="edit me">  </div>
               <div><label>TimeOut Duration:</label> <input v-model="currentExperiment.sessionVariables.timeOutDuration" placeholder="edit me">  </div>
+
+
+        <div  v-for=”property in currentExperiment.sessionVariables>
+           {{property.name}}
+           {{property}}
+           {{property.value}}
+        </div>
+
              </td>
              <td>
                   <button  class = "btn btn-start-exp"  v-on:click="startExperiment()">Start</button>
