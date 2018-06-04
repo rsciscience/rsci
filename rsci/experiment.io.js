@@ -5,8 +5,8 @@ var helpers = require('./helpers');
 try {
 
   const Gpio = require('onoff').Gpio;
-  var pin_food = new Gpio(1, 'out');
-  var pin_drug = new Gpio(2, 'out');
+  var pin_food = new Gpio(2, 'out');
+  var pin_drug = new Gpio(3, 'out');
 
   this.dispenseFood = function () {
     debug('dispenseFood');
