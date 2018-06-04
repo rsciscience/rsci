@@ -83,10 +83,11 @@ var base = class base {
     this.uiListens.push({ name: name, fun: fun });
   }
 
-  despenseFood() {
-    debug('despenseFood');
+  dispenseFood() {
+    debug('dispenseFood');
     console.log(io);
-    io.despenseFood();
+    console.log(io.dispenseFood);
+    io.dispenseFood();
   }
 
   UI_onReady() {

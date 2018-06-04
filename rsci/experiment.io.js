@@ -6,8 +6,8 @@ var helpers = require('../helpers');
 var pin_food = new Gpio(1, 'out');
 var pin_drug = new Gpio(2, 'out');
 
-this.despenseFood = function () {
-  debug('despenseFood');
+this.dispenseFood = function () {
+  debug('dispenseFood');
   try {
     pin_food.writeSync(1);
     setTimeout(1000, () => { pin_food.writeSync(1); })
@@ -15,8 +15,8 @@ this.despenseFood = function () {
     console.log(e);
   }
 };
-this.despenseDrug = function () {
-  debug('despenseDrug');
+this.dispenseDrug = function () {
+  debug('dispenseDrug');
   try {
     pin_drug.writeSync(1);
     setTimeout(1000, ()=>{  pin_drug.writeSync(1); })

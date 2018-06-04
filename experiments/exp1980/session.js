@@ -9,7 +9,7 @@ class session extends base {
         super(sessionId, experiment);
         var changeSceneTo = function (scene) { this.changeSceneTo(scene); }.bind(this);
         var record = function (action) { this.record(action); }.bind(this);
-        var despenseFood = function () { this.despenseFood(); }.bind(this);
+        var dispenseFood = function () { this.dispenseFood(); }.bind(this);
         var addUIListner = function (name, fun) { this.addUIListner(name, fun); }.bind(this);
         var doEvent = function (msg) { this.doEvent(msg); }.bind(this);
         this.state = {};
@@ -84,7 +84,7 @@ class session extends base {
 
         function callAWinner(poke) {
             if (this.state.winningPokeHole === poke) {
-                despenseFood(); 
+                dispenseFood(); 
                 correctResponseTime();
             } else {
                 incorrectResponseTime();
