@@ -1,7 +1,7 @@
 "use strict";
 const ee = require('event-emitter');
 const debug = require('debug')('RSCI.experiment.base');
-const io = require('debug')('RSCI.experiment.io');
+const io = require('debug')('./experiment.io');
 var helpers = require('./helpers');
 
 var base = class base {
