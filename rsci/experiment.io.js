@@ -1,9 +1,10 @@
 "use strict";
-const debug = require('debug')('RSCI.experiment.io');
-var helpers = require('../helpers');
+
 
 try {
-  
+
+  const debug = require('debug')('RSCI.experiment.io');
+  var helpers = require('../helpers');
   const Gpio = require('onoff').Gpio;
   var pin_food = new Gpio(1, 'out');
   var pin_drug = new Gpio(2, 'out');
@@ -32,7 +33,9 @@ try {
   module.exports = this;
 
 } catch (e) {
-
+  
+  const debug = require('debug')('RSCI.experiment.io');
+  var helpers = require('../helpers');
     // test stub
   this.dispenseFood = function () {
     debug('dispenseFood');
