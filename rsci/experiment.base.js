@@ -51,21 +51,21 @@ var base = class base {
     this.changeSceneTo = function (newScene) {
       debug('changeSceneTo');
       this.state.currentScene = newScene;
-    this.doEvent('ChangeToScene' + newScene);
-  }.bind(this);
+      this.doEvent('ChangeToScene' + newScene);
+    }.bind(this);
 
- 
-  this.record = function   (action) {
-    debug('record');
-    this.emit('Action', { actionTimeStamp: new Date(), actionType: action });
-  }.bind(this);
 
-  this.doEvent = function    (actionType) {
-    debug('doEvent:' + actionType);
-    this.record(actionType);
-    this.uiCalls.emitAction({ type: actionType });
-   }.bind(this);
-  
+    this.record = function (action) {
+      debug('record');
+      this.emit('Action', { actionTimeStamp: new Date(), actionType: action });
+    }.bind(this);
+
+    this.doEvent = function (actionType) {
+      debug('doEvent:' + actionType);
+      this.record(actionType);
+      this.uiCalls.emitAction({ type: actionType });
+    }.bind(this);
+
   }
 
   init(clientCommunicationFunctions) {
@@ -85,7 +85,7 @@ var base = class base {
 
   despenseFood() {
     debug('despenseFood');
-    
+    console.log(io);
     io.despenseFood();
   }
 
