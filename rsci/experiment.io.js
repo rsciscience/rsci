@@ -9,7 +9,7 @@ try {
   var pin_drug = new Gpio(3, 'out');
   var pin_buzzer = new Gpio(4, 'out');
 
-  this.restIO = function (){
+  this.resetIO = function (){
     pin_drug.writeSync(0);
     pin_food.writeSync(0);
     pin_buzzer.writeSync(0);
@@ -67,7 +67,7 @@ try {
     debug('dispenseDrug');
     console.log('IO not configured. Using test stubs');
   };
-  this.restIO = function (){
+  this.resetIO = function (){
     debug('resetIO');
     console.log('IO not configured. Using test stubs');
   }
