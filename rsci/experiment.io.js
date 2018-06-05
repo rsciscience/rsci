@@ -8,6 +8,12 @@ try {
   var pin_food = new Gpio(2, 'out');
   var pin_drug = new Gpio(3, 'out');
 
+  this.restIO = function (){
+    pin_drug.writeSync(0);
+    pin_drug.writeSync(0);
+  }
+
+
   this.dispenseFood = function () {
     debug('dispenseFood');
     try {
@@ -21,14 +27,14 @@ try {
     debug('dispenseDrug');
     try {
       pin_drug.writeSync(1);
-      setTimeout(1000, () => { pin_drug.writeSync(1); })
+      setTimeout(1000, () => { pin_drug.writeSync(0); })
     } catch (e) {
       console.log(e);
     }
 
   };
 
-
+  this.resetIO();
   module.exports = this;
 
 } catch (e) {
