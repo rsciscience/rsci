@@ -19,7 +19,7 @@ try {
     debug('dispenseFood');
     try {
       pin_food.writeSync(1);
-      var stop = function (pin) { pin.writeSync(0); } ;
+      function stop (pin) { pin.writeSync(0); } 
       setTimeout(1000, stop.bind(this,pin_food));
     } catch (e) {
       console.log('IO Error ');
@@ -31,7 +31,7 @@ try {
     debug('dispenseDrug');
     try {
       pin_drug.writeSync(1);
-      var stop = function (pin) { pin.writeSync(0); }.bind(this,pin_drug) ;
+      function stop (pin) { pin.writeSync(0); }
       setTimeout(1000, stop.bind(this,pin_drug));
     } catch (e) {
       console.log('IO Error ');
@@ -43,7 +43,7 @@ try {
     debug('dispenseDrug');
     try {
       pin_buzzer.writeSync(1);
-      var stop = function (pin) { pin.writeSync(0); };
+      function stop (pin) { pin.writeSync(0); }
       setTimeout(1000, stop.bind(this,pin_buzzer) );
     } catch (e) {
       console.log('IO Error ');
