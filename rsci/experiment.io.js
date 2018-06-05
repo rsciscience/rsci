@@ -13,7 +13,7 @@ try {
     pin_drug.writeSync(0);
     pin_food.writeSync(0);
     pin_buzzer.writeSync(0);
-  }
+  };
 
   this.dispenseFood = function () {
     debug('dispenseFood');
@@ -53,6 +53,10 @@ try {
 
 } catch (e) {
 
+      console.log('IO Error ');
+      console.log('Failed to create io ');
+      console.log(e);
+      console.log('IO not configured. Using test stubs');
 
     // test stub
   this.dispenseFood = function () {
@@ -63,6 +67,11 @@ try {
     debug('dispenseDrug');
     console.log('IO not configured. Using test stubs');
   };
+  this.restIO = function (){
+    debug('resetIO');
+    console.log('IO not configured. Using test stubs');
+  }
+
   module.exports = this;
 
 }
