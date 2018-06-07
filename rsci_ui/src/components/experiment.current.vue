@@ -3,9 +3,9 @@
 
     <div class="row">
       <div class="col-sm-2">
-        <h4>Running</h4>    
+        <h4>Running</h4>
         session: {{ experimentSession.experimentSessionId }}
-        <button class = "btn btn-stop-exp"  v-on:click="alert('Yeah,,, not wired ')">Stop</button>
+        <button class = "btn btn-stop-exp"  v-on:click="stopExperimentOnClick()">Stop</button>
 
       </div>
 
@@ -29,12 +29,13 @@
           </div>
         </div>
 
-      </div>  
-    </div>  
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import {HTTP} from '../http-common'
 
 export default {
   name: 'experimentCurrent',
@@ -43,6 +44,7 @@ export default {
       default: function () {
         return {
           experimentSessionId: '',
+          experimentId: '',
           clients: [{
             isOnline: true,
             assignedRat: 'rat??',
@@ -70,6 +72,17 @@ export default {
       let dif = t2.getTime() - t1.getTime()
       console.log(client.clientId, dif)
       return (dif < 30000)
+    },
+    stopExperimentOnClick: function () {
+      function err (e) {
+        this.errors.push(e)
+      }
+      function success (response) {
+        console.log('Experiment Stopped!')
+        console.log(response)
+      }
+
+      HTTP.post('server/experiment/' + this.experimentSession.experimentId + '/session/' + this.experimentSession.experimentSessionId + '/stop', []).then(success.bind(this)).catch(err.bind(this))
     }
   }
 }

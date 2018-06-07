@@ -125,7 +125,26 @@ this.server_register =  (req, res) => {
 }
 
 this.experiment_stop = (req, res)  => {
-  res.status(500).send();
+  debug('experiment_stop');
+
+  function doWork(input){
+    var output = this.clientFunctions.stopExperimentSession(input);
+
+    return  JSON.stringify(output);
+  }
+
+  var clientResponse = {}
+
+  try{
+    clientResponse =  doWork.bind(this, req.body)();
+  }catch (ex) {
+    debug(ex);
+    res.status(500).send('Something broke!')
+    return;
+  }
+
+  res.send(clientResponse);
+
 }
 
 

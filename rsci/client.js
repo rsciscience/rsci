@@ -66,6 +66,8 @@ this.initExperimentSession = function (experimentRequest) {
 
   sess.init(comms);
 
+  this.state.currentExperimentSession.sessionHandle = sess;
+
   return {
     clientId: esl.clientId,
     startDate: esl.date,
@@ -80,6 +82,20 @@ this.saveExperimentSessionEventOnClient = function (currentExperimentSession, cl
   currentExperimentSession.actions.push(data);
   db.experimentSessionsLocal.save(currentExperimentSession);
 }
+
+
+this.stopExperimentSession = function () {
+  debug('stopExperimentSession');
+
+  this.state.currentExperimentSession.sessionHandle.stop();
+
+  return {
+    experimentSessionId: this.state.currentExperimentSession.experimentSessionId
+  }
+
+}
+
+
 
 this.registerWithServer = async function (payload, serverip, port) {
   debug('registerWithServer');

@@ -39,8 +39,8 @@ try {
     }
   };
 
-  this.dispenseDrug = function () {
-    debug('dispenseDrug');
+  this.buzz = function () {
+    debug('buzz');
     try {
       pin_buzzer.writeSync(1);
       function stop (pin) { pin.writeSync(0); }
@@ -68,6 +68,10 @@ try {
   };
   this.dispenseDrug = function () {
     debug('dispenseDrug');
+    console.log('IO not configured. Using test stubs');
+  };
+  this.buzz = function () {
+    debug('buzz');
     console.log('IO not configured. Using test stubs');
   };
   this.resetIO = function (){
