@@ -43,6 +43,7 @@ this.startExperiment = async function (experimentId, inputConfig) {
     throw 'No clients';
   }
 
+
   //copy incoming config
   const dispatchConfig = Object.assign(experimentConfig, inputConfig);
   dispatchConfig.clientAssignments = null;

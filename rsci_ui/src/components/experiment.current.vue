@@ -2,16 +2,16 @@
   <div class="running">
 
     <div class="row">
-      <div class="col-sm-2">
+      <div class="col-sm-2" style="padding-left: 25px;">
         <h4>Running</h4>
-        session: {{ experimentSession.experimentSessionId }}
-        <button class = "btn btn-stop-exp"  v-on:click="stopExperimentOnClick()">Stop</button>
 
+        <button class = "btn btn-stop-exp"  v-on:click="stopAllSessionsOnClick()">Stop</button>
+        <div>session: {{ experimentSession.experimentSessionId }}</div>
       </div>
 
       <div class="col-sm-10">
         <div class="client"  v-for="client in experimentSession.clients" v-bind:key="client.clientId">
-          <div class="box" v-bind:class="{isOnline: isOnline(client)}" >
+          <div class="box" v-bind:class="{isOnline: isOnline(client)}" v-on:click="stopAllSessionsOnClick(client.clientId)">
           <svg style='width: 100%; height: 100%;  position:relitive; left:0; top:0'>
             <line x1="0" y1="100%" x2="100%" y2="0" style="stroke:rgb(191,188,188);stroke-width:2"/>
             <line x1="0" y1="0" x2="100%" y2="100%" style="stroke:rgb(191,188,188);stroke-width:2"/>
@@ -26,6 +26,10 @@
             <div class="id">{{client.clientId}}</div>
             <div class="assignedRat">{{client.assignedRat}}</div>
             <div class="last-action"> {{client.lastActionType}}</div>
+          </div>
+
+          <div class="box-label-stop">
+            STOP!
           </div>
         </div>
 
@@ -73,7 +77,7 @@ export default {
       console.log(client.clientId, dif)
       return (dif < 30000)
     },
-    stopExperimentOnClick: function () {
+    stopAllSessionsOnClick: function () {
       function err (e) {
         this.errors.push(e)
       }
@@ -83,6 +87,17 @@ export default {
       }
 
       HTTP.post('server/experiment/' + this.experimentSession.experimentId + '/session/' + this.experimentSession.experimentSessionId + '/stop', []).then(success.bind(this)).catch(err.bind(this))
+    },
+    stopSessionOnClick: function (clientId) {
+      function err (e) {
+        this.errors.push(e)
+      }
+      function success (response) {
+        console.log('Experiment Stopped!')
+        console.log(response)
+      }
+
+      HTTP.post('server/experiment/' + this.experimentSession.experimentId + '/session/' + this.experimentSession.experimentSessionId + '/stop', [clientId]).then(success.bind(this)).catch(err.bind(this))
     }
   }
 }
@@ -105,6 +120,14 @@ export default {
     color: white;
     margin: 0 auto;
   }
+  .client:hover .box-label-stop {
+    display: block;
+  }
+  .client:hover .box-label {
+    display: none;
+  }
+
+
   .box-back{
     fill:rgb(222, 222, 222);
     stroke-width:3;
@@ -126,6 +149,16 @@ export default {
     font-style:  italic;
   }
   .box-label{
+    display: block;
+    margin: 0 auto;
+    background-color: crimson;
+    color: white;
+    padding: 0px;
+    border: 0px solid #bfbcbc;
+    width: 80px;
+  }
+  .box-label-stop {
+    display: none;
     margin: 0 auto;
     background-color: crimson;
     color: white;
@@ -163,8 +196,9 @@ export default {
   .btn-stop-exp{
     background-color: crimson;
     font-size: 12px;
-    width: 50px;
-    height: 40px;
+    width: 70px;
+    height: 60px;
+    margin-bottom: 15px;
     box-shadow: 3px 5px #e4e4e4;
   }
   .clientactive {

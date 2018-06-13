@@ -12,7 +12,8 @@ module.exports = {
     return leftPadWithZeros(Math.floor(Math.random() * 1000000000));
   },
 
-  printObjetStructure: function (obj) {
+  getObjectStructure: function (obj) {
+    // Remember you need to console.log output of this function
     function getStruct(obj, cnt) {
       var mycnt = cnt + 1;
       var output = [];
@@ -25,16 +26,19 @@ module.exports = {
         var props = Object.keys(obj);
 
         for (var i = 0; i < props.length; i++) {
+
           var p = props[i];
+
           var typ = typeof obj[p];
+          
           if (Array.isArray(obj[p])) {
             typ = 'array'
           }
-
-          if (typeof obj[p].getMonth === 'function') {
+          if (obj[p] !== null && typeof obj[p].getMonth === 'function') {
             typ = 'date'
 
           }
+   
           switch (typ) {
             case 'array':
               output.push(tab + p + ': ' + typ+ '[');
@@ -54,6 +58,7 @@ module.exports = {
 
         }
     }catch (e){
+
         return tab +"???"
      
       }

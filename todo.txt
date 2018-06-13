@@ -26,7 +26,7 @@ create sql scripts to summarise client data
 Show last experiment 
 Test suite for testing experiments
  
-
+Clean up the server request for new session to not include sessionVariables from original config file
 
 
 

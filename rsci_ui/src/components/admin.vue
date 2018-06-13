@@ -3,12 +3,16 @@
   <div class="admin">
     <div class="section header">
       <div class="row">
-        <div class="col-sm-4">
-          <h1>Admin:<span class="clientId">{{ me.clientId }}</span></h1>
+        <div class="col-sm-2">
+          <h1>Admin:</h1>
         </div>
-        <div class="col-sm-6">
-          <button class ="btn" v-on:click="becomeServer">Become Server</button>
-          <button class ="btn" v-on:click="networkRescan">Rescan Network</button>
+        <div class="col-sm-3" style="margin-top:11px;">
+          <span class="clientId">{{ me.clientId }}</span>
+        </div>
+        <div class="col-sm-5" style="margin-top:11px;text-align:right;padding-right:10px;">
+          <a href="#" v-on:click="becomeServer">Become Server</a>
+          |
+          <a href="#" v-on:click="networkRescan">Rescan Network</a>
            |
           <router-link to="/export">Export</router-link>
         </div>
@@ -29,11 +33,23 @@
       </div>
     </div>
   <div class="section networkInfo">
-    <h1>Network information</h1>
-        <span>Server</span> {{ server.ip  }} (me:{{ server.me  }})
+    <h2>Network</h2>
     <div class="row">
-      <div class="col-sm-6">
-        <h2>Clients</h2>
+      <div class="col-sm-2">
+
+      </div>
+      <div class="col-sm-10">
+        <span>Server</span> {{ server.ip  }} (me:{{ server.me  }})
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-sm-2">
+
+      </div>
+      <div class="col-sm-5">
+        <b>Clients</b>
         <ul id="clientlist" >
           <li v-for="item in clientList" v-bind:key="item.clientId" >
             <a target="" :href="'http://' + item.ip + ':8080/#client'" >{{ item.clientId }}</a>
@@ -41,8 +57,8 @@
         </ul>
       </div>
 
-      <div class="col-sm-6">
-        <h2>Discovery Results</h2>
+      <div class="col-sm-5">
+        <b>Discovery Results</b>
         <ul id="discoverylist">
           <li v-for="item in discoveryList" v-bind:key="item.ip">
             {{ item.ip }}
@@ -178,13 +194,16 @@ export default {
   margin-top: 10px;
 }
 .clientId{
+  font-size: 18px;
+  font-weight: bold;
   color: #d58b8e;
 }
 .config{
 
 }
 .actvity{
-
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 .content {
   flex: 1 0 auto;

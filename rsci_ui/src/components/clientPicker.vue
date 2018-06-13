@@ -1,9 +1,9 @@
 <template>
   <div class="clientPicker">
 
-    <div class="container">
+    <div>
       <div class="row">
-        <div class="col-sm column-1">
+        <div class="col-sm-6 column-1">
            <h4>Expected</h4>
           <div class="client"  v-for="client in filterExpected" v-bind:key="client.clientId">
               <div class="box" v-bind:class="{isOnline: isOnline(client)}" v-on:click="filterExpectedClient_OnClick(client)">
@@ -21,7 +21,7 @@
               </div>
           </div>
         </div>
-        <div class="col-sm">
+        <div class="col-sm-6">
            <h4>Available</h4>
           <div class="client"  v-for="client in filterAvailable" v-bind:key="client.clientId">
             <div class="box" v-bind:class="{isOnline: isOnline(client)}" v-on:click="filterAvailableClient_OnClick(client)">

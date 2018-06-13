@@ -9,11 +9,13 @@ const request = require('request-promise');
 
 this.initExperimentSession = function (experimentRequest) {
   debug('initExperimentSession');
-
+  console.log(helpers.getObjectStructure(experimentRequest));
+  helpers.getObjectStructure(experimentRequest);
   var requestConfig = {
     experimentId: experimentRequest.experimentId,
     experimentSessionId: experimentRequest.experimentSessionId,
     experimentConfig: experimentRequest.experimentConfig,
+    sessionVariables: experimentRequest.experimentConfig.sessionVariables,
   };
 
   var esl = {
@@ -46,8 +48,8 @@ this.initExperimentSession = function (experimentRequest) {
     );
 
   }
-
-  var sess = new requestConfig.experimentConfig.session(requestConfig.experimentSessionId, requestConfig.experimentConfig.config);
+console.log(requestConfig.sessionVariables);
+  var sess = new requestConfig.experimentConfig.session(requestConfig.experimentSessionId, { sessionVariables: requestConfig.sessionVariables });
 
   sess.on('Init', watchEvents.bind(this, esl));
   sess.on('Dispose', watchEvents.bind(this, esl));

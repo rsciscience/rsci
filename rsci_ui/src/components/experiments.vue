@@ -1,6 +1,6 @@
 <template>
   <div class="experiments">
-    <h2>Available Experiments</h2>
+    <h2>Experiments</h2>
 
      <div class="row">
       <div class="col-sm-2">
@@ -10,32 +10,28 @@
           </li>
         </ul>
       </div>
-      <div class="col-sm-10">
-        <div v-if="hasCurrentExperiment">
-         <table>
-           <tr>
-             <td>
-              <h3>{{currentExperiment.name}}</h3>
-              <div  v-for="(value, propertyName,index) in currentExperiment.sessionVariables">
-                  <div><label>{{propertyName}}:</label> <input v-model="currentExperiment.sessionVariables[propertyName]"  placeholder="edit me">  </div>
-              </div>
-             </td>
-             <td>
-                  <button  class = "btn btn-start-exp"  v-on:click="startExperiment()">Start</button>
-             </td>
-           </tr>
-         </table>
-
-          <p />
-
-           <clientPicker v-bind:initialConfig="initialConfig"></clientPicker>
-
+      <div class="col-sm-5">
+        <div  v-for="(value, propertyName,index) in currentExperiment.sessionVariables">
+            <div><label>{{propertyName}}:</label> <input class="session-config-input" v-model="currentExperiment.sessionVariables[propertyName]"  placeholder="edit me">  </div>
         </div>
       </div>
-    </div>
+        <div class="col-sm-5">
+        <button  class = "btn btn-start-exp"  v-on:click="startExperiment()">Start</button>
+        <div><span class="config-detail-label">name:</span> {{ currentExperiment.name }}</div>
+        <div><span class="config-detail-label">type:</span> {{ currentExperiment.type }}</div>
+        <div><span class="config-detail-label">version:</span> {{ currentExperiment.version }}</div>
+        </div>
+      </div>
 
-  </div>
+      <div class="row">
+        <div class="col-sm-2">
 
+        </div>
+        <div class="col-sm-10">
+          <clientPicker class="client-picker" v-bind:initialConfig="initialConfig"></clientPicker>
+        </div>
+      </div>
+</div>
 </template>
 
 <script>
@@ -131,6 +127,9 @@ label{
     padding: 5px;
     width: 100px
 }
+.client-picker {
+    margin-top: 45px;
+}
   .box {
     background: darkgrey;
     border: 5px solid gray;
@@ -151,6 +150,8 @@ label{
   }
 
   .avaibleExperiment {
+    font-size: 18px;
+    font-weight: bold;
      cursor:pointer;
      color:#d58b8e;
      text-decoration:none;
@@ -163,10 +164,10 @@ label{
 .btn-start-exp{
   background-color: green ;
   font-size: 25px;
-      width: 100px;
-    height: 80px;
-    margin-left: 50px;
-    box-shadow: 3px 5px #e4e4e4;
+  width: 100px;
+  height: 80px;
+  box-shadow: 3px 5px #e4e4e4;
+  margin-bottom: 20px;
 }
 
 .btn-stop-exp{
@@ -177,6 +178,13 @@ label{
     margin-left: 50px;
     box-shadow: 3px 5px #e4e4e4;
 
+}
+.session-config-input {
+  margin-left: 15px;
+}
+.config-detail-label {
+  min-width: 70px;
+  text-transform: capitalize;
 }
 
 </style>
