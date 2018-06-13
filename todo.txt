@@ -1,12 +1,6 @@
 Admin
 
-Stop session 
-    Indvidual clients 
-
 Check what happens running muiltiple experimets one after another
-
-Test starting diffenrt boxes in the same session with different prameters 
-    Does the current session work correctly
 
 what happens if running multiple users
 
@@ -20,7 +14,6 @@ Add session prameters to csv it can be diffenrt for each box.
 
 Export direct to Access 
 create sql scripts to summarise client data
-
 
 
 Show last experiment 
