@@ -165,6 +165,7 @@ export default {
     padding: 0px;
     border: 0px solid #bfbcbc;
     width: 80px;
+    height: 58px;
   }
   .box-label.isOnline{
     background-color: green !important;

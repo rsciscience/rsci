@@ -21,6 +21,10 @@ this.getExperimentSessionExportAsCsv = async  function (id, cb) {
    
 };
 
+function escapeDoubleQuotes(str) {
+	return str.replace(/\\([\s\S])|(")/g,"\\$1$2"); // thanks @slevithan!
+}
+
 function processsExperimentSessionData(id, data) {
   let sessionInfo = [];
   let output = [];
@@ -48,7 +52,7 @@ function processsExperimentSessionData(id, data) {
      // console.log(client.clientId);
       clientInfo.push(sessionInfoString);
       clientInfo.push(quoteWrap(client.clientId));
-      clientInfo.push(quoteWrap('config???'));
+      clientInfo.push(quoteWrap( escapeDoubleQuotes(JSON.stringify(client.config.sessionVariables))));
 
       let clientInfoString = clientInfo.join(',');
 
@@ -58,9 +62,8 @@ function processsExperimentSessionData(id, data) {
 
         let actionInfo = [];
         actionInfo.push(clientInfoString);
-        actionInfo.push(quoteWrap(action.actionType));
         actionInfo.push(quoteWrap(action.actionTimeStamp));
-
+        actionInfo.push(quoteWrap(action.actionType));
         output.push(actionInfo.join(','));
       }
     }
