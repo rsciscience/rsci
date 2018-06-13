@@ -168,6 +168,28 @@ this.experiment_start = (req, res) => {
   res.send(clientResponse);
 }
 
+this.experiment_session_stop = (req, res) => {
+  debug('experiment_session_stop');
+
+  function doWork(experimentId, experimentSessionId, input){
+
+    var output = this.serverFunctions.stopExperiment(experimentId, experimentSessionId, input);
+    return  JSON.stringify(output);
+  }
+
+  var clientResponse = {}
+
+  try{
+    clientResponse =  doWork.bind(this, req.params.id, req.params.experimentSessionId, req.body)();
+  }catch (ex) {
+    debug(ex);
+    res.status(500).send('Something broke!')
+    return;
+  }
+
+  res.send(clientResponse);
+}
+
 this.register = (req, res) => {
   debug('server_register');
 
@@ -276,7 +298,7 @@ this.experiment_id_event = (req, res) => {
   }
 
   try{
-    doWork.bind(this,req.params.sessionId ,req.params.id,req.params.clientId, req.body, cb)();
+    doWork.bind(this,req.params.experimentSessionId ,req.params.id,req.params.clientId, req.body, cb)();
   }catch (ex) {
     debug(ex);
     res.status(500).send('Something broke!')

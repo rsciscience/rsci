@@ -74,7 +74,8 @@ this.app.post('/server/register',api_server.register);
 this.app.get('/server/experiment/:id',api_server.experiment_id);
 this.app.get('/server/experiment/:id/initialConfig',api_server.experiment_initialConfig);
 this.app.post('/server/experiment/:id/start',api_server.experiment_start);
-this.app.post('/server/experiment/:id/session/:sessionId/:clientId/event',api_server.experiment_id_event);
+this.app.post('/server/experiment/:id/session/:experimentSessionId/:clientId/event',api_server.experiment_id_event);
+this.app.post('/server/experiment/:id/session/:experimentSessionId/stop',api_server.experiment_session_stop);
 this.app.get('/server/export/session/:id',api_export.session_id);
 this.app.get('/server/export/sessions/list',api_export.experiment_sessions_list);
 

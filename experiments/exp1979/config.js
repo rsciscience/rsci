@@ -9,7 +9,8 @@ module.exports = {
         duration:60000,
         timeOutDuration:3000,
         p1:'iuyi',
-        p2:'khkj'
+        p2:'khkj',
+        p3: 'adfsd'
     }, 
     clientAssignments:[
         {
@@ -25,6 +26,11 @@ module.exports = {
             clientId: 'Box4' ,
             name: 'Box4',
             assignedRat: 'raty04'
+        }        
+        ,{
+            clientId: 'Box10' ,
+            name: 'Box10',
+            assignedRat: 'raty07'
         }
     ]
 };

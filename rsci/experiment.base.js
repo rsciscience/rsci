@@ -12,8 +12,8 @@ var base = class base {
     this.experiment = experiment
     this.uiListens = [];
 
-    this.sessionStopping = function () {
-      debug('sessionStopping');
+    this.stop = function () {
+      debug('stop');
       //server
       this.state.ignoreExtraneousInputs = true;
       this.emit('Stop', { actionTimeStamp: new Date(), actionType: 'Stop' });
@@ -96,7 +96,7 @@ var base = class base {
     this.uiCalls.start({ id: this.id });
     this.emit('Start', { actionTimeStamp: new Date(), actionType: 'Start' });
     this.changeSceneTo(1);
-    setTimeout(this.sessionStopping, this.config.duration);
+    setTimeout(this.stop, this.config.duration);
   } 
 
 

@@ -111,6 +111,66 @@ this.startExperiment = async function (experimentId, inputConfig) {
 };
 
 
+
+this.stopExperiment = async function (experimentId, experimentSessionId, clientList) {
+  debug('stopExperiment');
+
+  let clientsToStop = [];
+
+  console.log(experimentSessionId);
+  const experimentSession = await db.experimentSessionsServer.read(experimentSessionId);
+  console.log(experimentSession);
+
+
+  // if client list is empty - stop all sessions
+  const stopAll = (clientList.length === 0);
+
+  // if clientList matches id from current session stop those 
+  for (var i = 0; i < experimentSession.clients.length; i++) {
+    const client = experimentSession.clients[i];
+
+    if (stopAll || clientList.contains(client.clientId)) {
+      // stop
+      clientsToStop.push({ clientId: client.clientId, ip: client.ip });
+      continue;
+    } 
+  }
+  var port = this.state.listeningPort;
+  
+  async function sendClientStop(client) {
+    debug('sendClientStop');
+
+    var options = {
+      uri: 'http://' + client.ip + ':' + port + '/client/experiment/stop',
+      json: true,
+      method: 'POST',
+      body: {}
+    };
+
+    try {
+      let res = await request(options);
+      return res;
+    } catch (e) {
+      console.log(e)
+      debug('Error sending experiment start event');
+    }
+    return null;
+  }
+
+  let calledClients = await Promise.all(clientsToStop.map(sendClientStop));
+
+  return {
+    clientList: clientsToStop,
+    stopDate: new Date(),
+    experimentId: experimentId,
+    experimentSessionId: experimentSessionId,
+  };
+
+};
+
+
+
+
 this.processExperimentSessionEvent = async function (experimentSessionId, experimentId, clientId, clientAction) {
   debug('processExperimentSessionEvent');
   await db.experimentSessionsServer.insertClientAction(experimentSessionId, clientId, clientAction);
@@ -126,6 +186,7 @@ this.getExperimentSessionOverview = async function (experimentSessionId){
     output.running = true;
     output.experimentSessionId = data.experimentSessionId;
     output.clients = [];
+    output.experimentId = data.experimentId;
     
     for (var j = 0; j < data.clients.length; j++) {
       var client = data.clients[j];
