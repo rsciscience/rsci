@@ -1,48 +1,33 @@
 Admin
 
-add is ui running to client state. report back when the discovery is called
+Stop session 
+    Indvidual clients 
 
-fix what clients a called to run exp 
+Check what happens running muiltiple experimets one after another
 
+Test starting diffenrt boxes in the same session with different prameters 
+    Does the current session work correctly
 
-client name change propagated to server
+what happens if running multiple users
 
-Persist all ExperimentSessions client (local) and server
-check server data format
+show parameters of a box. 
 
-Add Export data
-by session 
-    CSV
-    SQL
-All sessions
+Work on showing current experiment 
+    what to do when it finishes
 
-Save last config for experient to database
-
-Change more settings on start 
-    which ratis in box
-
-client screen conneted to sever not working
-
-change discovery to event emiter to watch when network is discovering. dancig rat???
+Add session prameters to csv it can be diffenrt for each box. 
 
 
-Createing a job 
-    load variables 
-    select boxes you want 
-        load rat id in to box
-            change varibles rat
-
-session (job) 1 
-    session number/name : external id to define job.
-    save rat id for each box 
-    rename : 5 choice serial raction time task 
-    nose should not register as premiture. 
-    code ommisions
-    realtime stats on a job 
-     
-
-Access 
+Export direct to Access 
 create sql scripts to summarise client data
+
+
+
+Show last experiment 
+Test suite for testing experiments
+ 
+
+
 
 
 
