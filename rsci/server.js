@@ -24,7 +24,8 @@ this.startExperiment = async function (experimentId, inputConfig) {
     experimentSessionId: experimentSessionId,
     experimentId: experimentId,
     sessionStartTime: new Date(),
-    clients: []
+    clients: [],
+    sessionCompleted: false
   }
 
   var experimentConfig = null;
@@ -118,9 +119,7 @@ this.stopExperiment = async function (experimentId, experimentSessionId, clientL
 
   let clientsToStop = [];
 
-  console.log(experimentSessionId);
   const experimentSession = await db.experimentSessionsServer.read(experimentSessionId);
-  console.log(experimentSession);
 
 
   // if client list is empty - stop all sessions
@@ -175,6 +174,21 @@ this.stopExperiment = async function (experimentId, experimentSessionId, clientL
 this.processExperimentSessionEvent = async function (experimentSessionId, experimentId, clientId, clientAction) {
   debug('processExperimentSessionEvent');
   await db.experimentSessionsServer.insertClientAction(experimentSessionId, clientId, clientAction);
+
+  const es = await db.experimentSessionsServer.read(experimentSessionId);
+
+  if (clientAction.actionType === 'Dispose') {
+
+    es.clientDisposeCount =  es.clientDisposeCount + 1;
+
+    if (es.clients.length === es.clientDisposeCount) {
+      es.sessionCompleted = true;
+      es.sessionCompletedTime = new Date();
+    }
+
+    await db.experimentSessionsServer.save(es);
+  }
+  
 }
 
 
@@ -188,6 +202,8 @@ this.getExperimentSessionOverview = async function (experimentSessionId){
     output.experimentSessionId = data.experimentSessionId;
     output.clients = [];
     output.experimentId = data.experimentId;
+    output.sessionCompleted = data.sessionCompleted;
+    output.sessionCompletedTime = data.sessionCompletedTime;
     
     for (var j = 0; j < data.clients.length; j++) {
       var client = data.clients[j];

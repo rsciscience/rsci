@@ -117,8 +117,6 @@ label{
   width :150px
   }
 
-.experimentsList{
-}
 .experimentsList span:hover{
   color: blue;
 }

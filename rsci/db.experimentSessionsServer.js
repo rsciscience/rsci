@@ -9,7 +9,9 @@ function init(db, provider) {
         experimentSessionId: String,
         experimentId: String,
         clients: Array,
-        sessionStartTime: String,
+        sessionStartTime: Date,
+        sessionCompleted: Boolean,
+        sessionCompletedTime: Date,
     });
 
     this.model = provider.model('experimentSessionsServer', schema);

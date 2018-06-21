@@ -18,6 +18,7 @@
               <div class="box-label" v-bind:class="{isOnline: isOnline(client)}">
                 <div class="id">{{client.clientId}}</div>
                 <div class="assignedRat">{{client.assignedRat}}</div>
+                <input class="ratInput" v-model="client.assignedRat" />
               </div>
           </div>
         </div>
@@ -202,6 +203,21 @@ export default {
   }
   .col-sm {
     text-align: center;
+  }
+  .ratInput {
+    display: none;
+    width: 100%;
+    text-align: center;
+    color: black;
+    height: 24px;
+  }
+
+  .client:hover .ratInput {
+    display: block;
+  }
+
+  .client:hover .assignedRat {
+    display: none;
   }
 
 </style>
