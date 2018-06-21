@@ -7,9 +7,11 @@
 
         <button class = "btn btn-stop-exp"  v-on:click="stopAllSessionsOnClick()">Stop</button>
         <div>session: {{ experimentSession.experimentSessionId }}</div>
+        <div>sessionCompleted: {{ experimentSession.sessionCompleted }}</div>
+        <div>sessionCompletedTime: {{ experimentSession.sessionCompletedTime }}</div>
       </div>
 
-      <div class="col-sm-10">
+      <div class="col-sm-10 runningExperimentsWrapper">
         <div class="client"  v-for="client in experimentSession.clients" v-bind:key="client.clientId">
           <div class="box" v-bind:class="{isOnline: isOnline(client)}" v-on:click="stopAllSessionsOnClick(client.clientId)">
           <svg style='width: 100%; height: 100%;  position:relitive; left:0; top:0'>
@@ -209,6 +211,14 @@ export default {
   .last-action{
     color:white;
     font-size: 10px
+  }
+  .runningExperimentsWrapper {
+    display: flex;
+
+  }
+
+  .runningExperimentsWrapper .box-label {
+    min-height: 58px;
   }
 
 </style>
