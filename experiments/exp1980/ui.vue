@@ -85,24 +85,24 @@ export default {
         this.showScene5 = false;
 
         switch (action.type) {
-          case "ChangeToScene1":
+          case "ChangeToScene_1":
             this.currentScene = 1;
             this.showScene1 = true;
             this.ITIOn = false;
             break;
-          case "ChangeToScene2":
+          case "ChangeToScene_2":
             this.currentScene = 2;
             this.showScene2 = true;
             break;
-          case "ChangeToScene3":
+          case "ChangeToScene_3":
             this.currentScene = 3;
             this.showScene3 = true;
             break;
-          case "ChangeToScene4":
+          case "ChangeToScene_4":
             this.currentScene = 4;
             this.showScene4 = true;
             break;
-          case "ChangeToScene5":
+          case "ChangeToScene_5":
             this.currentScene = 5;
             this.showScene5 = true;
             break;

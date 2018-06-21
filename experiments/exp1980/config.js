@@ -8,8 +8,7 @@ module.exports = {
     sessionVariables:{
         duration:60000,
         timeOutDuration:3000,
-        p1:'iuyi',
-        p2:'khkj'
+        initalScreen:1
     }, 
     clientAssignments:[
         {

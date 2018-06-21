@@ -1,15 +1,29 @@
-Admin
+
+
+chage the rat id from the box ui 
+
+
+
+
+Show parameters of a box. 
+
+ui show result of last action 
+
+no updates on page to show werver is working. 
+
+
+
+
+Should you be able to start more tah one experiment. ??
 
 Check what happens running muiltiple experimets one after another
 
-what happens if running multiple users
+what happens if running multiple sessions
 
-show parameters of a box. 
+
 
 Work on showing current experiment 
     what to do when it finishes
-
-Add session prameters to csv it can be diffenrt for each box. 
 
 
 Export direct to Access 

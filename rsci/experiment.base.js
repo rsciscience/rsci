@@ -51,7 +51,7 @@ var base = class base {
     this.changeSceneTo = function (newScene) {
       debug('changeSceneTo');
       this.state.currentScene = newScene;
-      this.doEvent('ChangeToScene' + newScene);
+      this.doEvent('ChangeToScene_' + newScene);
     }.bind(this);
 
 
@@ -95,7 +95,7 @@ var base = class base {
     // on start after the ui is ready to go.
     this.uiCalls.start({ id: this.id });
     this.emit('Start', { actionTimeStamp: new Date(), actionType: 'Start' });
-    this.changeSceneTo(1);
+    this.changeSceneTo(this.config.initalScreen);
     setTimeout(this.stop, this.config.duration);
   } 
 

@@ -10,7 +10,8 @@ module.exports = {
         timeOutDuration:3000,
         p1:'iuyi',
         p2:'khkj',
-        p3: 'adfsd'
+        p3: 'adfsd',
+        initalScreen:1
     }, 
     clientAssignments:[
         {

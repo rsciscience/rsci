@@ -1,14 +1,20 @@
 "use strict";
 
 module.exports = {
-    id:'exp1982',
+    id:'expDD',
     version: '1.0.0',
-    name:'exp1982',
-    type:"masons exp",
+    name:'Delayed Discounting',
+    type:"Delayed Dicounting",
     sessionVariables:{
         duration:60000,
         timeOutDuration:3000,
-        masonNumber:''
+        startTaskTimeOut:5000,
+        maxTrials:10,
+        payoutPecent1:90,
+        payoutPecent2:80,
+        payoutPecent3:50,
+        payoutPecent4:20,
+        initalScreen:1
     }, 
     clientAssignments:[
         {

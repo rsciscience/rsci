@@ -44,62 +44,92 @@ class session extends base {
             |___|   
 
         */
-        // You need to listen to for the messages from the client when the screen is pressed 
-        addUIListner('scene1TrialStartNosepoke_onclick', scene1TrialStartNosepoke_onclick.bind(this));
-        addUIListner('scene2nosepokestim1_onclick', callAWinner.bind(this,1));
-        addUIListner('scene2nosepokestim2_onclick', callAWinner.bind(this,2));
-        addUIListner('scene2nosepokestim3_onclick', callAWinner.bind(this,3));
-        addUIListner('scene2nosepokestim4_onclick', callAWinner.bind(this,4));
-        addUIListner('scene2nosepokestim5_onclick', callAWinner.bind(this,5));
-        addUIListner('prematureResponse1', prematureResponse.bind(this));
-        addUIListner('prematureResponse2', prematureResponse.bind(this));
-        addUIListner('prematureResponse3', prematureResponse.bind(this));
-        addUIListner('prematureResponse4', prematureResponse.bind(this));
-        addUIListner('prematureResponse5', prematureResponse.bind(this));
+        // You need to listen to for the messages from the client when the screen is pressed
+        /* 
+        **incomming**
+        startTrial   
+        nosePoke1_pressed
+        nosePoke2_pressed
+        nosePoke3_pressed
+        nosePoke4_pressed
 
-        function prematureResponse() {
-            clearTimeout(this.state.interTrialIntervalTimeOut);
-            changeSceneTo(5);
-            setTimeout(() => {
-                changeSceneTo(1);
-            }, 5000);
-        }
 
-        function correctResponseTime() {
+        **outgoing**
+        ChangeToScene_start
+        ChangeToScene_task
+        ChangeToScene_win
+        ChangeToScene_lose
+        NosePokeStimulus_1
+        NosePokeStimulus_2
+        NosePokeStimulus_3
+        NosePokeStimulus_4
+        */
+            
+
+        addUIListner('startTrial', startTrial.bind(this));
+        addUIListner('nosePoke1_pressed', callAWinner.bind(this,1));
+        addUIListner('nosePoke2_pressed', callAWinner.bind(this,2));
+        addUIListner('nosePoke3_pressed', callAWinner.bind(this,3));
+        addUIListner('nosePoke4_pressed', callAWinner.bind(this,4));
+        
+
+        function correctResponseTime(payout) {
             debug('Winner Winner Chicken Dinner !!!!');
-            dispenseFood();
-            record('dispenseFood')
-            record('heres a thing')
-            changeSceneTo(3);
+
+            for(var i=0 ; i < payout; i++){
+                dispenseFood();
+                record('dispenseFood')
+            }
+            changeSceneTo();
             setTimeout(() => {
-                changeSceneTo(1);
+                changeSceneTo('start');
             }, 1000);
         }
 
         function incorrectResponseTime() {
-            changeSceneTo(4);
+            changeSceneTo('lose');
             setTimeout(() => {
                 changeSceneTo(1);
-            }, 10000);
+            }, );
         }
 
         function callAWinner(poke) {
+            var percent = 0;
+
+            switch(poke){
+                case 1 : break; 
+                    percent = this.config.payoutPecent1;
+                case 2 : break; 
+                    percent = this.config.payoutPecent2;
+                case 3 : break;
+                    percent = this.config.payoutPecent3;
+                case 4 : break; 
+                    percent = this.config.payoutPecent4; 
+            }
+
             if (this.state.winningPokeHole === poke) {
-                dispenseFood(); 
                 correctResponseTime();
+                 
             } else {
                 incorrectResponseTime();
             }
         }
 
-        function scene1TrialStartNosepoke_onclick(poke) {
+        function startTrial(poke) {
+            if(!this.state.trialCount){
+                this.state.trialCount = 0 ;
+            }
+            this.state.trialCount ++;
+
+            if(!this.state.trialCount >= this.config.maxTrials ){
+                record('MaxTrailsComplete')
+                this.stop()  ;
+            }
+
             this.state.interTrialIntervalTimeOut = setTimeout(() => {
                 this.state.interTrialInterval = new Date();
-                changeSceneTo(2);
-                this.state.winningPokeHole = Math.floor(Math.random() * 5) + 1;
-                debug('Next winner is poke ' + this.state.winningPokeHole);
-                doEvent('NosePokeStimulus_' + this.state.winningPokeHole);
-            }, 5000);
+                changeSceneTo('task');
+            }, this.config.startTaskTimeOut);
             doEvent('ITIOn');
         }
 
