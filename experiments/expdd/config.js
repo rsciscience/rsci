@@ -14,7 +14,6 @@ module.exports = {
         payoutPecent2:80,
         payoutPecent3:50,
         payoutPecent4:20,
-        initalScreen:"start"
     }, 
     clientAssignments:[
         {

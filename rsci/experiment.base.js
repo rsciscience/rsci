@@ -95,7 +95,7 @@ var base = class base {
     // on start after the ui is ready to go.
     this.uiCalls.start({ id: this.id });
     this.emit('Start', { actionTimeStamp: new Date(), actionType: 'Start' });
-    this.changeSceneTo(this.config.initalScreen);
+    this.changeSceneTo('start');
     setTimeout(this.stop, this.config.duration);
   } 
 

@@ -2,7 +2,7 @@
   <div class="session">
     
     <div class= "scene-container"  v-bind:class="{flashing: isFlashing}">
-      <div id="scene_1" sceneNumber="1" class = "scene" v-bind:class="{currentScene: showScene1}">
+      <div id="scene_start" sceneNumber="1" class = "scene" v-bind:class="{currentScene: showScene1}">
         <div class = "sceneLabel"> trial start scene </div>
         <button v-on:click="Scene1TrialStartNosepoke_onclick" class= "nosepokeLarge" v-bind:class="{nosepokeLargeOff: ITIOn}"></button>
         <div class= "nosepokeholescontainer">
@@ -85,7 +85,7 @@ export default {
         this.showScene5 = false;
 
         switch (action.type) {
-          case "ChangeToScene_1":
+          case "ChangeToScene_start":
             this.currentScene = 1;
             this.showScene1 = true;
             this.ITIOn = false;

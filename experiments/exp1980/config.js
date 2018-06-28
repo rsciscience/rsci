@@ -8,7 +8,6 @@ module.exports = {
     sessionVariables:{
         duration:60000,
         timeOutDuration:3000,
-        initalScreen:1
     }, 
     clientAssignments:[
         {

@@ -94,7 +94,7 @@ class session extends base {
         function callAWinner(poke) {
             var percent = 0;
             var payout = 0 ; 
-
+            doEvent('NosePokeStimulus_' + this.state.winningPokeHole);
             switch(poke){
                 case 1 : break; 
                     percent = this.config.payoutPecent1;

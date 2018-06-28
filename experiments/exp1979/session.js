@@ -71,14 +71,14 @@ class session extends base {
             record('dispenseFood')
             changeSceneTo(3);
             setTimeout(() => {
-                changeSceneTo(1);
+                changeSceneTo('start');
             }, 1000);
         }
 
         function incorrectResponseTime() {
             changeSceneTo(4);
             setTimeout(() => {
-                changeSceneTo(1);
+                changeSceneTo('start');
             }, 10000);
         }
 

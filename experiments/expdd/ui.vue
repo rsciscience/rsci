@@ -2,11 +2,11 @@
   <div class="session">
     
     <div class= "scene-container"  >
-      <div id="scene_start" sceneNumber="1" class = "scene" v-bind:class="{currentScene: showScene1}">
+      <div id="scene_start" class = "scene" v-bind:class="{currentScene: isShowSceen_start }">
         <div class = "sceneLabel"> trial start scene </div>
         <button v-on:click="startTrial_onclick" class= "nosepokeLarge"></button>
       </div>
-      <div id="scene_task"  sceneNumber="2" class = "scene" v-bind:class="{currentScene: showScene2}" >
+      <div id="scene_task"  class = "scene" v-bind:class="{currentScene: isShowSceen_task}" >
           <div class = "sceneLabel"> stimulus presentation scene </div>
           <div class= "nosepokeholescontainer">
             <button v-on:click="nosepoke1_onclick" class="nosepoke nosepoke1" v-bind:class="{nosepokeActive: NosePokeStimulus_1}"  ></button>
@@ -15,12 +15,13 @@
             <button v-on:click="nosepoke4_onclick" class="nosepoke nosepoke4" v-bind:class="{nosepokeActive: NosePokeStimulus_4}"  ></button>
           </div>
       </div>
-      <div id="scene_win" class = "scene" sceneNumber="3" v-bind:class="{currentScene: showScene3}" >
+      <div id="scene_win" class = "scene"  v-bind:class="{currentScene: isShowSceen_win}" >
           <div class = "sceneLabel"> win outcome scene</div>
       </div>
-      <div id="scene_lose"  class = "scene" sceneNumber="4" v-bind:class="{currentScene: showScene4}" > 
+      <div id="scene_lose"  class = "scene" v-bind:class="{currentScene: isShowSceen_lose}" > 
           <div class = "sceneLabel"> lose outcome scene</div>
       </div>
+  
     </div>
     
   </div>
@@ -47,32 +48,17 @@ export default {
 
     client_experiment_action: function(action) {
       console.log("client_experment_action", action);
-      if (action.type.startsWith("ChangeToScene")) {
-        this.showScene1 = false;
-        this.showScene2 = false;
-        this.showScene3 = false;
-        this.showScene4 = false;
-        this.showScene5 = false;
 
-        switch (action.type) {
-          case "ChangeToScene_start":
-            this.currentScene = 1;
-            this.showScene1 = true;
-            break;
-          case "ChangeToScene_task":
-            this.currentScene = 2;
-            this.showScene2 = true;
-            break;
-          case "ChangeToScene_win":
-            this.currentScene = 3;
-            this.showScene3 = true;
-            beep();
-            break;
-          case "ChangeToScene_lose":
-            this.currentScene = 4;
-            this.showScene4 = true;
-            break;
+      const sceneActionMarker  = "ChangeToScene_" ; 
+      if (action.type.startsWith(SceneActionMarker)) {
+       for(var propertyName in this) {
+         if(propertyName.startsWith("isShowSceen")){
+          console.log(propertyName)
+           this[propertyName] = false;
+          }
         }
+        var sceneName = action.type.subString(sceneActionMarker.length , action.length -  sceneActionMarker.length )
+        this['isShowSceen_' +  sceenName ] = true;
       }
       
       if (action.type.startsWith("NosePokeStimulus_")) {
@@ -108,10 +94,7 @@ export default {
       },
       ruunning: false,
       currentScene: 0,
-      showScene1: false,
-      showScene2: false,
-      showScene3: false,
-      showScene4: false
+      isShowSceen_start: false,
      
     };
   },
