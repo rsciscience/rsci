@@ -66,7 +66,7 @@ class session extends base {
         */
             
 
-        addUIListner('startTrial', startTrial.bind(this));
+        addUIListner('startTrial_pressed', startTrial.bind(this));
         addUIListner('nosePoke1_pressed', callAWinner.bind(this,1));
         addUIListner('nosePoke2_pressed', callAWinner.bind(this,2));
         addUIListner('nosePoke3_pressed', callAWinner.bind(this,3));
@@ -74,13 +74,11 @@ class session extends base {
         
 
         function correctResponseTime(payout) {
-            debug('Winner Winner Chicken Dinner !!!!');
-
+            changeSceneTo('win');
             for(var i=0 ; i < payout; i++){
                 dispenseFood();
                 record('dispenseFood')
             }
-            changeSceneTo();
             setTimeout(() => {
                 changeSceneTo('start');
             }, 1000);
@@ -89,30 +87,44 @@ class session extends base {
         function incorrectResponseTime() {
             changeSceneTo('lose');
             setTimeout(() => {
-                changeSceneTo(1);
-            }, );
+                changeSceneTo('start');
+            },5000 );
         }
 
         function callAWinner(poke) {
             var percent = 0;
+            var payout = 0 ; 
 
             switch(poke){
                 case 1 : break; 
                     percent = this.config.payoutPecent1;
+                    payout = 1;
                 case 2 : break; 
                     percent = this.config.payoutPecent2;
+                    payout = 2;
                 case 3 : break;
                     percent = this.config.payoutPecent3;
+                    payout = 3;
                 case 4 : break; 
                     percent = this.config.payoutPecent4; 
+                    payout = 4;
             }
 
-            if (this.state.winningPokeHole === poke) {
-                correctResponseTime();
-                 
+            var d = Math.random();
+            this.state['payout'+poke+'total'] = this.state['payout'+poke+'total'] + 1; 
+            if (d < (percent/100)){
+                correctResponseTime(payout);
+                this.state['payout'+poke+'win'] = this.state['payout'+poke+'win'] + 1; 
             } else {
                 incorrectResponseTime();
+                this.state['payout'+poke+'win'] = this.state['payout'+poke+'lose'] + 1; 
             }
+
+            record('Payout Rates' + '1:' + ( this.state['payout1win'] /this.state['payout1total'] )* 100 )
+            record('Payout Rates' + '2:' + ( this.state['payout2win'] /this.state['payout2total'] )* 100 )
+            record('Payout Rates' + '3:' + ( this.state['payout3win'] /this.state['payout3total'] )* 100 )
+            record('Payout Rates' + '4:' + ( this.state['payout4win'] /this.state['payout4total'] )* 100 )
+
         }
 
         function startTrial(poke) {
@@ -130,9 +142,7 @@ class session extends base {
                 this.state.interTrialInterval = new Date();
                 changeSceneTo('task');
             }, this.config.startTaskTimeOut);
-            doEvent('ITIOn');
         }
-
     
     }
 };

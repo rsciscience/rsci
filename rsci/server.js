@@ -207,8 +207,6 @@ this.getExperimentSessionOverview = async function (experimentSessionId){
     
     for (var j = 0; j < data.clients.length; j++) {
       var client = data.clients[j];
-console.log(helpers.getObjectStructure(client.sessionVariables));
-console.log(helpers.getObjectStructure(client.config.sessionVariables));
 
       var clientOverview =  {
         isOnline:true,
