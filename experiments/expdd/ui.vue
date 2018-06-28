@@ -9,10 +9,10 @@
       <div id="scene_task"  class = "scene" v-bind:class="getCurrentScene('task')" >
           <div class = "sceneLabel"> stimulus presentation scene </div>
           <div class= "nosepokeholescontainer">
-            <button v-on:click="nosepoke1_onclick" class="nosepoke nosepoke1" v-bind:class="{nosepokeActive: NosePokeStimulus_1}"  ></button>
-            <button v-on:click="nosepoke2_onclick" class="nosepoke nosepoke2" v-bind:class="{nosepokeActive: NosePokeStimulus_2}"  ></button>
-            <button v-on:click="nosepoke3_onclick" class="nosepoke nosepoke3" v-bind:class="{nosepokeActive: NosePokeStimulus_3}"  ></button>
-            <button v-on:click="nosepoke4_onclick" class="nosepoke nosepoke4" v-bind:class="{nosepokeActive: NosePokeStimulus_4}"  ></button>
+            <button v-on:click="nosepoke1_onclick" class="nose-poke nosepoke1" v-bind:class="isNosePokeActive('1')"  ></button>
+            <button v-on:click="nosepoke2_onclick" class="nose-poke nosepoke2" v-bind:class="isNosePokeActive('2')"  ></button>
+            <button v-on:click="nosepoke3_onclick" class="nose-poke nosepoke3" v-bind:class="isNosePokeActive('3')"  ></button>
+            <button v-on:click="nosepoke4_onclick" class="nose-poke nosepoke4" v-bind:class="isNosePokeActive('4')"  ></button>
           </div>
       </div>
       <div id="scene_win" class = "scene"  v-bind:class="getCurrentScene('win')" >
@@ -51,35 +51,18 @@ export default {
 
       const sceneActionMarker  = "ChangeToScene_" ; 
       if (action.type.startsWith(sceneActionMarker)) {
-        debugger
-        var sceneName = action.type.substring(sceneActionMarker.length, action.type.length - sceneActionMarker.length )
-        console.log('sceneName set ' + sceneName)
+
+        var sceneName = action.type.substring(sceneActionMarker.length, action.type.length)
+
         this.currentScene = sceneName;
       }
-      
-      if (action.type.startsWith("NosePokeStimulus_")) {
-        this.NosePokeStimulus_1 = false;
-        this.NosePokeStimulus_2 = false;
-        this.NosePokeStimulus_3 = false;
-        this.NosePokeStimulus_4 = false;
-        this.NosePokeStimulus_5 = false;
-        switch (action.type) {
-          case "NosePokeStimulus_1":
-            this.NosePokeStimulus_1 = true;
-            break;
-          case "NosePokeStimulus_2":
-            this.NosePokeStimulus_2 = true;
-            break;
-          case "NosePokeStimulus_3":
-            this.NosePokeStimulus_3 = true;
-            break;
-          case "NosePokeStimulus_4":
-            this.NosePokeStimulus_4 = true;
-            break;
-          case "NosePokeStimulus_5":
-            this.NosePokeStimulus_5 = true;
-            break;
-        }
+
+      if (action.type.startsWith("NosePokeStimulus_on_")) {
+        Vue.set(this, 'poke' + action.type.substring(action.type.length - 1, action.type.length), true)
+        // this.nosePokeStimulusValues[ 'poke' + action.type.substring(action.type.length - 1, action.type.length)] = true;
+      } 
+      if (action.type.startsWith("NosePokeStimulus_off_")) {
+        this.nosePokeStimulusValues[ 'poke' + action.type.substring(action.type.length - 1, action.type.length)] = false;
       } 
     }
   },
@@ -91,7 +74,7 @@ export default {
       ruunning: false,
       currentScene: '',
       isShowSceen_start: false,
-     
+      nosePokeStimulusValues: {}
     };
   },
   mounted() {
@@ -114,14 +97,21 @@ export default {
     },
 
     getCurrentScene: function(scene) {
-      console.log('scene inside getCurrentScene ' + scene)
-      console.log('curentScene inside getCurrentScene ', + this.currentScene)
       var output = [];
       if (this.currentScene === scene) {
         output.push('current-scene');
       }
     return output;
-    }
+    },
+    isNosePokeActive: function(nosePokeID) {
+      debugger
+      var output = [];
+      if (this['poke' + nosePokeID] === true) {
+        output.push('nose-poke-active');
+      }
+      return output;
+    },
+
   }
 }
 </script>
@@ -189,13 +179,16 @@ a {
   animation: color-me-in 1s;
 }
 
-.nosepoke {
+.nose-poke {
   height: 100px;
   width: 100px;
   margin-left: 65px;
   background-color: white;
 }
 
+.nose-poke-active {
+  background-color: yellow;
+}
 
 .nosepokeholescontainer {
   border: 1px rgb(153, 153, 155);

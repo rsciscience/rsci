@@ -141,6 +141,7 @@ class session extends base {
             this.state.interTrialIntervalTimeOut = setTimeout(() => {
                 this.state.interTrialInterval = new Date();
                 changeSceneTo('task');
+                doEvent('NosePokeStimulus_on_1');
             }, this.config.startTaskTimeOut);
         }
     
