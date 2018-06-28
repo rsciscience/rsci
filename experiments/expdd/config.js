@@ -25,6 +25,11 @@ module.exports = {
             clientId: 'Box4' ,
             name: 'Box4',
             assignedRat: 'raty04'
+        },
+        {
+            clientId: 'box5-fvm',
+            name: 'box5-fvm',
+            assignedRat: 'raty07'
         }
     ]
 };
