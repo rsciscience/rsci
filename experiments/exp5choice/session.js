@@ -51,14 +51,15 @@ class session extends base {
         addUIListner('scene2nosepokestim3_onclick', callAWinner.bind(this,3));
         addUIListner('scene2nosepokestim4_onclick', callAWinner.bind(this,4));
         addUIListner('scene2nosepokestim5_onclick', callAWinner.bind(this,5));
-        addUIListner('prematureResponse1', prematureResponse.bind(this));
-        addUIListner('prematureResponse2', prematureResponse.bind(this));
-        addUIListner('prematureResponse3', prematureResponse.bind(this));
-        addUIListner('prematureResponse4', prematureResponse.bind(this));
-        addUIListner('prematureResponse5', prematureResponse.bind(this));
+        addUIListner('prematureResponse1', prematureResponse.bind(this,1));
+        addUIListner('prematureResponse2', prematureResponse.bind(this,2));
+        addUIListner('prematureResponse3', prematureResponse.bind(this,3));
+        addUIListner('prematureResponse4', prematureResponse.bind(this,4));
+        addUIListner('prematureResponse5', prematureResponse.bind(this,5));
 
-        function prematureResponse() {
+        function prematureResponse(val) {
             clearTimeout(this.state.interTrialIntervalTimeOut);
+            record('prematureResponse' + val );
             changeSceneTo(5);
             setTimeout(() => {
                 changeSceneTo(1);
@@ -97,7 +98,8 @@ class session extends base {
                 changeSceneTo(2);
                 this.state.winningPokeHole = Math.floor(Math.random() * 5) + 1;
                 debug('Next winner is poke ' + this.state.winningPokeHole);
-                doEvent('NosePokeStimulus_' + this.state.winningPokeHole);
+                doEvent('NosePokeStimulus_off_all');
+                doEvent('NosePokeStimulus_on_' + this.state.winningPokeHole);
             }, 5000);
             doEvent('ITIOn');
         }

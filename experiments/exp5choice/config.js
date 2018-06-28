@@ -1,9 +1,9 @@
 "use strict";
 
 module.exports = {
-    id:'exp1978',
+    id:'exp5Choice',
     version: '1.0.0',
-    name:'exp1978',
+    name:'5 choice',
     type:"5 choice",
     sessionVariables:{
         duration:60000,
@@ -23,6 +23,16 @@ module.exports = {
             clientId: 'Box4' ,
             name: 'Box4',
             assignedRat: 'raty04'
+        }        
+        ,{
+            clientId: 'Box10' ,
+            name: 'Box10',
+            assignedRat: 'raty07'
+        },
+        {
+            clientId: 'box5-fvm',
+            name: 'box5-fvm',
+            assignedRat: 'raty07'
         }
     ]
 };

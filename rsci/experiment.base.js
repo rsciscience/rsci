@@ -21,6 +21,7 @@ var base = class base {
       //client
       this.uiCalls.stop({ id: this.id });
       this.uiCalls.dispose({ id: this.id });
+      console.log(this.state);
     }.bind(this);
 
     this.listen = function (incomingMessage) {

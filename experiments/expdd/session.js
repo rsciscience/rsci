@@ -86,6 +86,7 @@ class session extends base {
 
         function incorrectResponseTime() {
             changeSceneTo('lose');
+            doEvent('beep');
             setTimeout(() => {
                 changeSceneTo('start');
             },5000 );
@@ -137,8 +138,9 @@ class session extends base {
                 record('MaxTrailsComplete')
                 this.stop()  ;
             }
-
+            this.state.ignoreExtraneousInputs = true;
             this.state.interTrialIntervalTimeOut = setTimeout(() => {
+                this.state.ignoreExtraneousInputs = false;
                 this.state.interTrialInterval = new Date();
                 changeSceneTo('task');
                 doEvent('NosePokeStimulus_on_1');
