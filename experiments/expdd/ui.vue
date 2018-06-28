@@ -50,15 +50,15 @@ export default {
       console.log("client_experment_action", action);
 
       const sceneActionMarker  = "ChangeToScene_" ; 
-      if (action.type.startsWith(SceneActionMarker)) {
+      if (action.type.startsWith(sceneActionMarker)) {
        for(var propertyName in this) {
          if(propertyName.startsWith("isShowSceen")){
           console.log(propertyName)
            this[propertyName] = false;
           }
         }
-        var sceneName = action.type.subString(sceneActionMarker.length , action.length -  sceneActionMarker.length )
-        this['isShowSceen_' +  sceenName ] = true;
+        var sceneName = action.type.substring(sceneActionMarker.length , action.length -  sceneActionMarker.length )
+        this['isShowSceen_' +  sceneName ] = true;
       }
       
       if (action.type.startsWith("NosePokeStimulus_")) {
