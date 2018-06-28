@@ -146,6 +146,29 @@ this.experiments_list = (req, res) => {
   res.send(clientResponse);
 }
 
+
+this.experiments_reload = (req, res) => {
+  debug('server_experiments_reload');
+
+  function doWork(input){
+    var output = this.serverFunctions.experimentsReload();
+    return  JSON.stringify( output);
+  }
+
+  var clientResponse = {}
+
+  try{
+    clientResponse =  doWork.bind(this, req.body)();
+  }catch (ex) {
+    debug(ex);
+    res.status(500).send('Something broke!')
+    return;
+  }
+
+  res.send(clientResponse);
+}
+
+
 this.experiment_start = (req, res) => {
   debug('server_experiment_start_event');
 

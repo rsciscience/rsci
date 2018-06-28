@@ -286,6 +286,13 @@ this.experimentsList = function () {
 
   return output;
 };
+this.experimentsReload = function () {
+  debug('experimentsReload');
+  var output = {};
+  this.state.experiments.configs = this.loadExperiments(this.state.experiments.configDir); 
+  output.refreshing = true;
+  return output;
+};
 
 this.register = function (cb) {
   debug('register');

@@ -14,6 +14,8 @@
           |
           <a href="#" v-on:click="networkRescan">Rescan Network</a>
            |
+             <a href="#" v-on:click="experimentsRefresh">Reload Experiments</a>
+           |
           <router-link to="/export">Export</router-link>
         </div>
         <div class="col-sm-2">
@@ -150,6 +152,17 @@ export default {
       }
 
       HTTP.post('server/register', {}).then(success.bind(this)).catch(err.bind(this))
+    },
+    experimentsRefresh: function () {
+      function err (e) {
+        this.errors.push(e)
+      }
+
+      function success (response) {
+        console.log('Called server/experiments/reload')
+      }
+
+      HTTP.post('server/experiments/reload', {}).then(success.bind(this)).catch(err.bind(this))
     },
     networkRescan: function () {
       function err (e) {

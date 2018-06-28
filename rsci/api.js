@@ -68,6 +68,7 @@ this.app.get('/server/network',api_server.network);
 this.app.post('/server/network/rescan',api_server.network_rescan);
 this.app.get('/server/experiments/sessions',api_server.experiments_sessions);
 this.app.get('/server/experiments/list',api_server.experiments_list);
+this.app.post('/server/experiments/reload',api_server.experiments_reload);
 this.app.post('/server/client/add',api_server.client_add);
 this.app.post('/server/client/updateClientID',api_server.updateClientID);
 this.app.post('/server/register',api_server.register);
