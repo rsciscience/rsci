@@ -55,7 +55,6 @@ var base = class base {
       this.doEvent('ChangeToScene_' + newScene);
     }.bind(this);
 
-
     this.record = function (action) {
       debug('record');
       this.emit('Action', { actionTimeStamp: new Date(), actionType: action });

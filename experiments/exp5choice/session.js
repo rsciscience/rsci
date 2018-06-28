@@ -62,7 +62,7 @@ class session extends base {
             record('prematureResponse' + val );
             changeSceneTo(5);
             setTimeout(() => {
-                changeSceneTo(1);
+                changeSceneTo('start');
             }, 5000);
         }
 

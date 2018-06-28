@@ -10,11 +10,11 @@
           <span class="clientId">{{ me.clientId }}</span>
         </div>
         <div class="col-sm-5" style="margin-top:11px;text-align:right;padding-right:10px;">
-          <a href="#" v-on:click="becomeServer">Become Server</a>
+          <a href="javascript:void(0)" v-on:click="becomeServer">Become Server</a>
           |
-          <a href="#" v-on:click="networkRescan">Rescan Network</a>
+          <a href="javascript:void(0)" v-on:click="networkRescan">Rescan Network</a>
            |
-             <a href="#" v-on:click="experimentsRefresh">Reload Experiments</a>
+             <a  href="javascript:void(0)" v-on:click="experimentsRefresh">Reload Experiments</a>
            |
           <router-link to="/export">Export</router-link>
         </div>
@@ -160,6 +160,11 @@ export default {
 
       function success (response) {
         console.log('Called server/experiments/reload')
+        function successExperimentsSessionsList (response) {
+          console.log(response)
+          this.experimentSessions = response.data
+        }
+        HTTP.get('server/experiments/list').then(successExperimentsSessionsList.bind(this)).catch(err.bind(this))
       }
 
       HTTP.post('server/experiments/reload', {}).then(success.bind(this)).catch(err.bind(this))

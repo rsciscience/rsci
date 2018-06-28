@@ -2,7 +2,7 @@
   <div class="session">
     
     <div class= "scene-container"  v-bind:class="{flashing: isFlashing}">
-      <div id="scene_start" sceneNumber="1" class = "scene" v-bind:class="getCurrentScene('start')">
+      <div id="scene_start"  class = "scene" v-bind:class="getCurrentScene('start')">
         <div class = "sceneLabel"> trial start scene </div>
         <button v-on:click="Scene1TrialStartNosepoke_onclick" class= "nosepokeLarge" v-bind:class="{nosepokeLargeOff: ITIOn}"></button>
         <div class= "nosepokeholescontainer">
@@ -13,7 +13,7 @@
           <button v-on:click="Scene1nosepokestim5_onclick" class="nose-poke nosepoke5"></button>
         </div>
       </div>
-      <div id="scene_2"  sceneNumber="2" class = "scene" v-bind:class="getCurrentScene('2')">
+      <div id="scene_2"   class = "scene" v-bind:class="getCurrentScene('2')">
           <div class = "sceneLabel"> stimulus presentation scene </div>
           <button class= "nosepokeLarge nosepokeLargeOff Scene2PerseverativeTrialStartNosepoke"></button>
           <div class= "nosepokeholescontainer">
@@ -57,7 +57,7 @@
 
 <script>
 export default {
-  name: "exp1979",
+  name: "exp5Choice",
   sockets: {
     connect: function() {
       console.log("session socket connected");
@@ -77,6 +77,7 @@ export default {
     client_experiment_action: function(action) {
       console.log("client_experment_action", action);
 
+      const sceneActionMarker  = "ChangeToScene_" ; 
       if (action.type.startsWith(sceneActionMarker)) {
         var sceneName = action.type.substring(sceneActionMarker.length, action.type.length)
         this.currentScene = sceneName;
@@ -87,8 +88,10 @@ export default {
         for(var propertyName in d) {
           d[propertyName] = false;
         }
+        this.nosePokeStimulusValues = d ;
         return ;
-      } 
+      }
+
       if (action.type.startsWith("NosePokeStimulus_")) {
         var val = (action.type.startsWith("NosePokeStimulus_on"));
         const d = Object.assign({}, this.nosePokeStimulusValues); 
@@ -106,7 +109,8 @@ export default {
       config: {
         id: "Placeholder"
       },
-      ruunning: false,
+      running:  false,
+      currentScene: '',
       isFlashing: false,
       nosePokeStimulusValues: {},
       ITIOn: false
@@ -214,19 +218,9 @@ a {
 }
 
 @keyframes color-me-in {
-  /* You could think of as "step 1" */
-  0% {
-    background: blue;
-  }
-  /* You could think of as "step 2" */
-  50% {
-    background: green;
-  }
-
-  100% {
-    background: blue;
-  }
-}
+  0% { background: blue; }
+  100% { background: gree; }
+   }
 
 .nose-poke {
   height: 100px;
@@ -236,8 +230,8 @@ a {
 }
 .nose-poke-active {
   background-color: yellow;
-    animation-iteration-count: infinite;
-  animation: color-me-in 10s;
+  animation-iteration-count: infinite;
+  animation: color-me-in 1;
 }
 
 .nosepokeholescontainer {

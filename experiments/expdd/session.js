@@ -14,8 +14,8 @@ class session extends base {
         var doEvent = function (msg) { this.doEvent(msg); }.bind(this);
         this.state = {};
         // things to ignore : done
-           
-        
+
+
         /*
 
             __QQ
@@ -33,7 +33,7 @@ class session extends base {
             this.state.nextPoke = 3 ;
             this.state.didWin = true;
 
-        */    
+        */
 
 
         /*
@@ -64,18 +64,18 @@ class session extends base {
         NosePokeStimulus_3
         NosePokeStimulus_4
         */
-            
+
 
         addUIListner('startTrial_pressed', startTrial.bind(this));
-        addUIListner('nosePoke1_pressed', callAWinner.bind(this,1));
-        addUIListner('nosePoke2_pressed', callAWinner.bind(this,2));
-        addUIListner('nosePoke3_pressed', callAWinner.bind(this,3));
-        addUIListner('nosePoke4_pressed', callAWinner.bind(this,4));
-        
+        addUIListner('nosePoke1_pressed', callAWinner.bind(this, 1));
+        addUIListner('nosePoke2_pressed', callAWinner.bind(this, 2));
+        addUIListner('nosePoke3_pressed', callAWinner.bind(this, 3));
+        addUIListner('nosePoke4_pressed', callAWinner.bind(this, 4));
+
 
         function correctResponseTime(payout) {
             changeSceneTo('win');
-            for(var i=0 ; i < payout; i++){
+            for (var i = 0; i < payout; i++) {
                 dispenseFood();
                 record('dispenseFood')
             }
@@ -89,43 +89,55 @@ class session extends base {
             doEvent('beep');
             setTimeout(() => {
                 changeSceneTo('start');
-            },5000 );
+            }, 5000);
         }
 
         function callAWinner(poke) {
             var percent = 0;
-            var payout = 0 ; 
-            doEvent('NosePokeStimulus_' + this.state.winningPokeHole);
-            switch(poke){
-                case 1 : break; 
+            var payout = 0;
+            doEvent('NosePokeStimulus_' + poke);
+            switch (poke) {
+                case 1:
                     percent = this.config.payoutPecent1;
                     payout = 1;
-                case 2 : break; 
+                    break;
+                case 2:
                     percent = this.config.payoutPecent2;
-                    payout = 2;
-                case 3 : break;
+                    payout = 2; 
+                    break;
+                case 3:
                     percent = this.config.payoutPecent3;
                     payout = 3;
-                case 4 : break; 
-                    percent = this.config.payoutPecent4; 
+                    break;
+                case 4:
+                    percent = this.config.payoutPecent4;
                     payout = 4;
+                    break;
             }
-
+            
+            var percentf = parseFloat(percent);
+            var tot = parseFloat(100.00000);
             var d = Math.random();
-            this.state['payout'+poke+'total'] = this.state['payout'+poke+'total'] + 1; 
-            if (d < (percent/100)){
+
+            if(!this.state['payout'+poke+'total'] ){this.state['payout'+poke+'total']  = 0 }
+            if(!this.state['payout'+poke+'win'] ){this.state['payout'+poke+'win']  = 0 }
+            if(!this.state['payout'+poke+'lose'] ){this.state['payout'+poke+'lose']  = 0 }
+
+            this.state['payout'+poke+'total'] = this.state['payout'+poke+'total'] + 1;
+       
+            if (d < (percentf/tot)){
                 correctResponseTime(payout);
                 this.state['payout'+poke+'win'] = this.state['payout'+poke+'win'] + 1; 
             } else {
                 incorrectResponseTime();
-                this.state['payout'+poke+'win'] = this.state['payout'+poke+'lose'] + 1; 
+                this.state['payout'+poke+'lose'] = this.state['payout'+poke+'lose'] + 1; 
             }
 
-            record('Payout Rates' + '1:' + ( this.state['payout1win'] /this.state['payout1total'] )* 100 )
-            record('Payout Rates' + '2:' + ( this.state['payout2win'] /this.state['payout2total'] )* 100 )
-            record('Payout Rates' + '3:' + ( this.state['payout3win'] /this.state['payout3total'] )* 100 )
-            record('Payout Rates' + '4:' + ( this.state['payout4win'] /this.state['payout4total'] )* 100 )
-
+            this.state['PayoutRates1'] = ( parseFloat(this.state['payout1win'] )/parseFloat(this.state['payout1total'] )) * 100 ; 
+            this.state['PayoutRates2'] = ( parseFloat(this.state['payout2win'] )/parseFloat(this.state['payout2total'] )) * 100 ;
+            this.state['PayoutRates3'] = ( parseFloat(this.state['payout3win'] )/parseFloat(this.state['payout3total'] )) * 100 ;
+            this.state['PayoutRates4'] = ( parseFloat(this.state['payout4win'] )/parseFloat(this.state['payout4total'] )) * 100 ;
+            
         }
 
         function startTrial(poke) {
@@ -138,12 +150,13 @@ class session extends base {
                 record('MaxTrailsComplete')
                 this.stop()  ;
             }
+                changeSceneTo('taskWait');
+
             this.state.ignoreExtraneousInputs = true;
             this.state.interTrialIntervalTimeOut = setTimeout(() => {
                 this.state.ignoreExtraneousInputs = false;
                 this.state.interTrialInterval = new Date();
                 changeSceneTo('task');
-                doEvent('NosePokeStimulus_on_1');
             }, this.config.startTaskTimeOut);
         }
     

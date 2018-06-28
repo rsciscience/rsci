@@ -6,6 +6,9 @@
         <div class = "sceneLabel"> trial start scene </div>
         <button v-on:click="startTrial_onclick" class= "nosepokeLarge"></button>
       </div>
+        <div id="scene_taskWait" class = "scene" v-bind:class="getCurrentScene('taskWait')" >
+        <div class = "sceneLabel"> trial wait </div>
+      </div>
       <div id="scene_task"  class = "scene" v-bind:class="getCurrentScene('task')" >
           <div class = "sceneLabel"> stimulus presentation scene </div>
           <div class= "nosepokeholescontainer">
@@ -61,8 +64,10 @@ export default {
         for(var propertyName in d) {
           d[propertyName] = false;
         }
+        this.nosePokeStimulusValues = d ;
         return ;
-      } 
+      }
+
       if (action.type.startsWith("NosePokeStimulus_")) {
         var val = (action.type.startsWith("NosePokeStimulus_on"));
         const d = Object.assign({}, this.nosePokeStimulusValues); 
@@ -80,15 +85,20 @@ export default {
       config: {
         id: "Placeholder"
       },
-      ruunning: false,
+      running: false,
       currentScene: '',
-      isShowSceen_start: false,
       nosePokeStimulusValues: {}
     };
   },
   mounted() {
     console.log("mounted");
     this.$socket.emit("client_experiment_onevent", { type: "UI_onReady" });
+  },
+  beforeDestroy(){
+    delete this.$options.sockets.client_experiment_session_start;
+    delete this.$options.sockets.client_experiment_session_stop;
+    delete this.$options.sockets.client_experiment_action;
+   
   },
   methods: {
     event: function(actionType) {
@@ -178,19 +188,24 @@ a {
 }
 
 @keyframes color-me-in {
-  /* You could think of as "step 1" */
-  0% {
-    background: white;
-  }
-  /* You could think of as "step 2" */
-  100% {
-    background: green;
-  }
+  0% { background: white; }
+  10% { background: green; }
+  20% { background: white; }
+  30% { background: green; }
+  40% { background: white; }
+  50% { background: green; }
+  60% { background: white; }
+  70% { background: green; }
+  80% { background: white; }
+  90% { background: green; }
+  100% { background: white; }
+  
 }
 
 #scene_lose {
   background-color:white;
   animation: color-me-in 1s;
+  animation-iteration-count: infinite;
 }
 
 .nose-poke {
