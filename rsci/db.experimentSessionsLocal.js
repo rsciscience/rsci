@@ -43,7 +43,6 @@ function init(db, provider) {
     function getList(cb) {
         debug('getList');
         model.find({}, function (err, data) {
-            console.log(err, data);
             if (err) { debug(err); return; }
             cb(data);
             }
