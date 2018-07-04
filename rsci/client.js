@@ -158,11 +158,12 @@ this.getState = function (cb) {
   debug('getState');
   function dbResults(cb, data) {
     console.log('database results');
-
     cb({
       server: this.state.server,
       me:this.state.me,
-      experimentSessionsLocal: data
+      experimentSessionsLocal: data,
+      clientUIisAvailable: this.state.clientUIisAvailable,
+      ts_ClientUIisAvailable: this.state.ts_ClientUIisAvailable
     }); 
 
   }

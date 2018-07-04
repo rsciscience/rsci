@@ -76,6 +76,12 @@ this.init = function () {
   this.initSettings(()=>{
     this.state.experiments.configs = this.server.loadExperiments(this.state.experiments.configDir);
     api.init(this.state.listeningPort,  this.client, this.server, this.export);
+
+    api.startUiHeartbeat((isAvailable) => {
+      debug('clientUIisAvailable ' + isAvailable);
+      this.state.clientUIisAvailable = isAvailable;
+      this.state.ts_ClientUIisAvailable = new Date();
+    });
  
     if (this.state.isServer === true) {
       debug('I\'m the server');
@@ -85,11 +91,6 @@ this.init = function () {
     }
   });
 
-  this.api.startUiHeartbeat((isAvailable) => {
-    debug('clientUIisAvailable ' + isAvailable);
-    this.state.clientUIisAvailable = isAvailable;
-    this.state.ts_ClientUIisAvailable = new Date();
-  });
 }.bind(this);
 
 

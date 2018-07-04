@@ -4,6 +4,8 @@
      <input v-model="me.clientId" placeholder="clientId">
      <button class = "btn" v-on:click="updateSettings()"> update </button>
     I'm here :)
+    {{ me.clientUIisAvailable }}
+    {{ me.ts_ClientUIisAvailable }}
       <div>
         connected to server  <a target="" :href="'http://' + server.ip + ':8080/#admin'" >{{ server.id }}</a>
       </div>
@@ -33,7 +35,9 @@
       return {
         me: {},
         server: {},
-        experimentSessions: []
+        experimentSessions: [],
+        clientUIisAvailable: false,
+        ts_ClientUIisAvailable: new Date();
       }
     },
     mounted () {
@@ -46,6 +50,8 @@
         this.me = response.data.me
         this.server = response.data.server
         this.experimentSessions = response.data.experimentSessionsLocal
+        this.clientUIisAvailable = response.data.clientUIisAvailable
+        this.ts_ClientUIisAvailable = response.data.ts_ClientUIisAvailable
       }
 
       HTTP.get('client/state').then(success.bind(this)).catch(err.bind(this))
