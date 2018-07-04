@@ -1,6 +1,16 @@
 Add a check on the clients - check that client UI is listening
 This should be reported back to the server
 
+in Server.js add another state (isClientActive) - isClientUiAvailable?
+clientOn && uiAvailable?
+2params?
+
+We might need to write another timer to check for available clients and if their client UI is available
+this info should get reflected in server.experimentsList
+
+we want the bg process running on server, and a socket that sends messages to admin saying this is the latest exp listening
+
+
 
 Show parameters of a box. 
 
