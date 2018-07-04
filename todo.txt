@@ -2,7 +2,7 @@
 
 chage the rat id from the box ui 
 
-
+sockets on client binding repatably 
 
 
 Show parameters of a box. 
