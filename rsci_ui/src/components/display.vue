@@ -70,7 +70,9 @@ export default {
       sessionRunning: false
     }
   },
-  mounted () {}
+  mounted () {
+    this.$socket.emit('heartbeat_response')
+  }
 }
 </script>
 
