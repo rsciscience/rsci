@@ -15,6 +15,7 @@
                 <img src="/src/assets/long-evans-2a.png" class="isRatAssigned" v-show="client.isRatAssigned" />
               </div>
 
+            <div>{{client.clientUIisAvailable}}</div>
               <div class="box-label" v-bind:class="{isOnline: isOnline(client)}">
                 <div class="id">{{client.clientId}}</div>
                 <div class="assignedRat">{{client.assignedRat}}</div>
