@@ -41,7 +41,14 @@ this.startUiHeartbeat = function(cb) {
   this.heartbeat.callback = cb;
   var check = () => {
     this.io.emit('heartbeat_check');
-    this.heartbeat.response = false;
+    var a = new Date();
+
+    var difference = (new Date() - this.heartbeat.ts) / 1000;
+
+    if (difference  > 65){
+      this.heartbeat.response = false;
+    }
+
     this.heartbeat.callback(this.heartbeat.response);
   };
   this.heartbeat.intervalHandle = setInterval(check, 60000);

@@ -78,8 +78,10 @@ this.init = function () {
     api.init(this.state.listeningPort,  this.client, this.server, this.export);
 
     api.startUiHeartbeat((isAvailable) => {
-      debug('clientUIisAvailable ' + isAvailable);
-      this.state.clientUIisAvailable = isAvailable;
+      if (this.state.clientUIisAvailable != isAvailable){
+        debug('clientUIisAvailable ' + isAvailable);
+        this.state.clientUIisAvailable = isAvailable;
+      }
       this.state.ts_ClientUIisAvailable = new Date();
     });
  
