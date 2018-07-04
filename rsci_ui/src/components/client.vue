@@ -37,7 +37,7 @@
         server: {},
         experimentSessions: [],
         clientUIisAvailable: false,
-        ts_ClientUIisAvailable: new Date();
+        ts_ClientUIisAvailable: new Date()
       }
     },
     mounted () {
