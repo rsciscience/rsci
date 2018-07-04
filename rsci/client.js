@@ -125,7 +125,13 @@ this.registerServer = function (payload) {
   this.state.isServer = false;
   db.settings.save({ isServer: false }, function () { debug('Saved settings') });
 
-  var payload = { ip: this.state.me.ip, clientId: this.state.me.clientId, initTimeStamp: this.state.me.initTimeStamp }
+  var payload = { 
+    ip: this.state.me.ip,
+     clientId: this.state.me.clientId, 
+     initTimeStamp: this.state.me.initTimeStamp,
+     clientUIisAvailable : this.state.clientUIisAvailable,
+     ts_ClientUIisAvailable: this.state.ts_ClientUIisAvailable,
+     }
   this.registerWithServer(payload, this.state.server.ip, this.state.listeningPort);
 
 

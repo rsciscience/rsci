@@ -15,7 +15,6 @@ this.getState  = (req, res) => {
   };
 
   function cb(data) {
-    console.log('result of client response');
     const clientResponse = JSON.stringify(data);
     res.send(clientResponse);
   }
@@ -27,27 +26,6 @@ this.getState  = (req, res) => {
     res.status(500).send('Something broke!')
     return ;
   }
-}
-
-this.getStateOne  = (req, res) => {
-  debug('client_state');
-  function doWork(){
-
-    var output = this.clientFunctions.getState();
-    return  JSON.stringify( output);
-  };
-
-  var clientResponse = {}
-
-  try{
-    clientResponse =  doWork.bind(this)();
-  }catch (ex) {
-    debug(ex);
-    res.status(500).send('Something broke!')
-    return ;
-  }
-
-  res.send(clientResponse);
 }
 
 

@@ -44,9 +44,7 @@ this.startUiHeartbeat = function(cb) {
     this.heartbeat.response = false;
     this.heartbeat.callback(this.heartbeat.response);
   };
-  
   this.heartbeat.intervalHandle = setInterval(check, 60000);
-
   setTimeout(check, 5000);
 
 }

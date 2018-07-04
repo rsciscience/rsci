@@ -25,6 +25,7 @@
         <div class="col-sm-6">
            <h4>Available</h4>
           <div class="client"  v-for="client in filterAvailable" v-bind:key="client.clientId">
+            <div>{{client.clientUIisAvailable}}</div>
             <div class="box" v-bind:class="{isOnline: isOnline(client)}" v-on:click="filterAvailableClient_OnClick(client)">
                  <svg style='width: 100%; height: 100%;  position:relitive; left:0; top:0'>
                 <line x1="0" y1="100%" x2="100%" y2="0" style="stroke:rgb(191,188,188);stroke-width:2"/>

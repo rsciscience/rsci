@@ -210,6 +210,7 @@ this.getExperimentSessionOverview = async function (experimentSessionId){
 
       var clientOverview =  {
         isOnline:true,
+        clientUIisAvailable:client.clientUIisAvailable,
         assignedRat:client.assignedRat,
         clientId:client.clientId,
         sessionVariables:client.sessionVariables,
@@ -492,6 +493,7 @@ this.experiment_initialConfig = async function (experimentId){
 
     var clientsExperiment = {
       isOnline: false,
+      clientUIisAvailable: ca.clientUIisAvailable,
       clientId: ca.clientId,
       assignedRat: ca.assignedRat,
       isConfigClientAssignment: true,
