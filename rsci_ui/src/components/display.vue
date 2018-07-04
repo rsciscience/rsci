@@ -1,10 +1,10 @@
 <template>
   <div class="experiment">
-    
-    <div id='session'> 
-      <div id='content'> 
-      
-    </div> 
+
+    <div id='session'>
+      <div id='content'>
+
+    </div>
     </div>
 
     <div id="waiting" v-if="!sessionRunning" >
@@ -47,7 +47,7 @@ export default {
     client_experiment_dispose: function (val) {
       console.log('Experiment Dispose')
       this.sessionRunning = false
-
+      this.session.$destroy()
       document.getElementById('session').innerHTML = '<div id=\'content\'></div>'
       this.SessionComponent = null
       this.session = null

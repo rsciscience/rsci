@@ -95,6 +95,7 @@ export default {
     this.$socket.emit("client_experiment_onevent", { type: "UI_onReady" });
   },
   beforeDestroy(){
+    debugger;
     delete this.$options.sockets.client_experiment_session_start;
     delete this.$options.sockets.client_experiment_session_stop;
     delete this.$options.sockets.client_experiment_action;
