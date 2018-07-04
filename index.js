@@ -83,7 +83,12 @@ this.init = function () {
     } else {
       discovery.search(this.state.cpuInterface, this.state.listeningPort).then(this.startServerSearch);
     }
-    
+  });
+
+  this.api.startUiHeartbeat((isAvailable) => {
+    debug('clientUIisAvailable ' + isAvailable);
+    this.state.clientUIisAvailable = isAvailable;
+    this.state.ts_ClientUIisAvailable = new Date();
   });
 }.bind(this);
 

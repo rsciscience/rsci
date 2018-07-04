@@ -11,6 +11,13 @@ this.state = require('./state');
 
 this.app= express();
 
+this.heartbeat = {
+  ts: null,
+  response: false,
+  callback: null,
+  intervalHandle: null
+}
+
 this.server = require('http').Server(this.app);
 this.io = require('socket.io')(this.server,{transports: ['polling', 'websocket']});
 
@@ -22,7 +29,27 @@ this.io.on('connection', function (socket) {
       throw ( 'No externalExperimentSession Listen' );
     }
   }.bind(this));
+  socket.on('heartbeat_response', function () {
+    this.heartbeat.response = true;
+    this.heartbeat.ts = new Date();
+    this.heartbeat.callback(this.heartbeat.response);
+  }.bind(this));
 }.bind(this));
+
+this.startUiHeartbeat = function(cb) {
+  debug('startUiHeartbeat');
+  this.heartbeat.callback = cb;
+  var check = () => {
+    this.io.emit('heartbeat_check');
+    this.heartbeat.response = false;
+    this.heartbeat.callback(this.heartbeat.response);
+  };
+  
+  this.heartbeat.intervalHandle = setInterval(check, 60000);
+
+  setTimeout(check, 5000);
+
+}
 
 this.getClientCommunicationFunctions = function (listen) {
   debug('getClientCommunicationFunctions');

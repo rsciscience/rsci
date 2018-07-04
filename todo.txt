@@ -1,8 +1,5 @@
-
-
-chage the rat id from the box ui 
-
-sockets on client binding repatably 
+Add a check on the clients - check that client UI is listening
+This should be reported back to the server
 
 
 Show parameters of a box. 
