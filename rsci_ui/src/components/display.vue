@@ -60,7 +60,7 @@ export default {
       console.log('client_experment_stop', val)
     },
     heartbeat_check: function () {
-      this.$socket.emit('heartbeat_response');
+      this.$socket.emit('heartbeat_response')
     }
   },
   data () {

@@ -4,8 +4,8 @@
      <input v-model="me.clientId" placeholder="clientId">
      <button class = "btn" v-on:click="updateSettings()"> update </button>
     I'm here :)
-    {{ me.clientUIisAvailable }}
-    {{ me.ts_ClientUIisAvailable }}
+    <div> Client UI is on: {{ clientUIisAvailable }} </div>
+    <div> Client UI last updated at: {{ ts_ClientUIisAvailable }} </div>
       <div>
         connected to server  <a target="" :href="'http://' + server.ip + ':8080/#admin'" >{{ server.id }}</a>
       </div>
