@@ -42,6 +42,11 @@ Test suite for testing experiments
  
 Clean up the server request for new session to not include sessionVariables from original config file
 
+
+Update business logic that uses the DB to use async instead of CB pattern
+
+
+
 BUG:
 
 Stop on admin page causes multiple clients to be created in the experiment session

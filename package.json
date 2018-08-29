@@ -7,7 +7,8 @@
     "start": "concurrently \"npm run service\" \"npm run ui\"",
     "ui": "npm run start --prefix rsci_ui",
     "service": "DEBUG=RSCI* node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "unit": "jest --config jest.conf.js",
+    "test": "npm run unit"
   },
   "author": "David McColgan",
   "license": "ISC",
@@ -38,7 +39,9 @@
     "vue-template-compiler": "^2.5.16",
     "webpack": "^3.11.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jest": "^23.5.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ivanthemonkey/rsci.git"
