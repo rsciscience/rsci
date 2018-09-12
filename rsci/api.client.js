@@ -1,134 +1,42 @@
 "use strict";
-
+const wrapper = require('./api.wrapper.js');
 const debug = require('debug')('RSCI.API.client');
 this.state = require('./state');
 
-this.init = function(clientFunctions,io){
+this.init = function(clientFunctions, io){
   this.clientFunctions = clientFunctions;
   this.io = io;
 }
 
-this.getState  = (req, res) => {
-  debug('client_state');
-  function doWork(cb){
-   this.clientFunctions.getState(cb);
+this.getState        = wrapper.callback('client_state', this.clientFunctions.getState);
+this.root            = wrapper.standard('root', this.clientFunctions.updateSettings);
+this.experiment_init = wrapper.standard('experiment_init_event', this.clientFunctions.initExperimentSession);
+this.experiment_stop = wrapper.standard('experiment_stop', this.clientFunctions.stopExperimentSession);
+this.server_register = wrapper.standard('server_register', this.clientFunctions.registerServer, (resultData) => {
+  var updateNetworkData = {
+    server: this.state.server,
+    me:this.state.me,
+    discoveryList: this.state.discoveryList,
+    clientList: this.state.clientList,
   };
+  this.io.emit('server_network_event',updateNetworkData);
+});
 
-  function cb(data) {
-    const clientResponse = JSON.stringify(data);
-    res.send(clientResponse);
-  }
-  
-  try{
-    doWork.bind(this)(cb);
-  }catch (ex) {
-    debug(ex);
-    res.status(500).send('Something broke!')
-    return ;
-  }
+// My module
+function MyObject(bar) {
+  this.bar = bar;
 }
 
+MyObject.prototype.foo = function foo() {
+  console.log(this.bar);
+};
 
-this.root =  (req, res) => {
-  debug('root');
+module.exports = MyObject;
 
-  function doWork(input){
-    var output = this.clientFunctions.updateSettings(input);
-    return  JSON.stringify( output);
-  }
-
-  var clientResponse = {}
-
-  try{
-    clientResponse =  doWork.bind(this, req.body)();
-  }catch (ex) {
-    debug(ex);
-    res.status(500).send('Something broke!')
-    return;
-  }
-
-  res.send(clientResponse);
-}
-
-
- this.experiment_init = (req, res) => {
-  debug('experiment_init_event');
-
-  function doWork(input){
-    var output = this.clientFunctions.initExperimentSession(input);
-    return  JSON.stringify( output);
-  }
-
-  var clientResponse = {}
-
-  try{
-    clientResponse =  doWork.bind(this, req.body)();
-  }catch (ex) {
-    debug(ex);
-    res.status(500).send('Something broke!')
-    return;
-  }
-
-  res.send(clientResponse);
-}
-
-this.server_register =  (req, res) => {
-  debug('server_register');
-
-  function doWork(input){
-    var output = this.clientFunctions.registerServer(input);
-      debug('client_server_register post emit');
-    var updateNetworkData = {
-      server: this.state.server,
-      me:this.state.me,
-      discoveryList: this.state.discoveryList,
-      clientList: this.state.clientList,
-    };
-    this.io.emit('server_network_event',updateNetworkData )
-    
-    return  JSON.stringify( output);
-  }
-
-  var clientResponse = {}
-
-  try{
-    clientResponse =  doWork.bind(this, req.body)();
-  }catch (ex) {
-    debug(ex);
-    res.status(500).send('Something broke!')
-    return;
-  }
-
-  res.send(clientResponse);
-}
-
-this.experiment_stop = (req, res)  => {
-  debug('experiment_stop');
-
-  function doWork(input){
-    var output = this.clientFunctions.stopExperimentSession(input);
-
-    return  JSON.stringify(output);
-  }
-
-  var clientResponse = {}
-
-  try{
-    clientResponse =  doWork.bind(this, req.body)();
-  }catch (ex) {
-    debug(ex);
-    res.status(500).send('Something broke!')
-    return;
-  }
-
-  res.send(clientResponse);
-
-}
-
-
-module.exports = this;
-
-
+// In another module:
+var MyObjectOrSomeCleverName = require("./my_object.js");
+var my_obj_instance = new MyObjectOrSomeCleverName("foobar");
+my_obj_instance.foo(); // => "foobar"
 
 
 
