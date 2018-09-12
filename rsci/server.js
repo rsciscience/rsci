@@ -511,6 +511,7 @@ this.experiment_initialConfig = async function (experimentId){
       var oc = output[j];
       if (c.clientId === oc.clientId) {
         oc.isOnline = true;
+        oc.clientUIisAvailable=c.clientUIisAvailable;
         var found = true;
       }
     }
@@ -518,6 +519,7 @@ this.experiment_initialConfig = async function (experimentId){
     if (found === false) {
       output.push({
         isOnline: true,
+        clientUIisAvailable: ca.clientUIisAvailable,
         clientId: c.clientId,
         isConfigClientAssignment: false,
         assignedRat: c.assignedRat,

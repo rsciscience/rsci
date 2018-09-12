@@ -14,9 +14,7 @@
               </svg>
                 <img src="/src/assets/long-evans-2a.png" class="isRatAssigned" v-show="client.isRatAssigned" />
               </div>
-
-            <div>{{client.clientUIisAvailable}}</div>
-              <div class="box-label" v-bind:class="{isOnline: isOnline(client)}">
+              <div class="box-label" v-bind:class="{isOnline: isOnline(client),clientUIisAvailable: isClientUIisAvailable(client), }">
                 <div class="id">{{client.clientId}}</div>
                 <div class="assignedRat">{{client.assignedRat}}</div>
                 <input class="ratInput" v-model="client.assignedRat" />
@@ -26,15 +24,14 @@
         <div class="col-sm-6">
            <h4>Available</h4>
           <div class="client"  v-for="client in filterAvailable" v-bind:key="client.clientId">
-            <div>{{client.clientUIisAvailable}}</div>
-            <div class="box" v-bind:class="{isOnline: isOnline(client)}" v-on:click="filterAvailableClient_OnClick(client)">
+            <div class="box" v-bind:class="{isOnline: isOnline(client)  } " v-on:click="filterAvailableClient_OnClick(client)">
                  <svg style='width: 100%; height: 100%;  position:relitive; left:0; top:0'>
                 <line x1="0" y1="100%" x2="100%" y2="0" style="stroke:rgb(191,188,188);stroke-width:2"/>
                 <line x1="0" y1="0" x2="100%" y2="100%" style="stroke:rgb(191,188,188);stroke-width:2"/>
                 <rect width="30" height="30" x="20" y="20" class="box-back" />
               </svg>
             </div>
-             <div class="box-label" v-bind:class="{isOnline: isOnline(client)}">
+             <div class="box-label" v-bind:class="{isOnline: isOnline(client), clientUIisAvailable: isClientUIisAvailable(client)}">
                 <div class="id">{{client.clientId}}</div>
                 <div class="assignedRat">{{client.assignedRat}}</div>
               </div>
@@ -70,8 +67,14 @@ export default {
       // isRatAssigned: true,
       // isIncludedInSession: true
   methods: {
-    isOnline: function (client) {
+    isOnline (client) {
       return client.isOnline
+    },
+    isClientUIisAvailable (client) {
+      if (!client.isOnline) {
+        return false
+      }
+      return !client.clientUIisAvailable
     },
     selectClient (item) {
     },
@@ -169,6 +172,7 @@ export default {
     background: rgb(216, 211, 211);
 
   }
+  
   .name{
     font-size :10px;
   }
@@ -187,6 +191,9 @@ export default {
   .box-label.isOnline{
     background-color: green !important;
     border: 0px solid #bfbcbc;
+  }
+  .box-label.clientUIisAvailable{
+    background: orange !important; 
   }
   .id{
     font-size :13px;
