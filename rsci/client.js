@@ -7,7 +7,7 @@ var helpers = require('./helpers');
 
 const request = require('request-promise');
 
-this.initExperimentSession = function (experimentRequest) {
+function initExperimentSession(experimentRequest) {
   debug('initExperimentSession');
 
   var requestConfig = {
@@ -45,7 +45,6 @@ this.initExperimentSession = function (experimentRequest) {
       this.state.clientId,
       data
     );
-
   }
 
   var sess = new requestConfig.experimentConfig.session(requestConfig.experimentSessionId, { sessionVariables: requestConfig.sessionVariables });
@@ -77,15 +76,13 @@ this.initExperimentSession = function (experimentRequest) {
   };
 }
 
-
-this.saveExperimentSessionEventOnClient = function (currentExperimentSession, clientId, data) {
+function saveExperimentSessionEventOnClient(currentExperimentSession, clientId, data) {
   debug('saveExperimentSessionEventOnClient');
   currentExperimentSession.actions.push(data);
   db.experimentSessionsLocal.save(currentExperimentSession);
 }
 
-
-this.stopExperimentSession = function () {
+function stopExperimentSession() {
   debug('stopExperimentSession');
 
   this.state.currentExperimentSession.sessionHandle.stop();
@@ -93,12 +90,9 @@ this.stopExperimentSession = function () {
   return {
     experimentSessionId: this.state.currentExperimentSession.experimentSessionId
   }
-
 }
 
-
-
-this.registerWithServer = async function (payload, serverip, port) {
+async function registerWithServer(payload, serverip, port) {
   debug('registerWithServer');
 
   var options = {
@@ -116,9 +110,9 @@ this.registerWithServer = async function (payload, serverip, port) {
     debug('Error registering client');
   }
 
-};
+}
 
-this.registerServer = function (payload) {
+function registerServer(payload) {
   debug('registerServer');
   this.state.server = payload;
   this.state.clientList = [];
@@ -136,9 +130,9 @@ this.registerServer = function (payload) {
 
 
   return { success: true };
-};
+}
 
-this.updateSettings = function (payload) {
+function updateSettings(payload) {
   debug('updateSettings');
   if (!payload.clientId) {
     throw ('no supplied client id');
@@ -158,9 +152,9 @@ this.updateSettings = function (payload) {
   }
 
   return { clientId: this.state.clientId };
-};
+}
 
-this.getState = function (cb) {
+function getState(cb) {
   debug('getState');
   function dbResults(cb, data) {
     console.log('database results');
@@ -174,7 +168,7 @@ this.getState = function (cb) {
 
   }
   return db.experimentSessionsLocal.getList(dbResults.bind(this, cb));
-};
+}
 
 async function updateServerOnClientIdChange(change,serverip, port, ){
   var options = {
@@ -191,7 +185,6 @@ async function updateServerOnClientIdChange(change,serverip, port, ){
   }
 
 }
-
 
 async function sendServerExperimentSessionEvent(data, serverip, port, clientId, experimentId, experimentSessionId, ) {
   debug('sendServerExperimentSessionEvent');
@@ -210,6 +203,13 @@ async function sendServerExperimentSessionEvent(data, serverip, port, clientId, 
 
 }
 
+this.initExperimentSession = initExperimentSession;
+this.saveExperimentSessionEventOnClient = saveExperimentSessionEventOnClient;
+this.stopExperimentSession = stopExperimentSession;
+this.registerWithServer = registerWithServer;
+this.registerServer = registerServer;
+this.updateSettings = updateSettings;
+this.getState = getState;
 
 module.exports = this;
 
