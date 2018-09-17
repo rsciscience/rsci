@@ -4,8 +4,6 @@ const debug = require('debug')('RSCI.API');
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const api_client = require('./api.client');
-const api_server = require('./api.server');
 const api_export = require('./api.export');
 this.state = require('./state');
 
@@ -87,42 +85,50 @@ this.app.use(function(req, res, next) {
 
 });
 
-this.app.get('/discovery',discovery.bind(this));
-this.app.get('/discovery/list',discovery_list.bind(this));
-
-this.app.get('/client/state', api_client.getState);
-this.app.post('/client',api_client.root);
-this.app.post('/client/experiment/init',api_client.experiment_init);
-this.app.post('/client/experiment/stop',api_client.experiment_stop);
-this.app.post('/client/server/register',api_client.server_register);
-
-this.app.get('/server/network',api_server.network);
-this.app.post('/server/network/rescan',api_server.network_rescan);
-this.app.get('/server/experiments/sessions',api_server.experiments_sessions);
-this.app.get('/server/experiments/list',api_server.experiments_list);
-this.app.post('/server/experiments/reload',api_server.experiments_reload);
-this.app.post('/server/client/add',api_server.client_add);
-this.app.post('/server/client/updateClientID',api_server.updateClientID);
-this.app.post('/server/register',api_server.register);
-this.app.get('/server/experiment/:id',api_server.experiment_id);
-this.app.get('/server/experiment/:id/initialConfig',api_server.experiment_initialConfig);
-this.app.post('/server/experiment/:id/start',api_server.experiment_start);
-this.app.post('/server/experiment/:id/session/:experimentSessionId/:clientId/event',api_server.experiment_id_event);
-this.app.post('/server/experiment/:id/session/:experimentSessionId/stop',api_server.experiment_session_stop);
-this.app.get('/server/export/session/:id',api_export.session_id);
-this.app.get('/server/export/sessions/list',api_export.experiment_sessions_list);
 
 this.init = function(port,  clientFunctions, serverFunctions, exportFunctions ) {
   this.clientFunctions = clientFunctions;
   this.serverFunctions = serverFunctions;
   this.exportFunctions = exportFunctions;
-  api_client.init(this.clientFunctions,this.io); 
-  api_server.init(this.serverFunctions,this.io);
+  this.api_client = require('./api.client')(this.clientFunctions,this.io);
+  this.api_server = require('./api.server')(this.clientFunctions,this.io); 
   api_export.init(this.exportFunctions,this.io); 
+  this.setRoutes();
   this.server.listen(port,  '0.0.0.0', function() {
     debug("... API up");
   });
 };
+
+ this.setRoutes =  function(){
+
+  this.app.get('/discovery',discovery.bind(this));
+  this.app.get('/discovery/list',discovery_list.bind(this));
+
+  this.app.get('/client/state', this.api_client.getState);
+  this.app.post('/client',this.api_client.root);
+  this.app.post('/client/experiment/init',this.api_client.experiment_init);
+  this.app.post('/client/experiment/stop',this.api_client.experiment_stop);
+  this.app.post('/client/server/register',this.api_client.server_register);
+
+  this.app.get('/server/network',this.api_server.network);
+  this.app.post('/server/network/rescan',this.api_server.network_rescan);
+  this.app.get('/server/experiments/sessions',this.api_server.experiments_sessions);
+  this.app.get('/server/experiments/list',this.api_server.experiments_list);
+  this.app.post('/server/experiments/reload',this.api_server.experiments_reload);
+  this.app.post('/server/client/add',this.api_server.client_add);
+  this.app.post('/server/client/updateClientID',this.api_server.updateClientID);
+  this.app.post('/server/register',this.api_server.register);
+  this.app.get('/server/experiment/:id',this.api_server.experiment_id);
+  this.app.get('/server/experiment/:id/initialConfig',this.api_server.experiment_initialConfig);
+  this.app.post('/server/experiment/:id/start',this.api_server.experiment_start);
+  this.app.post('/server/experiment/:id/session/:experimentSessionId/:clientId/event',this.api_server.experiment_id_event);
+  this.app.post('/server/experiment/:id/session/:experimentSessionId/stop',this.api_server.experiment_session_stop);
+  
+  this.app.get('/server/export/session/:id',api_export.session_id);
+  this.app.get('/server/export/sessions/list',api_export.experiment_sessions_list);
+
+}
+
 
 
 function discovery (req, res)  {

@@ -1,55 +1,75 @@
 "use strict";
 const wrapper = require('./api.wrapper.js');
 const debug = require('debug')('RSCI.API.server');
-this.state = require('./state');
 
-this.init = function (serverFunctions,io) {
-  this.serverFunctions = serverFunctions;
-  this.io = io;
-}
 
-this.experiment_id = (req, res) => {
-  debug('server_experiment_id');
-  async function doWork(sessionId, cb){
-   var output  = this.serverFunctions.getExperimentSessionOverview(id);
-   cb( output);
-  };
+function init(serverFunctions, io) {
+  var state = require('./state');
 
-  function cb(data){
-    res.status(200).send(JSON.stringify(data));
+  function getArgs_id(req) {
+    const output = [];
+    output.push(req.params.id);
+    return output;
+  }
+  function getArgs_body(req) {
+    const output = [];
+    output.push(req.body);
+    return output;
   }
 
-  try{
-    doWork.bind(this)(req.params.id, cb);
-  }catch (ex) {
-    debug(ex);
-    res.status(500).send('Something broke!')
-    return ;
-  }
-}
+ 
+  return {
+    state: state,
+    experiments_sessions: wrapper.standard('server_experiments_sessions', function (input) { return this.state.experimentSessions }).bind({state:state}),
+    experiments_list: wrapper.standard('server_experiments_list', this.serverFunctions.experimentsList),
+    experiments_reload: wrapper.standard('server_experiments_reload', this.serverFunctions.experimentsReload),
+    client_add: wrapper.standard('server_client_add', this.serverFunctions.addClient, (resultData) => {
+      var updateNetworkData = {
+        server: this.state.server,
+        me: this.state.me,
+        discoveryList: this.state.discoveryList,
+        clientList: this.state.clientList,
+      };
+      this.io.emit('server_network_event', updateNetworkData);
+    }),
+    network_rescan: wrapper.standard('server_network', this.serverFunctions.networkRescan, (resultData) => {
+      var updateNetworkData = {
+        server: this.state.server,
+        me: this.state.me,
+        discoveryList: this.state.discoveryList,
+        clientList: this.state.clientList,
+      };
+      this.io.emit('server_network_event', updateNetworkData);
+    }),
 
-this.experiment_id_export = (req, res) =>  {
-  debug('server_experiment_id_export');
-  function doWork(sessionId){
+    network: wrapper.standard('server_network', () => {
+      return {
+        server: this.state.server,
+        me: this.state.me,
+        discoveryList: this.state.discoveryList,
+        clientList: this.state.clientList,
+      };
+    }),
 
-    var output = this.serverFunctions.getExperimentSessionExportAsCsv(sessionId);
-    return  JSON.stringify( output);
-  };
+     experiment_initialConfig : wrapper.async('server_experiment_initialConfig', this.serverFunctions.experiment_initialConfig, getArgs_id, null),
+     experiment_id : wrapper.async('experiment_id', this.serverFunctions.getExperimentSessionOverview, getArgs_id, null),
+     experiment_id_export : wrapper.async('experiment_id_export', this.serverFunctions.getExperimentSessionExportAsCsv, getArgs_id, null),
+     register : wrapper.async('server_register', this.serverFunctions.register, getArgs_body, ()=>{
+      var updateNetworkData = {
+        server: this.state.server,
+        me:this.state.me,
+        discoveryList: this.state.discoveryList,
+        clientList: this.state.clientList,
+      };
+      this.io.emit('server_network_event',updateNetworkData ) ;
+    }),
+   
 
-  var clientResponse = {}
 
-  try{
-    clientResponse =  doWork.bind(this)(req.params.id);
-  }catch (ex) {
-    debug(ex);
-    res.status(500).send('Something broke!')
-    return ;
-  }
+  
 
-  res.send(clientResponse);
-}
 
-this.experiment_start = (req, res) => {
+experiment_start : (req, res) => {
   debug('server_experiment_start_event');
 
   function doWork(experimentId, input){
@@ -69,9 +89,9 @@ this.experiment_start = (req, res) => {
   }
 
   res.send(clientResponse);
-}
+},
 
-this.experiment_session_stop = (req, res) => {
+experiment_session_stop : (req, res) => {
   debug('experiment_session_stop');
 
   function doWork(experimentId, experimentSessionId, input){
@@ -91,69 +111,11 @@ this.experiment_session_stop = (req, res) => {
   }
 
   res.send(clientResponse);
-}
+},
 
-this.register = (req, res) => {
-  debug('server_register');
 
-  function doWork(input){
-    var output = this.serverFunctions.register(()=>{
-      debug('server_register post emit');
-      var updateNetworkData = {
-        server: this.state.server,
-        me:this.state.me,
-        discoveryList: this.state.discoveryList,
-        clientList: this.state.clientList,
-      };
-      this.io.emit('server_network_event',updateNetworkData ) ;
-    });
-    return  JSON.stringify( output);
-  }
 
-  var clientResponse = {}
-
-  try{
-    clientResponse =  doWork.bind(this, req.body)();
-  }catch (ex) {
-    debug(ex);
-    res.status(500).send('Something broke!')
-    return;
-  }
-
-  res.send(clientResponse);
-}
-
-this.experiments_sessions = wrapper.standard('server_experiments_sessions', (input) => { return this.state.experimentSessions });
-this.experiments_list = wrapper.standard('server_experiments_list', this.serverFunctions.experimentsList);
-this.experiments_reload = wrapper.standard('server_experiments_reload', this.serverFunctions.experimentsReload);
-this.client_add         = wrapper.standard('server_client_add', this.serverFunctions.addClient, (resultData) => {
-  var updateNetworkData = {
-    server: this.state.server,
-    me:this.state.me,
-    discoveryList: this.state.discoveryList,
-    clientList: this.state.clientList,
-  };
-  this.io.emit('server_network_event',updateNetworkData );
-});
-this.network_rescan = wrapper.standard('server_network', this.serverFunctions.networkRescan, (resultData) => {
-  var updateNetworkData = {
-    server: this.state.server,
-    me:this.state.me,
-    discoveryList: this.state.discoveryList,
-    clientList: this.state.clientList,
-  };
-  this.io.emit('server_network_event',updateNetworkData );
-});
-this.network = wrapper.standard('server_network', () => {
-  return {
-    server: this.state.server,
-    me: this.state.me,
-    discoveryList: this.state.discoveryList,
-    clientList: this.state.clientList,
-  };
-});
-
- this.updateClientID =  (req, res) => {
+ updateClientID : (req, res) => {
   debug('server_client_add');
 
   function doWork(input){
@@ -180,9 +142,9 @@ this.network = wrapper.standard('server_network', () => {
   }
 
   res.send(clientResponse);
-}
+},
 
-this.experiment_id_event = (req, res) => {
+experiment_id_event :(req, res) => {
   //watch all client events
   debug('server_experiment_id_event');
 
@@ -206,16 +168,22 @@ this.experiment_id_event = (req, res) => {
     res.status(500).send('Something broke!')
     return;
   }
+},
+
+
+
+  };
+
+
+
+
+ 
+
+
+
 }
 
-function experimentInitialConfigGetArgsList(req) {
-  const output = [];
-  output.push(req.params.id);
-  return output;
-}
-this.experiment_initialConfig = wrapper.async('server_experiment_initialConfig', this.serverFunctions.experiment_initialConfig, experimentInitialConfigGetArgsList, null);
-
-module.exports = this;
+module.exports = init;
 
 
 

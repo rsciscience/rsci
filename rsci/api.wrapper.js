@@ -1,4 +1,5 @@
 "use strict";
+const debug = require('debug')('RSCI.API.wrapper');
 
 function standardWrapper(apiHandlerName, handlerFunction, postEvent) {
     return (req, res) => {
