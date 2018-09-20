@@ -5,6 +5,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const api_export = require('./api.export');
+const api_client = require('./api.client');
+const api_server = require('./api.server');
+
 this.state = require('./state');
 
 this.app= express();
@@ -90,8 +93,8 @@ this.init = function(port,  clientFunctions, serverFunctions, exportFunctions ) 
   this.clientFunctions = clientFunctions;
   this.serverFunctions = serverFunctions;
   this.exportFunctions = exportFunctions;
-  this.api_client = require('./api.client')(this.clientFunctions,this.io);
-  this.api_server = require('./api.server')(this.clientFunctions,this.io); 
+  this.api_client = new api_client(this.clientFunctions,this.io);
+  this.api_server = new api_server(this.serverFunctions,this.io); 
   api_export.init(this.exportFunctions,this.io); 
   this.setRoutes();
   this.server.listen(port,  '0.0.0.0', function() {

@@ -2,6 +2,7 @@
 var ip = require('ip');
 const debug = require('debug')('RSCI.index');
 const request = require('request-promise');
+const server = require('./rsci/server');
 
 debug('Init:RSCI');
 
@@ -14,8 +15,6 @@ console.log(' (o o) ');
 console.log('==\\o/==');
 console.log('');
 
-
-
 var api = require('./rsci/api');
 debug('Init Api Server');
 
@@ -23,8 +22,8 @@ var discovery = require('./rsci/discovery');
 debug('Init Discovery');
 
 this.client = require('./rsci/client');
+this.server = new server();
 this.db = require('./rsci/db');
-this.server = require('./rsci/server');
 this.export = require('./rsci/export');
 this.state = require('./rsci/state');
 this.helpers = require('./rsci/helpers')

@@ -1,9 +1,8 @@
 "use strict";
 const debug = require('debug')('RSCI.API.wrapper');
 
-function standardWrapper(apiHandlerName, handlerFunction, postEvent) {
+function standardWrapper(handlerFunction, postEvent) {
     return (req, res) => {
-              debug(apiHandlerName);
               function doWork(input){
                 var output = handlerFunction(input);
                 if (postEvent) {
@@ -15,7 +14,7 @@ function standardWrapper(apiHandlerName, handlerFunction, postEvent) {
               var clientResponse = {}
             
               try{
-                clientResponse =  doWork.bind(this, req.body)();
+                clientResponse = doWork.bind(this, req.body)();
               }catch (ex) {
                 debug(ex);
                 res.status(500).send('Something broke!')
@@ -26,9 +25,8 @@ function standardWrapper(apiHandlerName, handlerFunction, postEvent) {
             }
   }
 
-  function callbackWrapper(apiHandlerName, handlerFunction, postEvent) {
+  function callbackWrapper(handlerFunction, postEvent) {
     return (req, res) => {
-              debug(apiHandlerName);
                 function doWork(cb){
                  handlerFunction(cb);
                 };
@@ -51,9 +49,8 @@ function standardWrapper(apiHandlerName, handlerFunction, postEvent) {
             }
   }
 
-  function asyncWrapper(apiHandlerName, handlerFunction, getArgsListFunction, postEvent) {
+  function asyncWrapper(handlerFunction, getArgsListFunction, postEvent) {
     return (req, res) => {
-              debug(apiHandlerName);
                 async function doWork(argumentList, cb){
                  var boundHandlerFunction = handlerFunction.bind.apply(handlerFunction, [null].concat(argumentList));
                  var output = await boundHandlerFunction();
@@ -69,7 +66,7 @@ function standardWrapper(apiHandlerName, handlerFunction, postEvent) {
                 }
                 
                 try{
-                  argumentList = getArgsListFunction(req);
+                  const argumentList = getArgsListFunction(req);
                   doWork.bind(this)(argumentList, cb);
                 }catch (ex) {
                   debug(ex);
