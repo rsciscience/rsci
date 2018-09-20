@@ -11,7 +11,7 @@ class client {
       this.root = wrapper.standard(clientFunctions.updateSettings);
       this.experiment_init = wrapper.standard(clientFunctions.initExperimentSession);
       this.experiment_stop = wrapper.standard(clientFunctions.stopExperimentSession);
-      this.server_register = wrapper.asyncWrapper(clientFunctions.registerServer, null,function (resultData) {
+      this.server_register = wrapper.async(clientFunctions.registerServer, null,function (resultData) {
         var updateNetworkData = {
           server: this.state.server,
           me: this.state.me,
