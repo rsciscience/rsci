@@ -5,6 +5,11 @@ const request = require('request-promise');
 const server = require('./rsci/server');
 const client = require('./rsci/client');
 
+process.on('unhandledRejection', (reason, p) => {
+  console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+  // application specific logging, throwing an error, or other logic here
+});
+
 debug('Init:RSCI');
 
 console.log('');

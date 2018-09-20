@@ -44,7 +44,8 @@ class server {
     }, null);
     this.experiment_id_event = wrapper.async(this.serverFunctions.processExperimentSessionEvent, (req) => {
       return [req.params.experimentSessionId ,req.params.id,req.params.clientId, req.body];
-    }, async () => {
+    }, async (result) => {
+      console.log (result)
       var data = await this.serverFunctions.getExperimentSessionOverview(sessionId);
       this.io.emit('server_experimentsession_id_client_action', data);
     });
