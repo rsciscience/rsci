@@ -3,7 +3,7 @@ const debug = require('debug')('RSCI.API.wrapper');
 
 function standardWrapper(handlerFunction, postEvent) {
     return (req, res) => {
-              debug(handlerFunction.name);
+              //debug(handlerFunction.name);
               function doWork(input){
                 var output = handlerFunction(input);
                 if (postEvent) {
@@ -28,7 +28,7 @@ function standardWrapper(handlerFunction, postEvent) {
 
   function callbackWrapper(handlerFunction, postEvent) {
     return (req, res) => {
-              debug(handlerFunction.name);
+              //debug(handlerFunction.name);
                 function doWork(cb){
                  handlerFunction(cb);
                 };
@@ -54,8 +54,7 @@ function standardWrapper(handlerFunction, postEvent) {
   function asyncWrapper(handlerFunction, getArgsListFunction, postEvent) {
 
     return (req, res) => {
-              console.log(handlerFunction);
-              debug(handlerFunction.name);
+              //debug(handlerFunction.name);
                 async function doWork(argumentList, cb){
                  var boundHandlerFunction = handlerFunction.bind.apply(handlerFunction, [null].concat(argumentList));
                  var output = await boundHandlerFunction();
