@@ -1,5 +1,7 @@
 "use strict";
-const wrapper = require('./api.client.js');
+
+const debug = require('debug')('RSCI.API.client');
+const wrapper = require('./api.wrapper.js');
 
 class client {
   constructor(clientFunctions, io) {
