@@ -9,13 +9,13 @@ const request = require('request-promise');
 class client {
   constructor() {
     this.state = state;
-    this.initExperimentSession = initExperimentSession.bind(this);
-    this.saveExperimentSessionEventOnClient = saveExperimentSessionEventOnClient.bind(this);
-    this.stopExperimentSession = stopExperimentSession.bind(this);
-    this.registerWithServer = registerWithServer.bind(this);
-    this.registerServer = registerServer.bind(this);
-    this.updateSettings = updateSettings.bind(this);
-    this.getState = getState.bind(this);
+    this.initExperimentSession = this.initExperimentSession.bind(this);
+    this.saveExperimentSessionEventOnClient = this.saveExperimentSessionEventOnClient.bind(this);
+    this.stopExperimentSession = this.stopExperimentSession.bind(this);
+    this.registerWithServer = this.registerWithServer.bind(this);
+    this.registerServer = this.registerServer.bind(this);
+    this.updateSettings = this.updateSettings.bind(this);
+    this.getState = this.getState.bind(this);
   }
 
   initExperimentSession(experimentRequest) {
