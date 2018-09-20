@@ -44,7 +44,7 @@ class client {
     this.state.currentExperimentSession = requestConfig;
 
     function watchEvents(currentExperimentSession, data) {
-      sendServerExperimentSessionEvent(data,
+      this.sendServerExperimentSessionEvent(data,
         this.state.server.ip,
         this.state.listeningPort,
         this.state.clientId,
