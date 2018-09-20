@@ -1,8 +1,9 @@
 "use strict";
-const wrapper = require('./api.wrapper.js');
+const wrapper = require('./api.client.js');
 
 class client {
   constructor(clientFunctions, io) {
+    debug('constructor');
       this.state = require('./state');
       this.clientFunctions = clientFunctions;
       this.io = io;
@@ -11,6 +12,7 @@ class client {
       this.root = wrapper.standard(clientFunctions.updateSettings);
       this.experiment_init = wrapper.standard(clientFunctions.initExperimentSession);
       this.experiment_stop = wrapper.standard(clientFunctions.stopExperimentSession);
+      console.log(clientFunctions.registerServer);
       this.server_register = wrapper.async(clientFunctions.registerServer, function(){return []; },function (resultData) {
         var updateNetworkData = {
           server: this.state.server,
