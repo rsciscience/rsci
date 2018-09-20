@@ -52,7 +52,9 @@ function standardWrapper(handlerFunction, postEvent) {
   }
 
   function asyncWrapper(handlerFunction, getArgsListFunction, postEvent) {
+
     return (req, res) => {
+              console.log(handlerFunction);
               debug(handlerFunction.name);
                 async function doWork(argumentList, cb){
                  var boundHandlerFunction = handlerFunction.bind.apply(handlerFunction, [null].concat(argumentList));
