@@ -365,7 +365,6 @@ async processExperimentSessionEvent (experimentSessionId, experimentId, clientId
         method: 'POST',
         body: payload
       }
-console.log(options); 
       try {
         let res = await request(options);
         return res;
