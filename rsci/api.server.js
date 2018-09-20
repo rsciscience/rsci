@@ -30,15 +30,15 @@ class server {
     this.experiments_sessions = wrapper.standard((input) => { return this.state.experimentSessions });
     this.experiments_list = wrapper.standard(this.serverFunctions.experimentsList);
     this.experiments_reload = wrapper.standard(this.serverFunctions.experimentsReload);
-    this.client_add = wrapper.standard(this.serverFunctions.addClient, postEvent_emitNetworkData);
-    this.network_rescan = wrapper.standard(this.serverFunctions.networkRescan, postEvent_emitNetworkData);
+    this.client_add = wrapper.standard(this.serverFunctions.addClient, postEvent_emitNetworkData.bind(this));
+    this.network_rescan = wrapper.standard(this.serverFunctions.networkRescan, postEvent_emitNetworkData.bind(this));
     this.network = wrapper.standard(this.serverFunctions.getNetworkData);
     this.experiment_initialConfig = wrapper.async(this.serverFunctions.experiment_initialConfig, getArgs_id, null);
     this.experiment_id = wrapper.async(this.serverFunctions.getExperimentSessionOverview, getArgs_id, null);
     this.experiment_id_export = wrapper.async(this.serverFunctions.getExperimentSessionExportAsCsv, getArgs_id, null);
-    this.register = wrapper.async(this.serverFunctions.register, getArgs_body, postEvent_emitNetworkData);
+    this.register = wrapper.async(this.serverFunctions.register, getArgs_body, postEvent_emitNetworkData.bind(this));
     this.experiment_start = wrapper.async(this.serverFunctions.startExperiment, getArgs_id_body, null);
-    this.updateClientID = wrapper.async(this.serverFunctions.updateClientID, getArgs_body, postEvent_emitNetworkData);
+    this.updateClientID = wrapper.async(this.serverFunctions.updateClientID, getArgs_body, postEvent_emitNetworkData.bind(this));
     this.experiment_session_stop = wrapper.async(this.serverFunctions.stopExperiment, (req) => {
       return [req.params.id, req.params.experimentSessionId, req.body];
     }, null);
