@@ -79,7 +79,7 @@ this.init = function () {
   debug('init')
   
   this.initSettings(()=>{
-    this.state.experiments.configs = this.server.loadExperiments(this.state.experiments.configDir);
+    this.state.experiments.configs = this.server.experiments.load(this.state.experiments.configDir);
     api.init(this.state.listeningPort,  this.client, this.server, this.export);
 
     api.startUiHeartbeat((isAvailable) => {
