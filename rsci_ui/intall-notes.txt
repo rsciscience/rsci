@@ -16,15 +16,13 @@ DL virtual box
 
 New	- add name - linux - other 32-bit
 
-create virtual hard disk
+create virtual hard disk, type = VDI, storage = Dynamically allocated
 
-VDI
+Then: go to Storage tab and add Optical Disk existing image 2017-11-16-rpd-x86-stretch.iso
+    (dl’d from https://www.raspberrypi.org/downloads/raspberry-pi-desktop/)
 
-Dynamically allocated HD
-
-Then: go to Storage tab and add Disk (2017-11-16-rpd-x86-stretch.iso) dl’d from https://www.raspberrypi.org/downloads/raspberry-pi-desktop/
-
-Then: go to Network tab and set attached to: Bridged adapter (so that we aren’t NAT’d and we can see and talk to either other on the network)
+Then: go to Network tab and set attached to: Bridged adapter 
+    (so that we aren’t NAT’d and we can see and talk to either other on the network)
 
 Then Start VM, install and run defaults except with rooter step
 
@@ -41,14 +39,18 @@ curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 Mongo:
+sudo apt-get install mongodb-server
+
+Update all packages:
 sudo apt-get update
 sudo apt-get upgrade
-sudo apt-get
+sudo apt-get  (???)
 
 other dependencies to install:
-sudo apt-get install arp-scan (scans network to see what devices are available)
+sudo apt-get install arp-scan (scans network to see what devices are available, requires sudo?)
+sudo apt-get install build-essential (already in pi)
 
-clone git repo
+clone git repo:
 git clone https://github.com/ivanthemonkey/rsci.git
 
 npm install in pi work/rsci and work/rsci/rsci_ui
