@@ -92,7 +92,7 @@ class server {
 
   };
 
-  networkRescan(cb) {
+  networkRescan() {
 
     debug('networkRescan');
 
@@ -118,10 +118,6 @@ class server {
       for(var i = rmv.length; i > 0; i--){
         this.state.clientList.splice(rmv[i], 1);
       }
-      cb();
-    }
-    function err(e) {
-      debug('error getting discovery list', e);
     }
 
     discovery.search(this.state.cpuInterface, this.state.listeningPort).then(gotDiscoveryList.bind(this));
