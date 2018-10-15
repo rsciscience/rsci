@@ -16,12 +16,12 @@ Show parameters of a box.
 
 ui show result of last action 
 
-no updates on page to show werver is working. 
+no updates on page to show server is working. 
 
 
 
 
-Should you be able to start more tah one experiment. ??
+Should you be able to start more than one experiment. ??
 
 Check what happens running muiltiple experimets one after another
 
@@ -51,6 +51,7 @@ BUG:
 
 Stop on admin page causes multiple clients to be created in the experiment session
 
+rsci_ui dev depends on ChromeDriver, no longer has 32bit support, issue on pi, needed?
 
 
 
