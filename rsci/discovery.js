@@ -7,7 +7,7 @@ this.arpScanner = arpScanner;
 this.search = search.bind(this);
 
 async function search (interfaces,port) {
-
+    debug('search');
     debug('Port',port);
     var res= [];
 
@@ -59,20 +59,10 @@ async function findFriends(networkDeviceList,port) {
         }
     }
 
-    let friendsList = await Promise.all(networkDeviceList.map(callNetworkDevice,port));
+    let friendsList = await Promise.all(networkDeviceList.map(callNetworkDevice));
 
-    function cleanFriendList(actual) {
-        debug('Clean Debug List');
-        var newArray = new Array();
-        for (var i = 0; i < actual.length; i++) {
-            if (actual[i]) {
-                newArray.push(actual[i]);
-            }
-        }
-        return newArray;
-    }
-
-    return cleanFriendList(friendsList);  
+    debug('Clean Debug List');
+    return friendsList.filter((f) => { return f !== null; });
 };
 
 this.findServer= function (networkDeviceList) {
