@@ -6,7 +6,7 @@ function init(db, provider) {
     this.db = db;
 
     var schema = new provider.Schema({
-        clientId : String,
+        clientId: String,
         isServer: Boolean
     });
 
@@ -14,23 +14,21 @@ function init(db, provider) {
 
     function save(data, cb) {
         debug('save');
-        model.findOneAndUpdate(
-            {}, 
-            data , 
-            {upsert: true, 'new': true}, 
-            function(err, newData) {
-            if (err) { debug('error Saving', err); return  }
-                    cb(newData);
-                    });
+        model.findOneAndUpdate({}, data,
+            { upsert: true, 'new': true },
+            function (err, newData) {
+                if (err) { debug('error Saving', err); return; }
+                cb(newData);
+            });
     }
 
     function read(cb) {
         debug('read');
-        model.findOne({}, function (err, data) {
-            if (err) { debug(err); return; }
+        model.findOne({},
+            function (err, data) {
+                if (err) { debug(err); return; }
                 cb(data);
-            }
-        );
+            });
     }
 
     return {
