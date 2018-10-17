@@ -47,32 +47,32 @@ this.startServerSearch = function (discoveryList) {
   }
 }.bind(this);
 
-this.initSettings = function (cb) {
+this.initSettings = async function (cb) {
   debug('initSettings');
 
-  this.db.settings.read((data)=>{
-    debug('Read settings')
-    
-    if (data && data.clientId) {
-      this.state.clientId = data.clientId;
-    } else {
-      this.state.clientId = 'id_' + ip.address();
-      this.db.settings.save({ clientId: this.state.clientId }, function () { debug('Saved settings') });
-    }
-    if (data && data.isServer) {
-      this.state.isServer = data.isServer;
-    }
-    
-    let me = {
-      ip: ip.address(),
-      clientId: this.state.clientId,
-      initTimeStamp: this.state.initTimeStamp,
-    };
-    this.state.me = me;
-    me.me = true;
+  var data = await this.db.settings.read();
+  debug('Read settings')
+  
+  if (data && data.clientId) {
+    this.state.clientId = data.clientId;
+  } else {
+    this.state.clientId = 'id_' + ip.address();
+    await this.db.settings.save({ clientId: this.state.clientId });
+    debug('Saved settings');
+  }
+  if (data && data.isServer) {
+    this.state.isServer = data.isServer;
+  }
+  
+  let me = {
+    ip: ip.address(),
+    clientId: this.state.clientId,
+    initTimeStamp: this.state.initTimeStamp,
+  };
+  this.state.me = me;
+  me.me = true;
 
-    cb();
-  });
+  cb();
 }.bind(this);
 
 this.init = function () {

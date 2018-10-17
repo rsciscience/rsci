@@ -1,9 +1,6 @@
 const debug = require('debug')('RSCI.db.settings');
 
-const helpers = require('./helpers');
-
-function init(db, provider) {
-    this.db = db;
+function init(provider) {
 
     var schema = new provider.Schema({
         clientId: String,
@@ -12,23 +9,14 @@ function init(db, provider) {
 
     const model = provider.model('settings', schema);
 
-    function save(data, cb) {
+    async function save(data) {
         debug('save');
-        model.findOneAndUpdate({}, data,
-            { upsert: true, 'new': true },
-            function (err, newData) {
-                if (err) { debug('error Saving', err); return; }
-                cb(newData);
-            });
+        return model.findOneAndUpdate({}, data, { upsert: true, 'new': true });
     }
 
-    function read(cb) {
+    async function read() {
         debug('read');
-        model.findOne({},
-            function (err, data) {
-                if (err) { debug(err); return; }
-                cb(data);
-            });
+        return model.findOne({});
     }
 
     return {

@@ -43,8 +43,7 @@ Test suite for testing experiments
 Clean up the server request for new session to not include sessionVariables from original config file
 
 
-Update business logic that uses the DB to use async instead of CB pattern
-
+test db.experimentSessionsServer.insertClientAction()
 
 
 BUG:
@@ -53,6 +52,7 @@ Stop on admin page causes multiple clients to be created in the experiment sessi
 
 rsci_ui dev depends on ChromeDriver, no longer has 32bit support, issue on pi, needed?
 
-
+why is db.experimentSessionsLocal.sessionStartTime a string? but Date in experimentSessionsServer.
+xxxId are all strings
 
 

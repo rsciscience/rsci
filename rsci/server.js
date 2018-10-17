@@ -29,13 +29,14 @@ class server {
     }
   }
 
-  register(cb) {
+  async register(cb) {
     debug('register');
     this.state.clientList = [];
     this.state.server = this.state.me;
     this.state.isServer = true;
 
-    db.settings.save({ isServer: true }, function () { debug('Saved settings') });
+    await db.settings.save({ isServer: true });
+    debug('Saved settings');
 
     function gotDiscoveryList(discoveryList) {
       debug('gotDiscoveryList');

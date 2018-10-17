@@ -18,7 +18,7 @@ class client {
     this.getState = this.getState.bind(this);
   }
 
-  initExperimentSession(experimentRequest) {
+  async initExperimentSession(experimentRequest) {
     debug('initExperimentSession');
 
     var requestConfig = {
@@ -37,7 +37,7 @@ class client {
       actions: []
     }
     
-    db.experimentSessionsLocal.save(esl);
+    await db.experimentSessionsLocal.save(esl);
 
     requestConfig.experimentConfig.session = eval(experimentRequest.experimentConfig.session);
 
@@ -87,10 +87,10 @@ class client {
     };
   }
 
-  saveExperimentSessionEventOnClient(currentExperimentSession, clientId, data) {
+  async saveExperimentSessionEventOnClient(currentExperimentSession, clientId, data) {
     debug('saveExperimentSessionEventOnClient');
     currentExperimentSession.actions.push(data);
-    db.experimentSessionsLocal.save(currentExperimentSession);
+    return db.experimentSessionsLocal.save(currentExperimentSession);
   }
 
   stopExperimentSession() {
@@ -123,12 +123,13 @@ class client {
 
   }
 
-  registerServer(payload) {
+  async registerServer(payload) {
     debug('registerServer');
     this.state.server = payload;
     this.state.clientList = [];
     this.state.isServer = false;
-    db.settings.save({ isServer: false }, function () { debug('Saved settings') });
+    await db.settings.save({ isServer: false });
+    debug('Saved settings');
 
     var payload = { 
       ip: this.state.me.ip,
@@ -143,7 +144,7 @@ class client {
     return { success: true };
   }
 
-  updateSettings(payload) {
+  async updateSettings(payload) {
     debug('updateSettings');
     if (!payload.clientId) {
       throw ('no supplied client id');
@@ -156,7 +157,8 @@ class client {
     this.state.clientId = payload.clientId;
     this.state.me.clientId = this.state.clientId;
 
-    db.settings.save({ clientId: this.state.clientId }, (res) => { debug('Saved settings',res) })
+    var res = await db.settings.save({ clientId: this.state.clientId });
+    debug('Saved settings', res);
 
     if (change.newClientId != change.oldClientId ){
       updateServerOnClientIdChange(change,this.state.server.ip, this.state.listeningPort); 
@@ -165,21 +167,18 @@ class client {
     return { clientId: this.state.clientId };
   }
 
-  getState(cb) {
+  async getState(cb) {
     debug('getState');
-    function dbResults(cb, data) {
-      console.log('database results');
-      cb({
-        server: this.state.server,
-        me:this.state.me,
-        experimentSessionsLocal: data,
-        clientUIisAvailable: this.state.clientUIisAvailable,
-        ts_ClientUIisAvailable: this.state.ts_ClientUIisAvailable
-      }); 
-
-    }
-    return db.experimentSessionsLocal.getList(dbResults.bind(this, cb));
-  }
+    var data = await db.experimentSessionsLocal.getList();
+    console.log('database results');
+    cb({
+      server: this.state.server,
+      me:this.state.me,
+      experimentSessionsLocal: data,
+      clientUIisAvailable: this.state.clientUIisAvailable,
+      ts_ClientUIisAvailable: this.state.ts_ClientUIisAvailable
+    }); 
+}
 
   async updateServerOnClientIdChange(change,serverip, port, ){
     var options = {

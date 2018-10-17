@@ -1,9 +1,6 @@
 const debug = require('debug')('RSCI.db.experimentSessionsServer');
 
-const helpers = require('./helpers');
-
-function init(db, provider) {
-    this.db = db;
+function init(provider) {
 
     var schema = new provider.Schema({
         experimentSessionId: String,
@@ -14,10 +11,10 @@ function init(db, provider) {
         sessionCompletedTime: Date,
     });
 
-    this.model = provider.model('experimentSessionsServer', schema);
+    const model = provider.model('experimentSessionsServer', schema);
+
     async function save(data) {
         debug('save');
-        
         await model.findOneAndUpdate(
             { experimentSessionId: data.experimentSessionId },
             data,
@@ -25,16 +22,15 @@ function init(db, provider) {
         );
         await model.findOneAndUpdate(
             { experimentSessionId: data.experimentSessionId },
-            {$addToSet: {clients: {$each: data.clients}}}, 
-            {upsert:true}
+            { $addToSet: { clients: { $each: data.clients } } },
+            { upsert: true }
         );
         return model.findOne({ experimentSessionId: data.experimentSessionId });
     }
 
     async function read(experimentSessionId) {
         debug('read');
-    
-       return model.findOne({ experimentSessionId: experimentSessionId });
+        return model.findOne({ experimentSessionId: experimentSessionId });
     };
 
     async function getList() {
@@ -45,17 +41,17 @@ function init(db, provider) {
     async function insertClientAction(experimentSessionId, clientId, clientAction) {
         debug('insertClientAction');
         return model.update(
-            {"experimentSessionId": experimentSessionId, "clients.clientId": clientId },
+            { "experimentSessionId": experimentSessionId, "clients.clientId": clientId },
             {
                 "$push":
-                    {
-                        "clients.$.actions": clientAction
-                    }
-            }, 
-            
+                {
+                    "clients.$.actions": clientAction
+                }
+            },
+
         )
     }
-    
+
     return {
         read: read,
         save: save,

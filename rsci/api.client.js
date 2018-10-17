@@ -11,8 +11,8 @@ class client {
       this.io = io;
   
       this.getState = wrapper.callback(clientFunctions.getState);
-      this.root = wrapper.standard(clientFunctions.updateSettings);
-      this.experiment_init = wrapper.standard(clientFunctions.initExperimentSession);
+      this.root = wrapper.async(clientFunctions.updateSettings, req => [{} /* payload? */], null);
+      this.experiment_init = wrapper.async(clientFunctions.initExperimentSession, req => [req.body], null);
       this.experiment_stop = wrapper.standard(clientFunctions.stopExperimentSession);
       this.server_register = wrapper.async(clientFunctions.registerServer, (req) => { return [ req.body]; },
       function (resultData) {
