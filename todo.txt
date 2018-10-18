@@ -42,11 +42,20 @@ Test suite for testing experiments
  
 Clean up the server request for new session to not include sessionVariables from original config file
 
+DB: test db.experimentSessionsServer.insertClientAction()
 
-test db.experimentSessionsServer.insertClientAction()
+Vue: (lower priority) setup Redux like thing for storing data (that works with Vue)
 
+Client: Heartbeat between box and server (/server/network/heartbeat), eventully should hook to Vue state
+Client: Heartbeat box to UI should update server with on/off details
+Server: recurring network ARP scan to find new client stragglers, eventully should hook to Vue state
+Server: this.state should be periodically sent to clients using io.emit(server_network_event)
+Experiment: remove clientAssignments block from config.js, save to DB instead including defaults from file, (add revert to defaults button)
+Experiment: save "in flight" runs to DB so that updates to file experiments don't affect defaults, req thought and UI spec work
 
-BUG:
+Client/Server: Data/message robustness improvements, hash handshake finalization to ensure that all client messages reached server.
+
+BUGs:
 
 Stop on admin page causes multiple clients to be created in the experiment session
 
