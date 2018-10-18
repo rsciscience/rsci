@@ -203,7 +203,7 @@ async processSessionEvent (experimentSessionId, experimentId, clientId, clientAc
 
     await db.experimentSessionsServer.save(es);
   }
-  
+  return es;
 }
 
 
