@@ -66,13 +66,12 @@ this.initSettings = async function () {
     this.state.isServer = data.isServer;
   }
   
-  let me = {
+  this.state.me = {
+    me: true,
     ip: ip.address(),
     clientId: this.state.clientId,
     initTimeStamp: this.state.initTimeStamp,
   };
-  this.state.me = me;
-  me.me = true;
 }.bind(this);
 
 
