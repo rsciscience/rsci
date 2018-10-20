@@ -9,23 +9,22 @@ const experiments = require('./server.experiments.js');
 const client = require('./server.client');
 
 class server {
-  constructor(){
+  constructor() {
     this.state = state;
     this.getNetworkData = this.getNetworkData.bind(this);
     this.register = this.register.bind(this);
     this.sendDiscoveryListNewServer = this.sendDiscoveryListNewServer.bind(this);
     this.networkRescan = this.networkRescan.bind(this);
-
     this.experiments = new experiments();
     this.client = new client();
-  };
+  }
 
   getNetworkData() {
     return {
       server: this.state.server,
       me: this.state.me,
       discoveryList: this.state.discoveryList,
-      clientList: this.state.clientList,
+      clientList: this.state.clientList
     }
   }
 
@@ -38,84 +37,69 @@ class server {
     await db.settings.save({ isServer: true });
     debug('Saved settings');
 
-    function gotDiscoveryList(discoveryList) {
-      debug('gotDiscoveryList');
-      this.state.discoveryList = discoveryList;
-      let payload = {
-        ip: this.state.server.ip,
-        clientId: this.state.server.clientId,
-        initTimeStamp: this.state.server.initTimeStamp,
-      };
-      this.sendDiscoveryListNewServer(payload);
-    }
+    this.state.discoveryList = await discovery.search(this.state.cpuInterface, this.state.listeningPort)
+    debug('gotDiscoveryList');
 
-    var discoveryList = await discovery.search(this.state.cpuInterface, this.state.listeningPort)
-    gotDiscoveryList.bind(this)(discoveryList);
-  };
+    let payload = {
+      ip: this.state.server.ip,
+      port: this.state.listeningPort,
+      clientId: this.state.server.clientId,
+      initTimeStamp: this.state.server.initTimeStamp,
+    };
+    this.sendDiscoveryListNewServer(payload);
+  }
 
   async sendDiscoveryListNewServer(payload) {
     debug('sendDiscoveryListNewServer');
 
-    var port = this.state.listeningPort;
-
     async function sendListNewServer(client) {
       debug('sendListNewServer');
-
       var options = {
-        uri: 'http://' + client.ip + ':' + port + '/client/server/register',
+        uri: 'http://' + client.ip + ':' + client.port + '/client/server/register',
         json: true,
         method: 'POST',
         body: payload
       }
       try {
-        let res = await request(options);
-        return res;
-
+        return await request(options);
       } catch (e) {
-        debug(e);
-        debug('Error sending server registration');
+        debug('Error sending server registration:', e);
       }
       return null;
     }
 
     let calledClients = await Promise.all(this.state.discoveryList.map(sendListNewServer));
-
     return {
       clientList: calledClients,
       server: payload
     };
+  }
 
-  };
-
-  networkRescan() {
-
+  async networkRescan() {
     debug('networkRescan');
 
-    function gotDiscoveryList(discoveryList) {
-      debug('gotDiscoveryList');
+    this.state.discoveryList = await discovery.search(this.state.cpuInterface, this.state.listeningPort)
+    debug('gotDiscoveryList');
 
-      var rmv = [];
-      this.state.discoveryList = discoveryList;
-      for(var i =0 ; i< this.state.clientList.length;i++){
-        var client = this.state.clientList[i]; 
-        var found = false;
-        for(var j =0 ; j< this.state.discoveryList.length;j++){
-          if (client.ip == this.state.discoveryList[j].ip){
-            found = true;
-            break;
-          }
-        }
-        if (!found){
-            rmv.push(i);
+    var rmv = [];
+    for (var i = 0; i < this.state.clientList.length; i++) {
+      var client = this.state.clientList[i];
+      var found = false;
+      for (var j = 0; j < this.state.discoveryList.length; j++) {
+        if (client.ip == this.state.discoveryList[j].ip) {
+          found = true;
+          break;
         }
       }
-      debug('found '+ rmv.length + ' missing clients')
-      for(var i = rmv.length; i > 0; i--){
-        this.state.clientList.splice(rmv[i], 1);
+      if (!found) {
+        rmv.push(i);
       }
     }
-
-    discovery.search(this.state.cpuInterface, this.state.listeningPort).then(gotDiscoveryList.bind(this));
+    debug('found ' + rmv.length + ' missing clients')
+    for (var i = rmv.length; i > 0; i--) {
+      this.state.clientList.splice(rmv[i], 1);
+    }
   }
 }
+
 module.exports = server;

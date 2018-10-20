@@ -50,7 +50,7 @@ class server {
     this.client_add = wrapper.standard(this.serverFunctions.client.add, postEvent_emitNetworkData.bind(this));
     this.updateClientID = wrapper.async(this.serverFunctions.client.updateID, getArgs_body, postEvent_emitNetworkData.bind(this));
     
-    this.network_rescan = wrapper.standard(this.serverFunctions.networkRescan, postEvent_emitNetworkData.bind(this));
+    this.network_rescan = wrapper.async(this.serverFunctions.networkRescan, getArgs_body, postEvent_emitNetworkData.bind(this));
     this.network = wrapper.standard(this.serverFunctions.getNetworkData);
     this.register = wrapper.async(this.serverFunctions.register, getArgs_body, postEvent_emitNetworkData.bind(this));
     

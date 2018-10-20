@@ -5,73 +5,64 @@ const request = require('request-promise');
 
 this.search = async function (interfaces, port) {
     debug('search');
-    debug('Port', port);
     var res = [];
-
     for (var i = 0, len = interfaces.length; i < len; i++) {
-        var interface  = interfaces[i];
-        debug('  Trying Interface: ' + interface);
+        var interface = interfaces[i];
+        debug('  Trying Interface: ' + interface + ' on port ' + port);
         var partResults = [];
         try {
             partResults = await arpScanner({ interface: interface, sudo: true });
-        }  catch(e) {
-            if(e == 127) {
+        } catch (e) {
+            if (e == 127) {
                 console.log('check arp scanner is installed  (sudo apt-get install arp-scan)');
             }
-            debug('Failed on interface: ' + interface  + ' err code:', e);
-        } 
+            debug('Failed on interface: ' + interface + ' err code:', e);
+        }
         res = res.concat(partResults);
     }
     return findFriends(res, port);
-};
+}
 
 async function findFriends(networkDeviceList, port) {
     debug('findFriends');
-    debug('Port', port);
-    
+
     async function callNetworkDevice(networkDevice) {
         var options = {
-            uri: 'http://' + networkDevice.ip + ':'+port+'/discovery',
+            uri: 'http://' + networkDevice.ip + ':' + port + '/discovery',
             json: true,
-            timeout:5000
+            timeout: 5000
         };
-        debug('Trying: ' + options.uri );
+        debug('Trying: ' + options.uri);
         try {
             let res = await request(options);
-            debug('   friend at ' + networkDevice.ip);
+            debug('   friend at ' + networkDevice.ip + ':' + port);
             return {
-                ip: networkDevice.ip, 
+                ip: networkDevice.ip,
+                port: port,
                 clientId: res.clientId,
                 initTimeStamp: res.initTimeStamp
             };
-        } catch(e) {
-            debug('no friend at ' + networkDevice.ip);
+        } catch (e) {
+            debug('no friend at ' + networkDevice.ip + ':' + port);
             return null;
         }
     }
 
     let friendsList = await Promise.all(networkDeviceList.map(callNetworkDevice));
     return friendsList.filter((f) => { return f !== null; });
-};
+}
 
 this.findServer = function (networkDeviceList) {
     debug('findServer');
-    var output = {};
-    var oldestNetworkDevice = null;
-
+    var oldestNetworkDevice = networkDeviceList[0] || null;
     for (var i = 0, len = networkDeviceList.length; i < len; i++) {
-        var device =  networkDeviceList [i];
+        var device = networkDeviceList[i];
         debug(device.clientId);
-        if( oldestNetworkDevice == null){
-            oldestNetworkDevice =  device ;
-            continue;  
+        if (new Date(device.initTimeStamp) < new Date(oldestNetworkDevice.initTimeStamp)) {
+            oldestNetworkDevice = device;
         }
-        if( new Date( device.initTimeStamp) < new Date(oldestNetworkDevice.initTimeStamp))  {
-            oldestNetworkDevice =  device ;
-        }
-    }    
-    output = oldestNetworkDevice;
-    return output;
+    }
+    return oldestNetworkDevice;
 }
 
 

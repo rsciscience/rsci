@@ -47,8 +47,7 @@ class client {
 
     function watchEvents(currentExperimentSession, data) {
       this.sendServerExperimentSessionEvent(data,
-        this.state.server.ip,
-        this.state.listeningPort,
+        this.state.server,
         this.state.clientId,
         currentExperimentSession.experimentId,
         currentExperimentSession.experimentSessionId);
@@ -96,33 +95,24 @@ class client {
   }
 
   stopExperimentSession() {
-    debug('stopExperimentSession');
-
-    this.state.currentExperimentSession.sessionHandle.stop();
-
-    return {
-      experimentSessionId: this.state.currentExperimentSession.experimentSessionId
-    }
+    debug('stopExperimentSession')
+    this.state.currentExperimentSession.sessionHandle.stop()
+    return { experimentSessionId: this.state.currentExperimentSession.experimentSessionId }
   }
 
-  async registerWithServer(payload, serverip, port) {
+  async registerWithServer(payload, server) {
     debug('registerWithServer');
-
     var options = {
-      uri: 'http://' + serverip + ':' + port + '/server/client/add',
+      uri: 'http://' + server.ip + ':' + server.port + '/server/client/add',
       json: true,
       method: 'POST',
       body: payload
     };
-
     try {
       let res = await request(options);
     } catch (e) {
-
-      debug(e);
-      debug('Error registering client');
+      debug('Error registering client:', e);
     }
-
   }
 
   async registerServer(payload) {
@@ -130,20 +120,20 @@ class client {
     this.state.server = payload;
     this.state.clientList = [];
     this.state.isServer = false;
+
     await db.settings.save({ isServer: false });
     debug('Saved settings');
 
     var payload = { 
       ip: this.state.me.ip,
+      port: this.state.me.port,
       clientId: this.state.me.clientId, 
       initTimeStamp: this.state.me.initTimeStamp,
       clientUIisAvailable : this.state.clientUIisAvailable,
       ts_ClientUIisAvailable: this.state.ts_ClientUIisAvailable,
-      }
-    this.registerWithServer(payload, this.state.server.ip, this.state.listeningPort);
-
-
-    return { success: true };
+    }
+    this.registerWithServer(payload, this.state.server)
+    return { success: true }
   }
 
   async updateSettings(payload) {
@@ -151,22 +141,20 @@ class client {
     if (!payload.clientId) {
       throw ('no supplied client id');
     }
-    var change = {
-      oldClientId: this.state.clientId,
-      newClientId: payload.clientId
-    };
-
     this.state.clientId = payload.clientId;
     this.state.me.clientId = this.state.clientId;
 
     var res = await db.settings.save({ clientId: this.state.clientId });
     debug('Saved settings', res);
 
-    if (change.newClientId != change.oldClientId ){
-      updateServerOnClientIdChange(change,this.state.server.ip, this.state.listeningPort); 
+    var change = {
+      oldClientId: this.state.clientId,
+      newClientId: payload.clientId
     }
-
-    return { clientId: this.state.clientId };
+    if (change.newClientId != change.oldClientId) {
+      updateServerOnClientIdChange(change, this.state.server) 
+    }
+    return { clientId: this.state.clientId }
   }
 
   async getState(cb) {
@@ -180,51 +168,51 @@ class client {
       clientUIisAvailable: this.state.clientUIisAvailable,
       ts_ClientUIisAvailable: this.state.ts_ClientUIisAvailable
     }); 
-}
+  }
 
-  async updateServerOnClientIdChange(change,serverip, port, ){
+  async updateServerOnClientIdChange(change, server) {
     var options = {
-      uri: 'http://' + serverip + ':' + port + '/server/client/updateClientID',
+      uri: 'http://' + server.ip + ':' + server.port + '/server/client/updateClientID',
       json: true,
       method: 'POST',
       body: change
     };
-
     try {
       let res = await request(options);
     } catch (e) {
-      debug('Error sending experiment session event');
+      debug('Error sending experiment session event:', e);
     }
-
   }
 
-  async sendServerExperimentSessionEvent(data, serverip, port, clientId, experimentId, experimentSessionId) {
+  async sendServerExperimentSessionEvent(data, server, clientId, experimentId, experimentSessionId) {
     debug('sendServerExperimentSessionEvent');
     var options = {
-      uri: 'http://' + serverip + ':' + port + '/server/experiment/' + experimentId + '/session/' + experimentSessionId + '/' + clientId + '/event',
+      uri: 'http://' + server.ip + ':' + server.port + '/server/experiment/' + experimentId + '/session/' + experimentSessionId + '/' + clientId + '/event',
       json: true,
       method: 'POST',
       body: data
     };
-
     try {
       let res = await request(options);
     } catch (e) {
-      debug('Error sending experiment session event');
+      debug('Error sending experiment session event:', e);
     }
-
   }
 
   async search() {
     debug('search');
-    var discoveryList = await discovery.search(this.state.cpuInterface, this.state.listeningPort)
-    debug('Discovery List has ' + discoveryList.length);
-    this.state.discoveryList = discoveryList;
+    this.state.discoveryList = await discovery.search(this.state.cpuInterface, this.state.listeningPort)
+    debug('Discovery List has ' + this.state.discoveryList.length);
     this.state.server = discovery.findServer(this.state.discoveryList);
     if (this.state.server && this.state.server.me == false) {
       debug('registering');
-      var payload = { ip: me.ip, clientId: me.clientId, initTimeStamp: me.initTimeStamp }
-      this.client.registerWithServer(payload, this.state.server.ip, this.state.listeningPort);
+      var payload = { 
+        ip: me.ip,
+        port: me.port,
+        clientId: me.clientId, 
+        initTimeStamp: me.initTimeStamp 
+      }
+      this.client.registerWithServer(payload, this.state.server)
     }
   }
 }

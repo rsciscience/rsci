@@ -52,6 +52,7 @@ this.initSettings = async function () {
   this.state.me = {
     me: true,
     ip: ip.address(),
+    port: this.state.listeningPort,
     clientId: this.state.clientId,
     initTimeStamp: this.state.initTimeStamp,
   };

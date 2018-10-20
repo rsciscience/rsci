@@ -49,42 +49,35 @@ async start (experimentId, inputConfig) {
   if (experimentConfig == null) {
     throw 'Can\'t find experiment ' + experimentId;
   }
-
   if (!this.state.clientList || this.state.clientList.length < 1) {
     throw 'No clients';
   }
-
 
   //copy incoming config
   const dispatchConfig = Object.assign(experimentConfig, inputConfig);
   dispatchConfig.clientAssignments = null;
   dispatchConfig.clients = null;
 
-  
   for (var i = 0; i < this.state.clientList.length; i++) {
     let clientAssignment = this.state.clientList[i];
-
     var c = inputConfig.clients.find(((client) => { 
-      return client.clientId === clientAssignment.clientId; }))
-
+      return client.clientId === clientAssignment.clientId; 
+    }))
     if (!c) {
       continue;
     }
-
     newSession.clients.push({
       clientId: clientAssignment.clientId,
       assignedRat: c.assignedRat,
       ip: clientAssignment.ip,
+      port: clientAssignment.port,
       config: dispatchConfig,
       actions: []
     });
   }
 
-
   await db.experimentSessionsServer.save(newSession);
 
-
-  var port = this.state.listeningPort;
   var payload = {
     experimentId: experimentId,
     experimentSessionId: experimentSessionId,
@@ -93,89 +86,71 @@ async start (experimentId, inputConfig) {
 
   async function sendClientInit(client) {
     debug('sendClientInit');
-
     var options = {
-      uri: 'http://' + client.ip + ':' + port + '/client/experiment/init',
+      uri: 'http://' + client.ip + ':' + client.port + '/client/experiment/init',
       json: true,
       method: 'POST',
       body: payload
     };
-
     try {
-      let res = await request(options);
-      return res;
+      return await request(options);
     } catch (e) {
-      console.log(e)
-      debug('Error sending experiment start event');
+      debug('Error sending experiment start event:', e);
     }
     return null;
   }
 
   let calledClients = await Promise.all(newSession.clients.map(sendClientInit));
-
   return {
     clientList: calledClients,
     startDate: new Date(),
     experimentId: experimentId,
-    experimentSessionId: payload.experimentSessionId,
-  };
-
-};
-
+    experimentSessionId: payload.experimentSessionId
+  }
+}
 
 async stop (experimentId, experimentSessionId, clientList) {
   debug('stop');
 
-  let clientsToStop = [];
-
   const experimentSession = await db.experimentSessionsServer.read(experimentSessionId);
-
 
   // if client list is empty - stop all sessions
   const stopAll = (clientList.length === 0);
 
   // if clientList matches id from current session stop those 
+  let clientsToStop = [];
   for (var i = 0; i < experimentSession.clients.length; i++) {
     const client = experimentSession.clients[i];
-
     if (stopAll || clientList.contains(client.clientId)) {
-      // stop
-      clientsToStop.push({ clientId: client.clientId, ip: client.ip });
+      clientsToStop.push({ clientId: client.clientId, ip: client.ip, port: client.port });
       continue;
     } 
   }
-  var port = this.state.listeningPort;
-  
+
   async function sendClientStop(client) {
     debug('sendClientStop');
-
     var options = {
-      uri: 'http://' + client.ip + ':' + port + '/client/experiment/stop',
+      uri: 'http://' + client.ip + ':' + client.port + '/client/experiment/stop',
       json: true,
       method: 'POST',
       body: {}
-    };
-
+    }
     try {
-      let res = await request(options);
-      return res;
+      return await request(options);
     } catch (e) {
-      console.log(e)
-      debug('Error sending experiment start event');
+      debug('Error sending experiment start event:', e);
     }
     return null;
   }
 
   let calledClients = await Promise.all(clientsToStop.map(sendClientStop));
-
   return {
     clientList: clientsToStop,
     stopDate: new Date(),
     experimentId: experimentId,
     experimentSessionId: experimentSessionId,
-  };
-
-};
+  }
+}
 
 isClientActive(clientId, activeClientList) {
     for (var i = 0; i < activeClientList.length; i++) {
