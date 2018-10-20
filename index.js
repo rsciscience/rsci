@@ -24,29 +24,12 @@ console.log('');
 var api = require('./rsci/api');
 debug('Init Api Server');
 
-var discovery = require('./rsci/discovery');
-debug('Init Discovery');
-
 this.client = new client();
 this.server = new server();
 this.db = require('./rsci/db');
 this.export = require('./rsci/export');
 this.state = require('./rsci/state');
 this.helpers = require('./rsci/helpers')
-
-
-this.startServerSearch = function (discoveryList) {
-  debug('startServerSearch');
-  debug('Discovery List has ' + discoveryList.length);
-  this.state.discoveryList = discoveryList;
-  
-  this.state.server = discovery.findServer(this.state.discoveryList);
-  if (this.state.server &&   this.state.server.me == false) {
-    debug('registering');
-    var payload = { ip: me.ip, clientId: me.clientId, initTimeStamp: me.initTimeStamp }
-    this.client.registerWithServer(payload, this.state.server.ip, this.state.listeningPort);
-  }
-}.bind(this);
 
 
 this.initSettings = async function () {
@@ -89,9 +72,8 @@ this.init = async function () {
     debug('I\'m the server');
     this.server.register();
   } else {
-    discovery.search(this.state.cpuInterface, this.state.listeningPort).then(this.startServerSearch);
+    this.client.search();
   }
-  console.log(this)
 }.bind(this);
 
 

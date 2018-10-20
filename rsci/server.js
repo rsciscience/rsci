@@ -29,7 +29,7 @@ class server {
     }
   }
 
-  async register(cb) {
+  async register() {
     debug('register');
     this.state.clientList = [];
     this.state.server = this.state.me;
@@ -40,23 +40,17 @@ class server {
 
     function gotDiscoveryList(discoveryList) {
       debug('gotDiscoveryList');
-
       this.state.discoveryList = discoveryList;
-
       let payload = {
         ip: this.state.server.ip,
         clientId: this.state.server.clientId,
         initTimeStamp: this.state.server.initTimeStamp,
       };
-
       this.sendDiscoveryListNewServer(payload);
-      if(cb){cb();}
-    }
-    function err(e) {
-      debug('error getting discovery list', e);
     }
 
-    discovery.search(this.state.cpuInterface, this.state.listeningPort).then(gotDiscoveryList.bind(this));
+    var discoveryList = await discovery.search(this.state.cpuInterface, this.state.listeningPort)
+    gotDiscoveryList.bind(this)(discoveryList);
   };
 
   async sendDiscoveryListNewServer(payload) {
