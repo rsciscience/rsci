@@ -10,12 +10,18 @@ const api_server = require('./api.server');
 
 this.state = require('./state');
 
-this.app= express();
+this.app = express();
 
 this.heartbeat = {
   ts: null,
   response: false,
-  callback: null,
+  callback: (isAvailable) => {
+    if (this.state.clientUIisAvailable != isAvailable){
+      debug('clientUIisAvailable ' + isAvailable);
+      this.state.clientUIisAvailable = isAvailable;
+    }
+    this.state.ts_ClientUIisAvailable = new Date();
+  },
   intervalHandle: null
 }
 
@@ -37,9 +43,8 @@ this.io.on('connection', function (socket) {
   }.bind(this));
 }.bind(this));
 
-this.startUiHeartbeat = function(cb) {
+this.startUiHeartbeat = function() {
   debug('startUiHeartbeat');
-  this.heartbeat.callback = cb;
   var check = () => {
     this.io.emit('heartbeat_check');
     var difference = (new Date() - this.heartbeat.ts) / 1000;

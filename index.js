@@ -82,15 +82,9 @@ this.init = async function () {
   await this.initSettings()
   
   this.state.experiments.configs = this.server.experiments.load(this.state.experiments.configDir);
-  api.init(this.state.listeningPort,  this.client, this.server, this.export);
+  api.init(this.state.listeningPort, this.client, this.server, this.export);
 
-  api.startUiHeartbeat((isAvailable) => {
-    if (this.state.clientUIisAvailable != isAvailable){
-      debug('clientUIisAvailable ' + isAvailable);
-      this.state.clientUIisAvailable = isAvailable;
-    }
-    this.state.ts_ClientUIisAvailable = new Date();
-  });
+  api.startUiHeartbeat();
 
   if (this.state.isServer === true) {
     debug('I\'m the server');
@@ -98,11 +92,8 @@ this.init = async function () {
   } else {
     discovery.search(this.state.cpuInterface, this.state.listeningPort).then(this.startServerSearch);
   }
+  console.log(this)
 }.bind(this);
 
 
 this.init();
-
-
-
-
