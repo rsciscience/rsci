@@ -5,6 +5,7 @@ const api = require('./api');
 const db = require('./db');
 var helpers = require('./helpers');
 const request = require('request-promise');
+const discovery = require('./rsci/discovery');
 
 class client {
   constructor() {
@@ -211,6 +212,19 @@ class client {
       debug('Error sending experiment session event');
     }
 
+  }
+
+  async search() {
+    debug('search');
+    var discoveryList = await discovery.search(this.state.cpuInterface, this.state.listeningPort)
+    debug('Discovery List has ' + discoveryList.length);
+    this.state.discoveryList = discoveryList;
+    this.state.server = discovery.findServer(this.state.discoveryList);
+    if (this.state.server && this.state.server.me == false) {
+      debug('registering');
+      var payload = { ip: me.ip, clientId: me.clientId, initTimeStamp: me.initTimeStamp }
+      this.client.registerWithServer(payload, this.state.server.ip, this.state.listeningPort);
+    }
   }
 }
 
