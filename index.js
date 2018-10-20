@@ -34,6 +34,7 @@ this.export = require('./rsci/export');
 this.state = require('./rsci/state');
 this.helpers = require('./rsci/helpers')
 
+
 this.startServerSearch = function (discoveryList) {
   debug('startServerSearch');
   debug('Discovery List has ' + discoveryList.length);
@@ -47,7 +48,8 @@ this.startServerSearch = function (discoveryList) {
   }
 }.bind(this);
 
-this.initSettings = async function (cb) {
+
+this.initSettings = async function () {
   debug('initSettings');
 
   var data = await this.db.settings.read();
@@ -71,35 +73,32 @@ this.initSettings = async function (cb) {
   };
   this.state.me = me;
   me.me = true;
-
-  cb();
 }.bind(this);
 
-this.init = function () {
+
+this.init = async function () {
   debug('init')
   
-  this.initSettings(()=>{
-    this.state.experiments.configs = this.server.experiments.load(this.state.experiments.configDir);
-    api.init(this.state.listeningPort,  this.client, this.server, this.export);
+  await this.initSettings()
+  
+  this.state.experiments.configs = this.server.experiments.load(this.state.experiments.configDir);
+  api.init(this.state.listeningPort,  this.client, this.server, this.export);
 
-    api.startUiHeartbeat((isAvailable) => {
-      if (this.state.clientUIisAvailable != isAvailable){
-        debug('clientUIisAvailable ' + isAvailable);
-        this.state.clientUIisAvailable = isAvailable;
-      }
-      this.state.ts_ClientUIisAvailable = new Date();
-    });
- 
-    if (this.state.isServer === true) {
-      debug('I\'m the server');
-      this.server.register();
-    } else {
-      discovery.search(this.state.cpuInterface, this.state.listeningPort).then(this.startServerSearch);
+  api.startUiHeartbeat((isAvailable) => {
+    if (this.state.clientUIisAvailable != isAvailable){
+      debug('clientUIisAvailable ' + isAvailable);
+      this.state.clientUIisAvailable = isAvailable;
     }
+    this.state.ts_ClientUIisAvailable = new Date();
   });
 
+  if (this.state.isServer === true) {
+    debug('I\'m the server');
+    this.server.register();
+  } else {
+    discovery.search(this.state.cpuInterface, this.state.listeningPort).then(this.startServerSearch);
+  }
 }.bind(this);
-
 
 
 this.init();
