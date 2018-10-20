@@ -17,6 +17,7 @@ class client {
     this.registerServer = this.registerServer.bind(this);
     this.updateSettings = this.updateSettings.bind(this);
     this.getState = this.getState.bind(this);
+    this.search = this.search.bind(this);
   }
 
   async initExperimentSession(experimentRequest) {
