@@ -96,9 +96,15 @@ class server {
       }
     }
     debug('found ' + rmv.length + ' missing clients')
-    for (var i = rmv.length; i > 0; i--) {
+    for (var i = rmv.length - 1; i >= 0; i--) {
       this.state.clientList.splice(rmv[i], 1);
     }
+    /* 
+    // New version of above for review. 
+    var filteredClientList = this.state.clientList.filter((c) => this.state.discoveryList.find((d) => d.id === c.id))
+    debug('found ' + (this.state.clientList.length - filteredClientList.length) + ' missing clients')
+    this.state.clientList = filteredClientList
+    */
   }
 }
 
