@@ -61,21 +61,18 @@ this.initSettings = async function () {
 
 this.init = async function () {
   debug('init')
-  
   await this.initSettings()
-  
+
   this.state.experiments.configs = this.server.experiments.load(this.state.experiments.configDir);
   api.init(this.state.listeningPort, this.client, this.server, this.export);
 
-  api.startUiHeartbeat();
-
   if (this.state.isServer === true) {
-    debug('I\'m the server');
-    this.server.register();
+    debug('I\'m the server')
+    this.server.register()
   } else {
-    this.client.search();
+    this.client.search()
   }
-}.bind(this);
+}.bind(this)
 
 
-this.init();
+this.init()

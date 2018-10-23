@@ -48,13 +48,12 @@ class server {
     this.experiments_reload = wrapper.standard(this.serverFunctions.experiments.reload);
 
     this.client_add = wrapper.standard(this.serverFunctions.client.add, postEvent_emitNetworkData.bind(this));
+    this.client_heartbeat = wrapper.standard(this.serverFunctions.client.heartbeat, postEvent_emitNetworkData.bind(this));
     this.updateClientID = wrapper.async(this.serverFunctions.client.updateID, getArgs_body, postEvent_emitNetworkData.bind(this));
     
     this.network_rescan = wrapper.async(this.serverFunctions.networkRescan, getArgs_body, postEvent_emitNetworkData.bind(this));
     this.network = wrapper.standard(this.serverFunctions.getNetworkData);
     this.register = wrapper.async(this.serverFunctions.register, getArgs_body, postEvent_emitNetworkData.bind(this));
-    
-    
   }  
 }
 

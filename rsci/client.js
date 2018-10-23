@@ -3,21 +3,22 @@ const debug = require('debug')('RSCI.client');
 const state = require('./state');
 const api = require('./api');
 const db = require('./db');
-var helpers = require('./helpers');
 const request = require('request-promise');
 const discovery = require('./discovery');
+const heartbeat = require('./client.heartbeat')
 
 class client {
   constructor() {
-    this.state = state;
-    this.initExperimentSession = this.initExperimentSession.bind(this);
-    this.saveExperimentSessionEventOnClient = this.saveExperimentSessionEventOnClient.bind(this);
-    this.stopExperimentSession = this.stopExperimentSession.bind(this);
-    this.registerWithServer = this.registerWithServer.bind(this);
-    this.registerServer = this.registerServer.bind(this);
-    this.updateSettings = this.updateSettings.bind(this);
-    this.getState = this.getState.bind(this);
-    this.search = this.search.bind(this);
+    this.state = state
+    this.initExperimentSession = this.initExperimentSession.bind(this)
+    this.saveExperimentSessionEventOnClient = this.saveExperimentSessionEventOnClient.bind(this)
+    this.stopExperimentSession = this.stopExperimentSession.bind(this)
+    this.registerWithServer = this.registerWithServer.bind(this)
+    this.registerServer = this.registerServer.bind(this)
+    this.updateSettings = this.updateSettings.bind(this)
+    this.getState = this.getState.bind(this)
+    this.search = this.search.bind(this)
+    this.heartbeat = new heartbeat()
   }
 
   async initExperimentSession(experimentRequest) {
@@ -109,7 +110,8 @@ class client {
       body: payload
     };
     try {
-      let res = await request(options);
+      await request(options);
+      this.heartbeat.start()
     } catch (e) {
       debug('Error registering client:', e);
     }
@@ -212,7 +214,7 @@ class client {
         clientId: me.clientId, 
         initTimeStamp: me.initTimeStamp 
       }
-      this.client.registerWithServer(payload, this.state.server)
+      this.registerWithServer(payload, this.state.server)
     }
   }
 }

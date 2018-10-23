@@ -12,19 +12,6 @@ this.state = require('./state');
 
 this.app = express();
 
-this.heartbeat = {
-  ts: null,
-  response: false,
-  callback: (isAvailable) => {
-    if (this.state.clientUIisAvailable != isAvailable){
-      debug('clientUIisAvailable ' + isAvailable);
-      this.state.clientUIisAvailable = isAvailable;
-    }
-    this.state.ts_ClientUIisAvailable = new Date();
-  },
-  intervalHandle: null
-}
-
 this.server = require('http').Server(this.app);
 this.io = require('socket.io')(this.server,{transports: ['polling', 'websocket']});
 
@@ -33,29 +20,17 @@ this.io.on('connection', function (socket) {
     if (this.externalExperimentSessionListen) {
       this.externalExperimentSessionListen(data);
     } else {
-      throw ( 'No externalExperimentSession Listen' );
+      throw 'No externalExperimentSession listener';
     }
   }.bind(this));
   socket.on('heartbeat_response', function () {
-    this.heartbeat.response = true;
-    this.heartbeat.ts = new Date();
-    this.heartbeat.callback(this.heartbeat.response);
+    if (this.clientHeartbeatListener) {
+      this.clientHeartbeatListener()
+    } else {
+      throw 'No clientHeartbeat listener'
+    }
   }.bind(this));
 }.bind(this));
-
-this.startUiHeartbeat = function() {
-  debug('startUiHeartbeat');
-  var check = () => {
-    this.io.emit('heartbeat_check');
-    var difference = (new Date() - this.heartbeat.ts) / 1000;
-    if (difference > 65) {
-      this.heartbeat.response = false;
-    }
-    this.heartbeat.callback(this.heartbeat.response);
-  };
-  this.heartbeat.intervalHandle = setInterval(check, 60000);
-  setTimeout(check, 5000);
-}
 
 this.getClientCommunicationFunctions = function (listen) {
   debug('getClientCommunicationFunctions');
@@ -67,7 +42,12 @@ this.getClientCommunicationFunctions = function (listen) {
     dispose: (data) => { this.io.emit('client_experiment_dispose', data)},
     emitAction: (action) => { this.io.emit('client_experiment_action', action)},
   }
-};
+}
+this.getHeartbeatCommunicationFunction = function (listen) {
+  debug('getHeartbeatCommunicationFunction')
+  this.clientHeartbeatListener = listen
+  return () => { this.io.emit('heartbeat_check') }
+}
 
 this.app.use(bodyParser.urlencoded({
   extended: true
@@ -85,7 +65,6 @@ this.app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Content-Type");
   res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
   next();
-
 });
 
 
@@ -97,7 +76,7 @@ this.init = function(port,  clientFunctions, serverFunctions, exportFunctions ) 
   this.api_server = new api_server(this.serverFunctions,this.io); 
   api_export.init(this.exportFunctions,this.io); 
   this.setRoutes();
-  this.server.listen(port,  '0.0.0.0', function() {
+  this.server.listen(port, '0.0.0.0', function() {
     debug("... API up");
   });
 };
@@ -112,15 +91,18 @@ this.init = function(port,  clientFunctions, serverFunctions, exportFunctions ) 
   this.app.post('/client/experiment/init',this.api_client.experiment_init);
   this.app.post('/client/experiment/stop',this.api_client.experiment_stop);
   this.app.post('/client/server/register',this.api_client.server_register);
+  this.app.post('/client/server/heartbeat',this.api_client.server_heartbeat);
 
+  this.app.post('/server/register',this.api_server.register);
   this.app.get('/server/network',this.api_server.network);
   this.app.post('/server/network/rescan',this.api_server.network_rescan);
+  this.app.post('/server/client/add',this.api_server.client_add);
+  this.app.post('/server/client/heartbeat',this.api_server.client_heartbeat);
+  this.app.post('/server/client/updateClientID',this.api_server.updateClientID);
+
   this.app.get('/server/experiments/sessions',this.api_server.experiments_sessions);
   this.app.get('/server/experiments/list',this.api_server.experiments_list);
   this.app.post('/server/experiments/reload',this.api_server.experiments_reload);
-  this.app.post('/server/client/add',this.api_server.client_add);
-  this.app.post('/server/client/updateClientID',this.api_server.updateClientID);
-  this.app.post('/server/register',this.api_server.register);
   this.app.get('/server/experiment/:id',this.api_server.experiment_id);
   this.app.get('/server/experiment/:id/initialConfig',this.api_server.experiment_initialConfig);
   this.app.post('/server/experiment/:id/start',this.api_server.experiment_start);
