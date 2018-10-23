@@ -1,67 +1,52 @@
-Add a check on the clients - check that client UI is listening
-This should be reported back to the server
 
-in Server.js add another state (isClientActive) - isClientUiAvailable?
-clientOn && uiAvailable?
-2params?
-
-We might need to write another timer to check for available clients and if their client UI is available
-this info should get reflected in server.experimentsList
-
-we want the bg process running on server, and a socket that sends messages to admin saying this is the latest exp listening
+db:
+- test db.experimentSessionsServer.insertClientAction()
+- why is db.experimentSessionsLocal.sessionStartTime a string? but Date in experimentSessionsServer.
 
 
-
-Show parameters of a box. 
-
-ui show result of last action 
-
-no updates on page to show server is working. 
-
-
-
-
-Should you be able to start more than one experiment. ??
-
-Check what happens running muiltiple experimets one after another
-
-what happens if running multiple sessions
+ui:
+- Work on showing current experiment, what to do when it finishes?
+- (lower priority) setup Redux like thing for storing state (that works with Vue, changes to state "reduce" to system changes)
+- Show parameters of a box. 
+- ui show result of last action 
+- no updates on page to show server is working. 
+- Should you be able to start more than one experiment. ??
+- Check what happens running muiltiple experimets one after another
+- what happens if running multiple sessions
+- Export direct to Access 
+- create sql scripts to summarise client data
 
 
-
-Work on showing current experiment 
-    what to do when it finishes
-
-
-Export direct to Access 
-create sql scripts to summarise client data
+api/io: 
+- separate io from api? HTTP vs SocketIO what ties them together?
 
 
-Show last experiment 
-Test suite for testing experiments
- 
-Clean up the server request for new session to not include sessionVariables from original config file
+client: 
+- clean up client/server transition, network scan (make sure state is consistent)
 
-DB: test db.experimentSessionsServer.insertClientAction()
 
-Vue: (lower priority) setup Redux like thing for storing data (that works with Vue)
+server: 
+- recurring network ARP scan to find new client stragglers
+- this.state should be periodically sent to clients using io.emit(server_network_event)
+- Clean up the server request for new session to not include sessionVariables from original config file
+- Client UI status info should get reflected in server.experimentsList
+- Data/message robustness improvements, hash handshake finalization to ensure that all client messages reached server.
+- in Server.js add another state (isClientActive) - isClientUiAvailable? clientOn && uiAvailable? 2params?
+- we want the bg process running on server, and a socket that sends messages to admin saying this is the latest exp listening
 
-Client: Heartbeat between box and server (/server/network/heartbeat), eventully should hook to Vue state
-Client: Heartbeat box to UI should update server with on/off details
-Server: recurring network ARP scan to find new client stragglers, eventully should hook to Vue state
-Server: this.state should be periodically sent to clients using io.emit(server_network_event)
-Experiment: remove clientAssignments block from config.js, save to DB instead including defaults from file, (add revert to defaults button)
-Experiment: save "in flight" runs to DB so that updates to file experiments don't affect defaults, req thought and UI spec work
 
-Client/Server: Data/message robustness improvements, hash handshake finalization to ensure that all client messages reached server.
+experiment: 
+- remove clientAssignments block from config.js, save to DB instead including defaults from file, (add revert to defaults button)
+- save "in flight" runs to DB so that updates to file experiments don't affect defaults, req thought and UI spec work
+- Show last experiment 
+- Test suite for testing experiments
+
 
 BUGs:
 
 Stop on admin page causes multiple clients to be created in the experiment session
 
-rsci_ui dev depends on ChromeDriver, no longer has 32bit support, issue on pi, needed?
+rsci_ui dev depends on ChromeDriver, no longer has 32bit support (issue on pi), needed?
 
-why is db.experimentSessionsLocal.sessionStartTime a string? but Date in experimentSessionsServer.
-xxxId are all strings
 
 
