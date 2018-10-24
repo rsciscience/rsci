@@ -7,16 +7,16 @@ this.search = async function (interfaces, port) {
     debug('search');
     var res = [];
     for (var i = 0, len = interfaces.length; i < len; i++) {
-        var interface = interfaces[i];
-        debug('  Trying Interface: ' + interface + ' on port ' + port);
+        var int = interfaces[i];
+        debug('  Trying Interface: ' + int + ' on port ' + port);
         var partResults = [];
         try {
-            partResults = await arpScanner({ interface: interface, sudo: true });
+            partResults = await arpScanner({ interface: int, sudo: true });
         } catch (e) {
             if (e == 127) {
                 console.log('check arp scanner is installed  (sudo apt-get install arp-scan)');
             }
-            debug('Failed on interface: ' + interface + ' err code:', e);
+            debug('Failed on interface: ' + int + ' err code:', e);
         }
         res = res.concat(partResults);
     }
