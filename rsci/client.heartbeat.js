@@ -1,13 +1,13 @@
 "use strict"
 const debug = require('debug')('RSCI.client.heartbeat')
 const state = require('./state')
-const api = require('./api')
 const request = require('request-promise')
 
 
 class heartbeat {
-  constructor() {
+  constructor(api) {
     this.state = state
+    this.api = api
     this.ui_response = this.ui_response.bind(this)
     this.server_response = this.server_response.bind(this)
   }
@@ -16,7 +16,7 @@ class heartbeat {
     debug('start')
     this.ui = { ts: new Date(1900, 1, 1), response: false, emitter: null }
     this.server = { ts: new Date(1900, 1, 1), response: false }
-    this.ui.emitter = api.getHeartbeatCommunicationFunction(this.ui_response)
+    this.ui.emitter = this.api.getHeartbeatCommunicationFunction(this.ui_response)
     this.intervalHandle = setInterval(this._beat.bind(this), 60000)
     this._beat()
   }

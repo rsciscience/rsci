@@ -9,15 +9,15 @@ const experiments = require('./client.experiments')
 
 
 class client {
-  constructor() {
+  constructor(api) {
     this.state = state
     this.registerWithServer = this.registerWithServer.bind(this)
     this.registerServer = this.registerServer.bind(this)
     this.updateSettings = this.updateSettings.bind(this)
     this.getState = this.getState.bind(this)
     this.search = this.search.bind(this)
-    this.heartbeat = new heartbeat()
-    this.experiments = new experiments()
+    this.heartbeat = new heartbeat(api)
+    this.experiments = new experiments(api)
   }
 
   async registerWithServer(payload, server) {
