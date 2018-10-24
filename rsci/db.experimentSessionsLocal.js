@@ -1,37 +1,36 @@
-const debug = require('debug')('RSCI.db.experimentSessionsLocal');
+const debug = require('debug')('RSCI.db.experimentSessionsLocal')
 
-function init(provider) {
-
-    var schema = new provider.Schema({
-        experimentSessionId: String,
-        experimentId: String,
-        experimentConfig: Object,
-        clientId: String,
-        sessionStartTime: String,
-        actions: Array,
-    });
-
-    const model = provider.model('experimentSessionsLocal', schema);
-
-    async function save(data) {
-        debug('save');
-        return model.findOneAndUpdate({ experimentSessionId: data.experimentSessionId }, data, { upsert: true, 'new': true });
+class experimentSessionsLocal {
+    constructor (provider) {
+        this.schema = new provider.Schema({
+            experimentSessionId: String,
+            experimentId: String,
+            experimentConfig: Object,
+            clientId: String,
+            sessionStartTime: String,
+            actions: Array,
+        })
+        this.model = provider.model('experimentSessionsLocal', this.schema)
     }
 
-    async function read(experimentSessionId) {
-        debug('read');
-        return model.findOne({ experimentSessionId: experimentSessionId });
+    async save(data) {
+        debug('save')
+        return this.model.findOneAndUpdate(
+            { experimentSessionId: data.experimentSessionId }, 
+            data, 
+            { upsert: true, 'new': true }
+        )
     }
 
-    async function getList() {
-        debug('getList');
-        return model.find({});
-    };
-    
-    return {
-        read: read,
-        save: save,
-        getList: getList,
-    };
+    async read(experimentSessionId) {
+        debug('read')
+        return this.model.findOne({ experimentSessionId: experimentSessionId })
+    }
+
+    async getList() {
+        debug('getList')
+        return this.model.find({})
+    }
 }
-module.exports = init;
+
+module.exports = experimentSessionsLocal

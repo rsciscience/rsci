@@ -4,18 +4,18 @@ const state = require('./state');
 const fs = require('fs');
 const request = require('request-promise');
 const discovery = require('./discovery');
-const db = require('./db');
 const experiments = require('./server.experiments.js');
 const client = require('./server.client');
 
 class server {
-  constructor() {
+  constructor(db) {
     this.state = state;
+    this.db = db
     this.getNetworkData = this.getNetworkData.bind(this);
     this.register = this.register.bind(this);
     this.sendDiscoveryListNewServer = this.sendDiscoveryListNewServer.bind(this);
     this.networkRescan = this.networkRescan.bind(this);
-    this.experiments = new experiments();
+    this.experiments = new experiments(db);
     this.client = new client();
   }
 
@@ -34,7 +34,7 @@ class server {
     this.state.server = this.state.me;
     this.state.isServer = true;
 
-    await db.settings.save({ isServer: true });
+    await this.db.settings.save({ isServer: true });
     debug('Saved settings');
 
     this.state.discoveryList = await discovery.search(this.state.cpuInterface, this.state.listeningPort)

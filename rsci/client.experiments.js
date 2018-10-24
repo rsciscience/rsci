@@ -1,13 +1,13 @@
 "use strict"
 const debug = require('debug')('RSCI.client.experiments')
 const state = require('./state');
-const db = require('./db');
 const request = require('request-promise');
 
 
 class experiments {
-  constructor (api) {
+  constructor (db, api) {
     this.state = state
+    this.db = db
     this.api = api
     this.initExperimentSession = this.initExperimentSession.bind(this)
     this.saveExperimentSessionEventOnClient = this.saveExperimentSessionEventOnClient.bind(this)
@@ -33,7 +33,7 @@ class experiments {
       actions: []
     }
     
-    await db.experimentSessionsLocal.save(esl)
+    await this.db.experimentSessionsLocal.save(esl)
 
     requestConfig.experimentConfig.session = eval(experimentRequest.experimentConfig.session)
 
@@ -86,7 +86,7 @@ class experiments {
   async saveExperimentSessionEventOnClient(currentExperimentSession, clientId, data) {
     debug('saveExperimentSessionEventOnClient');
     currentExperimentSession.actions.push(data);
-    return db.experimentSessionsLocal.save(currentExperimentSession);
+    return this.db.experimentSessionsLocal.save(currentExperimentSession);
   }
 
   stopExperimentSession() {

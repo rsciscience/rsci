@@ -1,7 +1,6 @@
 "use strict";
 const debug = require('debug')('RSCI.client');
 const state = require('./state');
-const db = require('./db');
 const request = require('request-promise');
 const discovery = require('./discovery');
 const heartbeat = require('./client.heartbeat')
@@ -9,15 +8,16 @@ const experiments = require('./client.experiments')
 
 
 class client {
-  constructor(api) {
+  constructor(db, api) {
     this.state = state
+    this.db = db
     this.registerWithServer = this.registerWithServer.bind(this)
     this.registerServer = this.registerServer.bind(this)
     this.updateSettings = this.updateSettings.bind(this)
     this.getState = this.getState.bind(this)
     this.search = this.search.bind(this)
     this.heartbeat = new heartbeat(api)
-    this.experiments = new experiments(api)
+    this.experiments = new experiments(db, api)
   }
 
   async registerWithServer(payload, server) {
@@ -42,7 +42,7 @@ class client {
     this.state.clientList = [];
     this.state.isServer = false;
 
-    await db.settings.save({ isServer: false });
+    await this.db.settings.save({ isServer: false });
     debug('Saved settings');
 
     var payload = { 
@@ -65,7 +65,7 @@ class client {
     this.state.clientId = payload.clientId;
     this.state.me.clientId = this.state.clientId;
 
-    var res = await db.settings.save({ clientId: this.state.clientId });
+    var res = await this.db.settings.save({ clientId: this.state.clientId });
     debug('Saved settings', res);
 
     var change = {
@@ -80,7 +80,7 @@ class client {
 
   async getState(cb) {
     debug('getState');
-    var data = await db.experimentSessionsLocal.getList();
+    var data = await this.db.experimentSessionsLocal.getList();
     console.log('database results');
     cb({
       server: this.state.server,

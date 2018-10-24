@@ -4,6 +4,8 @@ const debug = require('debug')('RSCI.index')
 const server = require('./rsci/server')
 const client = require('./rsci/client')
 const api = require('./rsci/api')
+const db = require('./rsci/db')
+const data_export = require('./rsci/export')
 
 process.on('unhandledRejection', (reason, p) => {
   console.log('Unhandled Rejection at: Promise', p, 'reason:', reason)
@@ -22,12 +24,10 @@ console.log('==\\o/==')
 console.log('')
 
 
-const db = require('./rsci/db')
-const exp = require('./rsci/export')
 const state = require('./rsci/state')
 
 
-async function initSettings() {
+async function initSettings(db) {
   debug('initSettings')
 
   var data = await db.settings.read()
@@ -55,11 +55,13 @@ async function initSettings() {
 
 async function init() {
   debug('init')
-  await initSettings()
+  const _db = new db()
+  await initSettings(_db)
 
   const _api = new api()
-  const cl = new client(_api)
-  const srv = new server()
+  const cl = new client(_db, _api)
+  const srv = new server(_db)
+  const exp = new data_export(_db)
   state.experiments.configs = srv.experiments.load(state.experiments.configDir)
   _api.init(state.listeningPort, cl, srv, exp)
 

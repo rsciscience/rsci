@@ -1,8 +1,16 @@
-const mongoose = require('mongoose');
-mongoose.connect('mongodb://127.0.0.1/rsci');
+const mongoose = require('mongoose')
+const settings = require('./db.settings')
+const experimentSessionsLocal = require('./db.experimentSessionsLocal')
+const experimentSessionsServer = require('./db.experimentSessionsServer')
 
-this.settings = require('./db.settings')(mongoose);
-this.experimentSessionsLocal = require('./db.experimentSessionsLocal')(mongoose);
-this.experimentSessionsServer = require('./db.experimentSessionsServer')(mongoose);
 
-module.exports = this;
+class db {
+    constructor() {
+        mongoose.connect('mongodb://127.0.0.1/rsci')
+        this.settings = new settings(mongoose)
+        this.experimentSessionsLocal = new experimentSessionsLocal(mongoose)
+        this.experimentSessionsServer = new experimentSessionsServer(mongoose)
+    }
+}
+
+module.exports = db;

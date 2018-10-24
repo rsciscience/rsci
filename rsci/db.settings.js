@@ -1,28 +1,24 @@
 const debug = require('debug')('RSCI.db.settings');
 
-function init(provider) {
 
-    var schema = new provider.Schema({
-        clientId: String,
-        isServer: Boolean
-    });
-
-    const model = provider.model('settings', schema);
-
-    async function save(data) {
-        debug('save');
-        return model.findOneAndUpdate({}, data, { upsert: true, 'new': true });
+class settings {
+    constructor(provider) {
+        this.schema = new provider.Schema({
+            clientId: String,
+            isServer: Boolean
+        })
+        this.model = provider.model('settings', this.schema)
     }
 
-    async function read() {
-        debug('read');
-        return model.findOne({});
+    async save(data) {
+        debug('save')
+        return this.model.findOneAndUpdate({}, data, { upsert: true, 'new': true })
     }
 
-    return {
-        read: read,
-        save: save,
-    };
+    async read() {
+        debug('read')
+        return this.model.findOne({})
+    }
 }
 
-module.exports = init;
+module.exports = settings;

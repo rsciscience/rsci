@@ -1,46 +1,47 @@
-const debug = require('debug')('RSCI.db.experimentSessionsServer');
+const debug = require('debug')('RSCI.db.experimentSessionsServer')
 
-function init(provider) {
 
-    var schema = new provider.Schema({
-        experimentSessionId: String,
-        experimentId: String,
-        clients: Array,
-        sessionStartTime: Date,
-        sessionCompleted: Boolean,
-        sessionCompletedTime: Date,
-    });
+class experimentSessionsServer {
+    constructor(provider) {
+        this.schema = new provider.Schema({
+            experimentSessionId: String,
+            experimentId: String,
+            clients: Array,
+            sessionStartTime: Date,
+            sessionCompleted: Boolean,
+            sessionCompletedTime: Date,
+        })
+        this.model = provider.model('experimentSessionsServer', this.schema)
+    }
 
-    const model = provider.model('experimentSessionsServer', schema);
-
-    async function save(data) {
-        debug('save');
-        await model.findOneAndUpdate(
+    async save(data) {
+        debug('save')
+        await this.model.findOneAndUpdate(
             { experimentSessionId: data.experimentSessionId },
             data,
             { upsert: true, 'new': true }
-        );
-        await model.findOneAndUpdate(
+        )
+        await this.model.findOneAndUpdate(
             { experimentSessionId: data.experimentSessionId },
             { $addToSet: { clients: { $each: data.clients } } },
             { upsert: true }
-        );
-        return model.findOne({ experimentSessionId: data.experimentSessionId });
+        )
+        return this.model.findOne({ experimentSessionId: data.experimentSessionId })
     }
 
-    async function read(experimentSessionId) {
-        debug('read');
-        return model.findOne({ experimentSessionId: experimentSessionId });
-    };
+    async read(experimentSessionId) {
+        debug('read')
+        return this.model.findOne({ experimentSessionId: experimentSessionId })
+    }
 
-    async function getList() {
-        debug('getList');
-        return model.find({});
-    };
+    async getList() {
+        debug('getList')
+        return this.model.find({})
+    }
 
-    async function insertClientAction(experimentSessionId, clientId, clientAction) {
-        debug('insertClientAction');
-        return model.update(
+    async insertClientAction(experimentSessionId, clientId, clientAction) {
+        debug('insertClientAction')
+        return this.model.update(
             { "experimentSessionId": experimentSessionId, "clients.clientId": clientId },
             {
                 "$push":
@@ -48,15 +49,8 @@ function init(provider) {
                     "clients.$.actions": clientAction
                 }
             },
-
         )
     }
-
-    return {
-        read: read,
-        save: save,
-        getList: getList,
-        insertClientAction: insertClientAction,
-    };
 }
-module.exports = init;
+
+module.exports = experimentSessionsServer

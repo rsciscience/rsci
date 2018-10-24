@@ -8,13 +8,13 @@ const request = require('request-promise');
 const webpackConfig = require('./webpack.conf.js');
 const MemoryFS = require("memory-fs");
 const webpack = require("webpack");
-const db = require('./db');
 const moment = require('moment');
 const vuetemplatecompiler = require("vue-template-compiler");
 
 class experiments {
-    constructor() {
+    constructor(db) {
         this.state = state;
+        this.db = db
         this.start = this.start.bind(this);
         this.stop = this.stop.bind(this);
         this.processSessionEvent = this.processSessionEvent.bind(this);
@@ -76,7 +76,7 @@ async start (experimentId, inputConfig) {
     });
   }
 
-  await db.experimentSessionsServer.save(newSession);
+  await this.db.experimentSessionsServer.save(newSession);
 
   var payload = {
     experimentId: experimentId,
@@ -112,7 +112,7 @@ async start (experimentId, inputConfig) {
 async stop (experimentId, experimentSessionId, clientList) {
   debug('stop');
 
-  const experimentSession = await db.experimentSessionsServer.read(experimentSessionId);
+  const experimentSession = await this.db.experimentSessionsServer.read(experimentSessionId);
 
   // if client list is empty - stop all sessions
   const stopAll = (clientList.length === 0);
@@ -163,9 +163,9 @@ isClientActive(clientId, activeClientList) {
 
 async processSessionEvent (experimentSessionId, experimentId, clientId, clientAction) {
   debug('processSessionEvent');
-  await db.experimentSessionsServer.insertClientAction(experimentSessionId, clientId, clientAction);
+  await this.db.experimentSessionsServer.insertClientAction(experimentSessionId, clientId, clientAction);
 
-  const es = await db.experimentSessionsServer.read(experimentSessionId);
+  const es = await this.db.experimentSessionsServer.read(experimentSessionId);
 
   if (clientAction.actionType === 'Dispose') {
 
@@ -176,7 +176,7 @@ async processSessionEvent (experimentSessionId, experimentId, clientId, clientAc
       es.sessionCompletedTime = new Date();
     }
 
-    await db.experimentSessionsServer.save(es);
+    await this.db.experimentSessionsServer.save(es);
   }
   return es;
 }
@@ -185,7 +185,7 @@ async processSessionEvent (experimentSessionId, experimentId, clientId, clientAc
 async getSessionOverview (experimentSessionId){
     debug('getSessionOverview');
     
-    var data = await db.experimentSessionsServer.read(experimentSessionId);
+    var data = await this.db.experimentSessionsServer.read(experimentSessionId);
 
       var output = {};
       output.running = true;
