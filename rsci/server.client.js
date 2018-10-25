@@ -30,13 +30,10 @@ class client {
     debug('heartbeat')
     var c = this.state.clientList.find(cl => cl.clientId === client.clientId)
     if (c) {
-      var lastts = c.ts || new Date(1900, 1, 1)
-      if ((new Date() - lastts) / 1000 > 55) {
-        c.ts = new Date()
-        c.clientUIisAvailable = client.clientUIisAvailable
-        c.ts_ClientUIisAvailable = client.ts_ClientUIisAvailable
-        this.heartbeat_response(c)
-      }
+      c.ts = new Date()
+      c.clientUIisAvailable = client.clientUIisAvailable
+      c.ts_ClientUIisAvailable = client.ts_ClientUIisAvailable
+      this.heartbeat_response(c)
     }
     debug('client:', client)
     debug('clientList:', this.state.clientList)

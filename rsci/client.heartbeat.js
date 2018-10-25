@@ -17,21 +17,21 @@ class heartbeat {
     this.ui = { ts: new Date(1900, 1, 1), response: false, emitter: null }
     this.server = { ts: new Date(1900, 1, 1), response: false }
     this.ui.emitter = this.api.getHeartbeatCommunicationFunction(this.ui_response)
-    this.intervalHandle = setInterval(this._beat.bind(this), 60000)
+    this.intervalHandle = setInterval(this._beat.bind(this), this.state.heartbeat_interval)
     this._beat()
   }
 
   _update() {
     debug('_update')
     // client
-    this.ui.response = (new Date() - this.ui.ts) / 1000 < 65
+    this.ui.response = new Date() - this.ui.ts <= this.state.heartbeat_interval
     if (this.state.clientUIisAvailable != this.ui.response) {
         debug('clientUIisAvailable ', this.ui.response)
         this.state.clientUIisAvailable = this.ui.response
     }
     this.state.ts_ClientUIisAvailable = new Date()
     // server
-    this.server.response = (new Date() - this.server.ts) / 1000 < 65
+    this.server.response = new Date() - this.server.ts <= this.state.heartbeat_interval
     if (this.state.serverisAvailable != this.server.response) {
         debug('serverisAvailable ', this.server.response)
         this.state.serverisAvailable = this.server.response

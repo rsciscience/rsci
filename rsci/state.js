@@ -8,14 +8,13 @@ module.exports = {
     ts_serverisAvailable: new Date(),
     experimentSessionsLocal: [],
     listeningPort: 3003,
+    heartbeat_interval: 10000,
     cpuInterface: ['eth0', 'en0', 'wlan0', 'enp0s3', 'enp0s18f2u1', 'wlp8s0'],
-    server: {
-    },
-    clientId:'no client id',
-    me:{},
+    server: { },
+    clientId: 'no client id',
+    me: { },
     experiments: {
       configDir: './experiments', 
-      configs:[]
+      configs: []
     }
-
-  };
+  }
