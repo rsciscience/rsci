@@ -22,7 +22,6 @@ class heartbeat {
   }
 
   _update() {
-    debug('_update')
     // client
     this.ui.response = new Date() - this.ui.ts <= this.state.heartbeat_interval
     if (this.state.clientUIisAvailable != this.ui.response) {
@@ -40,7 +39,6 @@ class heartbeat {
   }
 
   _beat() {
-    debug('_beat')
     this._update()
     this._ui_beat()
     setTimeout(this._server_beat.bind(this), 1000)
