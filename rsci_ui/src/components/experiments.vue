@@ -40,6 +40,10 @@ import {HTTP} from '../http-common'
 export default {
   name: 'experiments',
   props: {
+    initialConfig: {
+      default: function () { return [] },
+      type: Array
+    },
     experimentsList: {
       default: function () { return [] },
       type: Array
@@ -51,8 +55,7 @@ export default {
         sessionVariables: {},
         clientAssignments: []
       },
-      hasCurrentExperiment: false,
-      initialConfig: []
+      hasCurrentExperiment: false
     }
   },
   methods: {
@@ -62,20 +65,7 @@ export default {
     selectExperiment (item) {
       this.currentExperiment = item
       this.hasCurrentExperiment = true
-      this.getExperimentInitialConfig()
-    },
-    getExperimentInitialConfig () {
-      var config = this.currentExperiment
-      function err (e) {
-        this.errors.push(e)
-      }
-      function success (response) {
-        this.initialConfig = response.data
-
-        console.log('Got Experiment Initial Config!')
-        console.log(response)
-      }
-      HTTP.get('server/experiment/' + config.id + '/initialConfig', config).then(success.bind(this)).catch(err.bind(this))
+      this.$emit('selectExperiment', item.id)
     },
     startExperiment: function () {
       var config = { ...this.currentExperiment, clients: [] }

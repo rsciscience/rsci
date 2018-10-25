@@ -27,7 +27,7 @@
 
     <div class="content">
       <div class="section config">
-        <experiments v-bind:experimentsList="experiments"></experiments>
+        <experiments v-bind:experimentsList="experiments" v-bind:initialConfig="initialConfig" @selectExperiment="getExperimentInitialConfig"></experiments>
       </div>
 
       <div class="section actvity">
@@ -95,6 +95,20 @@ export default {
       this.server = val.server
       this.discoveryList = val.discoveryList
       this.clientList = val.clientList
+
+      this.initialConfig.map((configClient) => {
+        const client = this.clientList.find((client) => {
+          return client.clientId === configClient.clientId
+        });
+
+        configClient.isOnline = false;
+        configClient.clientUIisAvailable = false;
+
+        if (client) {
+          configClient.isOnline = true;
+          configClient.clientUIisAvailable = client.clientUIisAvailable
+        }
+      });
     }
   },
   data () {
@@ -109,7 +123,8 @@ export default {
         experimentSessionId: '',
         clients: []
       },
-      experiments: []
+      experiments: [],
+      initialConfig: []
     }
   },
   mounted () {
@@ -182,6 +197,19 @@ export default {
     },
     isActiveRecient: function (client) {
       return true
+    },
+     getExperimentInitialConfig (id) {
+
+      function err (e) {
+        this.errors.push(e)
+      }
+      function success (response) {
+        this.initialConfig = response.data
+
+        console.log('Got Experiment Initial Config!')
+        console.log(response)
+      }
+      HTTP.get('server/experiment/' + id + '/initialConfig').then(success.bind(this)).catch(err.bind(this))
     }
   }
 }
