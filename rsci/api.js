@@ -57,7 +57,7 @@ class api {
     if (this.clientHeartbeatListener) {
       this.clientHeartbeatListener()
     } else {
-      throw 'No clientHeartbeat listener'
+      debug( '_heartbeat_response','Error : No clientHeartbeat listener')
     }
   }
 
