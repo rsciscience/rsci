@@ -30,7 +30,7 @@ const state = require('./rsci/state')
 async function initSettings(db) {
   debug('initSettings')
 
-  var data = await db.settings.read()
+  const data = await db.settings.read()
   debug('Read settings')
   
   if (data && data.clientId) {
@@ -59,16 +59,16 @@ async function init() {
   await initSettings(_db)
 
   const _api = new api()
-  const cl = new client(_db, _api)
-  const srv = new server(_db)
-  const exp = new data_export(_db)
-  state.experiments.configs = srv.experiments.load(state.experiments.configDir)
-  _api.init(state.listeningPort, cl, srv, exp)
+  const _client = new client(_db, _api)
+  const _server = new server(_db)
+  const _export = new data_export(_db)
+  state.experiments.configs = _server.experiments.load(state.experiments.configDir)
+  _api.init(state.listeningPort, _client, _server, _export)
 
   if (state.isServer === true) {
-    srv.register()
+    _server.register()
   } else {
-    cl.search()
+    _client.search()
   }
 }
 
