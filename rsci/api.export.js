@@ -3,15 +3,14 @@
 const debug = require('debug')('RSCI.API.export');
 this.state = require('./state');
 
-this.init = function (exportFunctions,io) {
-  this.exportFunctions = exportFunctions;
-  this.io = io;
+this.init = function (exporter) {
+  this.exporter = exporter
 }
 
 this.session_id = (req, res) =>  {
   debug('session_id');
   function doWork(experimentSessionId,cb){
-    this.exportFunctions.getExperimentSessionExportAsCsv(experimentSessionId,cb);
+    this.exporter.getExperimentSessionExportAsCsv(experimentSessionId,cb);
   }
 
   function cb(data){
@@ -34,7 +33,7 @@ this.experiment_sessions_list = (req, res) =>  {
   debug('experiment_sessions_list');
 
   function doWork(cb){
-    this.exportFunctions.getExperimentSessions(cb);
+    this.exporter.getExperimentSessions(cb);
   }
 
   function cb(data){

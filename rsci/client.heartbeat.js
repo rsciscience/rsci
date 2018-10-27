@@ -14,9 +14,9 @@ class heartbeat {
 
   start() {
     debug('start')
-    this.ui = { ts: new Date(1900, 1, 1), response: false, emitter: null }
+    this.ui = { ts: new Date(1900, 1, 1), response: false }
     this.server = { ts: new Date(1900, 1, 1), response: false }
-    this.ui.emitter = this.api.getHeartbeatCommunicationFunction(this.ui_response)
+    this.api.add_listener('heartbeat_response', this.ui_response)
     this.intervalHandle = setInterval(this._beat.bind(this), this.state.heartbeat_interval)
     this._beat()
   }
@@ -46,7 +46,7 @@ class heartbeat {
 
   async _ui_beat() {
     debug('ui_beat')
-    this.ui.emitter()
+    this.api.emit('heartbeat_check')
   }
 
   ui_response() {
@@ -57,7 +57,7 @@ class heartbeat {
 
   async _server_beat() {
     debug('server_beat')
-    var options = {
+    const options = {
       uri: 'http://' + this.state.server.ip + ':' + this.state.server.port + '/server/client/heartbeat',
       json: true,
       method: 'POST',

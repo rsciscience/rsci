@@ -1,7 +1,7 @@
 "use strict"
 const debug = require('debug')('RSCI.client.experiments')
-const state = require('./state');
-const request = require('request-promise');
+const state = require('./state')
+const request = require('request-promise')
 
 
 class experiments {
@@ -15,16 +15,16 @@ class experiments {
   }
 
   async initExperimentSession(experimentRequest) {
-    debug('initExperimentSession');
+    debug('initExperimentSession')
 
-    var requestConfig = {
+    const requestConfig = {
       experimentId: experimentRequest.experimentId,
       experimentSessionId: experimentRequest.experimentSessionId,
       experimentConfig: experimentRequest.experimentConfig,
       sessionVariables: experimentRequest.experimentConfig.sessionVariables,
     }
 
-    var esl = {
+    const esl = {
       experimentSessionId: requestConfig.experimentSessionId,
       experimentId: requestConfig.experimentId,
       experimentConfig: requestConfig.experimentConfig,
@@ -54,7 +54,7 @@ class experiments {
       )
     }
 
-    var sess = new requestConfig.experimentConfig.session(requestConfig.experimentSessionId, { sessionVariables: requestConfig.sessionVariables })
+    const sess = new requestConfig.experimentConfig.session(requestConfig.experimentSessionId, { sessionVariables: requestConfig.sessionVariables })
 
     sess.on('Init', watchEvents.bind(this, esl))
     sess.on('Dispose', watchEvents.bind(this, esl))
@@ -63,7 +63,14 @@ class experiments {
     sess.on('Event', watchEvents.bind(this, esl))
     sess.on('Action', watchEvents.bind(this, esl))
 
-    var comms = this.api.getClientCommunicationFunctions(sess.listen)
+    this.api.add_listener('client_experiment_onevent', sess.listen)
+    const comms = {
+      init: (data) => { this.api.emit('client_experiment_init', data) },
+      start: (data) => { this.api.emit('client_experiment_session_start', data) },
+      stop: (data) => { this.api.emit('client_experiment_session_stop', data) },
+      dispose: (data) => { this.api.emit('client_experiment_dispose', data) },
+      emitAction: (action) => { this.api.emit('client_experiment_action', action) },
+    }
 
     comms.init({
       experimentId: requestConfig.experimentId,
@@ -84,9 +91,9 @@ class experiments {
   }
 
   async saveExperimentSessionEventOnClient(currentExperimentSession, clientId, data) {
-    debug('saveExperimentSessionEventOnClient');
-    currentExperimentSession.actions.push(data);
-    return this.db.experimentSessionsLocal.save(currentExperimentSession);
+    debug('saveExperimentSessionEventOnClient')
+    currentExperimentSession.actions.push(data)
+    return this.db.experimentSessionsLocal.save(currentExperimentSession)
   }
 
   stopExperimentSession() {
@@ -96,17 +103,17 @@ class experiments {
   }
 
   async sendServerExperimentSessionEvent(data, server, clientId, experimentId, experimentSessionId) {
-    debug('sendServerExperimentSessionEvent');
-    var options = {
+    debug('sendServerExperimentSessionEvent')
+    const options = {
       uri: 'http://' + server.ip + ':' + server.port + '/server/experiment/' + experimentId + '/session/' + experimentSessionId + '/' + clientId + '/event',
       json: true,
       method: 'POST',
       body: data
-    };
+    }
     try {
-      await request(options);
+      await request(options)
     } catch (e) {
-      debug('Error sending experiment session event:', e);
+      debug('Error sending experiment session event:', e)
     }
   }
 }

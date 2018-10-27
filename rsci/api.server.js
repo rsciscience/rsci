@@ -1,63 +1,68 @@
-"use strict";
-const wrapper = require('./api.wrapper.js');
-const debug = require('debug')('RSCI.API.server');
-var state = require('./state');
+"use strict"
+const debug = require('debug')('RSCI.API.server')
+const wrapper = require('./api.wrapper.js')
 
-function getArgs_id(req) {
-  const output = [];
-  output.push(req.params.id);
-  return output;
-}
-function getArgs_body(req) {
-  const output = [];
-  output.push(req.body);
-  return output;
-}
-function getArgs_id_body(req) {
-  const output = [];
-  output.push(req.params.id, req.body);
-  return output;
-}
-function postEvent_emitNetworkData(resultData) {
-  this.io.emit('server_network_event', this.serverFunctions.getNetworkData());
-}
+const state = require('./state')
+
 
 class server {
-  constructor(serverFunctions, io) {
-    this.state = state;
-    this.serverFunctions = serverFunctions;
-    this.io = io;
+  constructor(api, server) {
+    this.state = state
+    this.api = api
+    this.server = server
+    this._postEvent_emitNetworkData = this._postEvent_emitNetworkData.bind(this)
 
-    this.experiment_session_stop = wrapper.async(this.serverFunctions.experiments.stop, (req) => {
-      return [req.params.id, req.params.experimentSessionId, req.body];
-    }, null);
-    this.experiment_id_event = wrapper.async(this.serverFunctions.experiments.processSessionEvent
-      , (req) => {
-        return [req.params.experimentSessionId ,req.params.id,req.params.clientId, req.body];
+    this.experiment_session_stop = wrapper.async(server.experiments.stop, (req) => {
+        return [req.params.id, req.params.experimentSessionId, req.body]
+      }, null)
+    this.experiment_id_event = wrapper.async(server.experiments.processSessionEvent, (req) => {
+        return [req.params.experimentSessionId ,req.params.id,req.params.clientId, req.body]
       }
       , async (result) => {
-        var data = await this.serverFunctions.experiments.getSessionOverview(result.experimentSessionId);
-        this.io.emit('server_experimentsession_id_client_action', data);
-      });
-    this.experiment_initialConfig = wrapper.async(this.serverFunctions.experiments.initialConfigload, getArgs_id, null);
-    this.experiment_id = wrapper.async(this.serverFunctions.experiments.getSessionOverview, getArgs_id, null);
-    this.experiment_id_export = wrapper.async(this.serverFunctions.experiments.getSessionExportAsCsv, getArgs_id, null);
-    this.experiment_start = wrapper.async(this.serverFunctions.experiments.start, getArgs_id_body, null);
-    this.experiments_sessions = wrapper.standard((input) => { return this.state.experimentSessions });
-    this.experiments_list = wrapper.standard(this.serverFunctions.experiments.list);
-    this.experiments_reload = wrapper.standard(this.serverFunctions.experiments.reload);
+        var data = await server.experiments.getSessionOverview(result.experimentSessionId)
+        this.api.emit('server_experimentsession_id_client_action', data)
+      })
+    this.experiment_initialConfig = wrapper.async(server.experiments.initialConfigload, this._getArgs_id, null)
+    this.experiment_id = wrapper.async(server.experiments.getSessionOverview, this._getArgs_id, null)
+    this.experiment_id_export = wrapper.async(server.experiments.getSessionExportAsCsv, this._getArgs_id, null)
+    this.experiment_start = wrapper.async(server.experiments.start, this._getArgs_id_body, null)
+    this.experiments_sessions = wrapper.standard((input) => { return this.state.experimentSessions })
+    this.experiments_list = wrapper.standard(server.experiments.list)
+    this.experiments_reload = wrapper.standard(server.experiments.reload)
 
-    this.client_add = wrapper.standard(this.serverFunctions.client.add, postEvent_emitNetworkData.bind(this));
-    this.client_heartbeat = wrapper.standard(this.serverFunctions.client.heartbeat, postEvent_emitNetworkData.bind(this));
-    this.updateClientID = wrapper.async(this.serverFunctions.client.updateID, getArgs_body, postEvent_emitNetworkData.bind(this));
+    this.client_add = wrapper.standard(server.client.add, this._postEvent_emitNetworkData)
+    this.client_heartbeat = wrapper.standard(server.client.heartbeat, this._postEvent_emitNetworkData)
+    this.updateClientID = wrapper.async(server.client.updateID, this._getArgs_body, this._postEvent_emitNetworkData)
     
-    this.network_rescan = wrapper.async(this.serverFunctions.networkRescan, getArgs_body, postEvent_emitNetworkData.bind(this));
-    this.network = wrapper.standard(this.serverFunctions.getNetworkData);
-    this.register = wrapper.async(this.serverFunctions.register, getArgs_body, postEvent_emitNetworkData.bind(this));
+    this.network_rescan = wrapper.async(server.networkRescan, this._getArgs_body, this._postEvent_emitNetworkData)
+    this.network = wrapper.standard(server.getNetworkData)
+    this.register = wrapper.async(server.register, this._getArgs_body, this._postEvent_emitNetworkData)
   }  
+
+  _getArgs_id(req) {
+    const output = []
+    output.push(req.params.id)
+    return output
+  }
+
+  _getArgs_body(req) {
+    const output = []
+    output.push(req.body)
+    return output
+  }
+
+  _getArgs_id_body(req) {
+    const output = []
+    output.push(req.params.id, req.body)
+    return output
+  }
+
+  _postEvent_emitNetworkData(resultData) {
+    this.api.emit('server_network_event', this.server.getNetworkData())
+  }
 }
 
-module.exports = server;
+module.exports = server
 
 
 

@@ -1,31 +1,35 @@
-"use strict";
+"use strict"
+const debug = require('debug')('RSCI.API.client')
+const wrapper = require('./api.wrapper.js')
 
-const debug = require('debug')('RSCI.API.client');
-const wrapper = require('./api.wrapper.js');
+const state = require('./state')
+
 
 class client {
-  constructor(clientFunctions, io) {
-    debug('constructor');
-    this.state = require('./state');
-    this.clientFunctions = clientFunctions;
-    this.io = io;
+  constructor(api, client) {
+    this.state = state
+    this.api = api
+    this._postEvent_emitNetworkData = this._postEvent_emitNetworkData.bind(this)
 
-    this.getState = wrapper.callback(clientFunctions.getState);
-    this.root = wrapper.async(clientFunctions.updateSettings, req => req.body, null);
-    this.experiment_init = wrapper.async(clientFunctions.experiments.initExperimentSession, req => [req.body], null);
-    this.experiment_stop = wrapper.standard(clientFunctions.experiments.stopExperimentSession);
-    this.server_register = wrapper.async(clientFunctions.registerServer, (req) => { return [req.body]; },
-      function (resultData) {
-        var updateNetworkData = {
-          server: this.state.server,
-          me: this.state.me,
-          discoveryList: this.state.discoveryList,
-          clientList: this.state.clientList,
-        };
-        this.io.emit('server_network_event', updateNetworkData);
-      }.bind(this))
-    this.server_heartbeat = wrapper.standard(clientFunctions.heartbeat.server_response)
+    this.getState = wrapper.callback(client.getState)
+    this.root = wrapper.async(client.updateSettings, req => req.body, null)
+
+    this.experiment_init = wrapper.async(client.experiments.initExperimentSession, req => [req.body], null)
+    this.experiment_stop = wrapper.standard(client.experiments.stopExperimentSession)
+
+    this.server_register = wrapper.async(client.registerServer, req => [req.body], this._postEvent_emitNetworkData)
+    this.server_heartbeat = wrapper.standard(client.heartbeat.server_response)
+  }
+
+  _postEvent_emitNetworkData(resultData) {
+    const updateNetworkData = {
+      server: this.state.server,
+      me: this.state.me,
+      discoveryList: this.state.discoveryList,
+      clientList: this.state.clientList,
+    }
+    this.api.emit('server_network_event', updateNetworkData);
   }
 }
 
-module.exports = client;
+module.exports = client
