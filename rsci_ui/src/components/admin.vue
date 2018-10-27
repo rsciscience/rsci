@@ -99,16 +99,16 @@ export default {
       this.initialConfig.map((configClient) => {
         const client = this.clientList.find((client) => {
           return client.clientId === configClient.clientId
-        });
+        })
 
-        configClient.isOnline = false;
-        configClient.clientUIisAvailable = false;
+        configClient.isOnline = false
+        configClient.clientUIisAvailable = false
 
         if (client) {
-          configClient.isOnline = true;
+          configClient.isOnline = true
           configClient.clientUIisAvailable = client.clientUIisAvailable
         }
-      });
+      })
     }
   },
   data () {
@@ -198,8 +198,7 @@ export default {
     isActiveRecient: function (client) {
       return true
     },
-     getExperimentInitialConfig (id) {
-
+    getExperimentInitialConfig (id) {
       function err (e) {
         this.errors.push(e)
       }
