@@ -18,7 +18,6 @@ class data_export {
   }
 
   processsExperimentSessionData(id, data) {
-    const sessionInfo = []
     const output = []
     for (let i = 0; i < data.length; i++) {
       const experimentSession = data[i]
@@ -26,28 +25,29 @@ class data_export {
       console.log('found exp ' + id)
 
       // experimentId	experimentName	sessionId	sessionStartTime	clientConfig	clientId	clientAction	clientActionTime
-      output.experimentSessionId = id
-      sessionInfo.push(this._quoteWrap(experimentSession.experimentId))
-      sessionInfo.push(this._quoteWrap(experimentSession.experimentSessionId))
-      sessionInfo.push(this._quoteWrap(experimentSession.sessionStartTime))
-
+      const sessionInfo = [
+        this._quoteWrap(experimentSession.experimentId),
+        this._quoteWrap(experimentSession.experimentSessionId),
+        this._quoteWrap(experimentSession.sessionStartTime)
+      ]
       const sessionInfoString = sessionInfo.join(',')
 
       for (var j = 0; j < experimentSession.clients.length; j++) {
-        const clientInfo = []
         const client = experimentSession.clients[j]
-        clientInfo.push(sessionInfoString)
-        clientInfo.push(this._quoteWrap(client.clientId))
-        clientInfo.push(this._quoteWrap(this._escapeDoubleQuotes(JSON.stringify(client.config.sessionVariables))))
-
+        const clientInfo = [
+          sessionInfoString,
+          this._quoteWrap(client.clientId),
+          this._quoteWrap(this._escapeDoubleQuotes(JSON.stringify(client.config.sessionVariables)))
+        ]
         const clientInfoString = clientInfo.join(',')
 
         for (var k = 0; k < client.actions.length; k++) {
           const action = client.actions[k]
-          const actionInfo = []
-          actionInfo.push(clientInfoString)
-          actionInfo.push(this._quoteWrap(action.actionTimeStamp))
-          actionInfo.push(this._quoteWrap(action.actionType))
+          const actionInfo = [
+            clientInfoString,
+            this._quoteWrap(action.actionTimeStamp),
+            this._quoteWrap(action.actionType)
+          ]
           output.push(actionInfo.join(','))
         }
       }
