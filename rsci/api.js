@@ -78,7 +78,7 @@ class api {
   _setup_routes(client, server, exporter) {
     const _api_client = new api_client(this, client)
     const _api_server = new api_server(this, server)
-    api_export.init(this, exporter)
+    const _api_export = new api_export(exporter)
 
     this.app.get('/discovery', this._discovery)
     this.app.get('/discovery/list', this._discovery_list)
@@ -106,8 +106,8 @@ class api {
     this.app.post('/server/experiment/:id/session/:experimentSessionId/:clientId/event', _api_server.experiment_id_event)
     this.app.post('/server/experiment/:id/session/:experimentSessionId/stop', _api_server.experiment_session_stop)
 
-    this.app.get('/server/export/session/:id', api_export.session_id)
-    this.app.get('/server/export/sessions/list', api_export.experiment_sessions_list)
+    this.app.get('/server/export/session/:id', _api_export.session_id)
+    this.app.get('/server/export/sessions/list', _api_export.experiment_sessions_list)
   }
 
   _discovery(req, res) {
