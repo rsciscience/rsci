@@ -17,10 +17,6 @@ ui:
 - create sql scripts to summarise client data
 
 
-api/io: 
-- separate io from api? HTTP vs SocketIO what ties them together?
-
-
 client: 
 - clean up client/server transition, network scan (make sure state is consistent)
 
@@ -31,7 +27,6 @@ server:
 - Clean up the server request for new session to not include sessionVariables from original config file
 - Client UI status info should get reflected in server.experimentsList
 - Data/message robustness improvements, hash handshake finalization to ensure that all client messages reached server.
-- in Server.js add another state (isClientActive) - isClientUiAvailable? clientOn && uiAvailable? 2params?
 - we want the bg process running on server, and a socket that sends messages to admin saying this is the latest exp listening
 
 
@@ -47,6 +42,6 @@ BUGs:
 Stop on admin page causes multiple clients to be created in the experiment session
 
 rsci_ui dev depends on ChromeDriver, no longer has 32bit support (issue on pi), needed?
-
+mongodb version issue, pi support?
 
 
