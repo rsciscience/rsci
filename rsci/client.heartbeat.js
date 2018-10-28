@@ -14,6 +14,7 @@ class heartbeat {
 
   start() {
     debug('start')
+    if (this.intervalHandle) clearInterval(this.intervalHandle)
     this.ui = { ts: new Date(1900, 1, 1), response: false }
     this.server = { ts: new Date(1900, 1, 1), response: false }
     this.api.add_listener('heartbeat_response', this.ui_response)
