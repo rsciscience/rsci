@@ -51,14 +51,14 @@ class server {
 
   async sendDiscoveryListNewServer(payload) {
     debug('sendDiscoveryListNewServer')
-    const calledClients = await Promise.all(this.state.discoveryList.map(this._sendListNewServer))
+    const calledClients = await Promise.all(this.state.discoveryList.map(c => this._sendListNewServer(c, payload)))
     return {
       clientList: calledClients,
       server: payload
     }
   }
 
-  async _sendListNewServer(client) {
+  async _sendListNewServer(client, payload) {
     debug('sendListNewServer')
     const options = {
       uri: 'http://' + client.ip + ':' + client.port + '/client/server/register',
