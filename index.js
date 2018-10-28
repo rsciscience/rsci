@@ -1,6 +1,7 @@
 "use strict"
 const ip = require('ip')
 const debug = require('debug')('RSCI.index')
+const discovery = require('./rsci/discovery')
 const server = require('./rsci/server')
 const client = require('./rsci/client')
 const api = require('./rsci/api')
@@ -59,8 +60,9 @@ async function init() {
   await initSettings(_db)
 
   const _api = new api()
-  const _client = new client(_db, _api)
-  const _server = new server(_db)
+  const _discovery = new discovery(state.listeningPort)
+  const _client = new client(_db, _api, _discovery)
+  const _server = new server(_db, _discovery)
   const _export = new data_export(_db)
   state.experiments.configs = _server.experiments.load(state.experiments.configDir)
   _api.init(state.listeningPort, _client, _server, _export)

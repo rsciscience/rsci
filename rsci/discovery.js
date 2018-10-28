@@ -1,69 +1,66 @@
-const debug = require('debug')('RSCI.discovery');
-const arpScanner = require('arpscan/promise');
-const request = require('request-promise');
+const debug = require('debug')('RSCI.discovery')
+const arpScanner = require('arpscan/promise')
+const request = require('request-promise')
 
 
-this.search = async function (interfaces, port) {
-    debug('search');
-    var res = [];
-    for (var i = 0, len = interfaces.length; i < len; i++) {
-        var int = interfaces[i];
-        debug('  Trying Interface: ' + int + ' on port ' + port);
-        var partResults = [];
-        try {
-            partResults = await arpScanner({ interface: int, sudo: true });
-        } catch (e) {
-            if (e == 127) {
-                console.log('check arp scanner is installed  (sudo apt-get install arp-scan)');
-            }
-            debug('Failed on interface: ' + int + ' err code:', e);
-        }
-        res = res.concat(partResults);
+class discovery {
+  constructor(port) {
+    this.port = port
+    // handlers
+    this._callNetworkDevice = this._callNetworkDevice.bind(this)
+  }
+
+  async search(interfaces) {
+    debug('search')
+    const arpScanLists = await Promise.all(interfaces.map(this._arp_scan))
+    const networkDeviceList = arpScanLists.reduce((a, b) => a.concat(b), [])
+    const friendsList = await Promise.all(networkDeviceList.map(this._callNetworkDevice))
+    return friendsList.filter(f => f !== null)
+  }
+
+  async _arp_scan(int) {
+    let results = []
+    debug('  Trying Interface: ' + int)
+    try {
+      results = await arpScanner({ interface: int, sudo: true })
+      debug('arpscan result', results)
+    } catch (e) {
+      if (e == 127) {
+        console.log('check arp scanner is installed  (sudo apt-get install arp-scan)')
+      }
+      debug('Failed on interface: ' + int + ' err code:', e)
     }
-    return findFriends(res, port);
-}
+    return results
+  }
 
-async function findFriends(networkDeviceList, port) {
-    debug('findFriends');
-
-    async function callNetworkDevice(networkDevice) {
-        var options = {
-            uri: 'http://' + networkDevice.ip + ':' + port + '/discovery',
-            json: true,
-            timeout: 5000
-        };
-        debug('Trying: ' + options.uri);
-        try {
-            let res = await request(options);
-            debug('   friend at ' + networkDevice.ip + ':' + port);
-            return {
-                ip: networkDevice.ip,
-                port: port,
-                clientId: res.clientId,
-                initTimeStamp: res.initTimeStamp
-            };
-        } catch (e) {
-            debug('no friend at ' + networkDevice.ip + ':' + port);
-            return null;
-        }
+  async _callNetworkDevice(networkDevice) {
+    const options = {
+      uri: 'http://' + networkDevice.ip + ':' + this.port + '/discovery',
+      json: true,
+      timeout: 5000
     }
-
-    let friendsList = await Promise.all(networkDeviceList.map(callNetworkDevice));
-    return friendsList.filter((f) => { return f !== null; });
-}
-
-this.findServer = function (networkDeviceList) {
-    debug('findServer');
-    var oldestNetworkDevice = networkDeviceList[0] || null;
-    for (var i = 0, len = networkDeviceList.length; i < len; i++) {
-        var device = networkDeviceList[i];
-        debug(device.clientId);
-        if (new Date(device.initTimeStamp) < new Date(oldestNetworkDevice.initTimeStamp)) {
-            oldestNetworkDevice = device;
-        }
+    debug('Trying: ' + options.uri)
+    try {
+      const res = await request(options)
+      debug('   friend at ' + networkDevice.ip + ':' + this.port)
+      return {
+        ip: networkDevice.ip,
+        port: this.port,
+        clientId: res.clientId,
+        initTimeStamp: res.initTimeStamp
+      }
+    } catch (e) {
+      debug('no friend at ' + networkDevice.ip + ':' + this.port)
+      return null
     }
-    return oldestNetworkDevice;
+  }
+
+  findServer(networkDeviceList) {
+    debug('findServer')
+    if (!networkDeviceList || networkDeviceList.length <= 0) return null
+    return networkDeviceList.reduce((a, b) => new Date(a.initTimeStamp) < new Date(b.initTimeStamp) ? a : b)
+  }
 }
 
 
-module.exports = this;
+module.exports = discovery

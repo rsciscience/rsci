@@ -1,51 +1,52 @@
-"use strict";
-const debug = require('debug')('RSCI.client');
-const state = require('./state');
-const request = require('request-promise');
-const discovery = require('./discovery');
+"use strict"
+const debug = require('debug')('RSCI.client')
+const state = require('./state')
+const request = require('request-promise')
 const heartbeat = require('./client.heartbeat')
 const experiments = require('./client.experiments')
 
 
 class client {
-  constructor(db, api) {
+  constructor(db, api, discovery) {
     this.state = state
     this.db = db
+    this.discovery = discovery
+    this.heartbeat = new heartbeat(api)
+    this.experiments = new experiments(db, api)
+    // handlers
     this.registerWithServer = this.registerWithServer.bind(this)
     this.registerServer = this.registerServer.bind(this)
     this.updateSettings = this.updateSettings.bind(this)
     this.getState = this.getState.bind(this)
     this.search = this.search.bind(this)
-    this.heartbeat = new heartbeat(api)
-    this.experiments = new experiments(db, api)
   }
 
   async registerWithServer(payload, server) {
-    debug('registerWithServer');
-    var options = {
+    debug('registerWithServer')
+    const options = {
       uri: 'http://' + server.ip + ':' + server.port + '/server/client/add',
       json: true,
       method: 'POST',
       body: payload
-    };
+    }
     try {
-      await request(options);
+      await request(options)
       this.heartbeat.start()
     } catch (e) {
-      debug('Error registering client:', e);
+      debug('Error registering client:', e)
     }
   }
 
-  async registerServer(payload) {
-    debug('registerServer');
-    this.state.server = payload;
-    this.state.clientList = [];
-    this.state.isServer = false;
+  async registerServer(server_payload) {
+    debug('registerServer')
+    this.state.server = server_payload
+    this.state.clientList = []
+    this.state.isServer = false
 
-    await this.db.settings.save({ isServer: false });
-    debug('Saved settings');
+    await this.db.settings.save({ isServer: false })
+    debug('Saved settings')
 
-    var payload = { 
+    const payload = { 
       ip: this.state.me.ip,
       port: this.state.me.port,
       clientId: this.state.me.clientId, 
@@ -58,17 +59,17 @@ class client {
   }
 
   async updateSettings(payload) {
-    debug('updateSettings');
+    debug('updateSettings')
     if (!payload.clientId) {
-      throw ('no supplied client id');
+      throw ('no supplied client id')
     }
-    this.state.clientId = payload.clientId;
-    this.state.me.clientId = this.state.clientId;
+    this.state.clientId = payload.clientId
+    this.state.me.clientId = this.state.clientId
 
-    var res = await this.db.settings.save({ clientId: this.state.clientId });
-    debug('Saved settings', res);
+    const res = await this.db.settings.save({ clientId: this.state.clientId })
+    debug('Saved settings', res)
 
-    var change = {
+    const change = {
       oldClientId: this.state.clientId,
       newClientId: payload.clientId
     }
@@ -79,40 +80,40 @@ class client {
   }
 
   async getState(cb) {
-    debug('getState');
-    var data = await this.db.experimentSessionsLocal.getList();
-    console.log('database results');
+    debug('getState')
+    const data = await this.db.experimentSessionsLocal.getList()
+    console.log('database results')
     cb({
       server: this.state.server,
       me:this.state.me,
       experimentSessionsLocal: data,
       clientUIisAvailable: this.state.clientUIisAvailable,
       ts_ClientUIisAvailable: this.state.ts_ClientUIisAvailable
-    }); 
+    }) 
   }
 
   async updateServerOnClientIdChange(change, server) {
-    var options = {
+    const options = {
       uri: 'http://' + server.ip + ':' + server.port + '/server/client/updateClientID',
       json: true,
       method: 'POST',
       body: change
-    };
+    }
     try {
-      let res = await request(options);
+      await request(options)
     } catch (e) {
-      debug('Error sending experiment session event:', e);
+      debug('Error sending experiment session event:', e)
     }
   }
 
   async search() {
-    debug('search');
-    this.state.discoveryList = await discovery.search(this.state.cpuInterface, this.state.listeningPort)
-    debug('Discovery List has ' + this.state.discoveryList.length);
-    this.state.server = discovery.findServer(this.state.discoveryList);
+    debug('search')
+    this.state.discoveryList = await this.discovery.search(this.state.cpuInterface)
+    debug('Discovery List has ' + this.state.discoveryList.length)
+    this.state.server = this.discovery.findServer(this.state.discoveryList)
     if (this.state.server && this.state.server.me == false) {
-      debug('registering');
-      var payload = { 
+      debug('registering')
+      const payload = { 
         ip: me.ip,
         port: me.port,
         clientId: me.clientId, 
@@ -123,5 +124,5 @@ class client {
   }
 }
 
-module.exports = client;
+module.exports = client
 
