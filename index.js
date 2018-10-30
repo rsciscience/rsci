@@ -46,7 +46,6 @@ async function initSettings(db) {
   }
   
   state.me = {
-    me: true,
     ip: ip.address(),
     port: state.listeningPort,
     clientId: state.clientId,

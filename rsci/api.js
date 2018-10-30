@@ -16,6 +16,8 @@ class api {
   constructor() {
     this.state = state
     this.listener_list = []
+    // handlers
+    this.getNetworkData = this.getNetworkData.bind(this)
     this._setup_socket_listeners = this._setup_socket_listeners.bind(this)
     this._discovery = this._discovery.bind(this)
     this._discovery_list = this._discovery_list.bind(this)
@@ -44,6 +46,15 @@ class api {
   emit(eventName, data) {
     debug('emit', eventName)
     this.io.emit(eventName, data)
+  }
+
+  getNetworkData() {
+    return {
+      server: this.state.server,
+      me: this.state.me,
+      discoveryList: this.state.discoveryList,
+      clientList: this.state.clientList
+    }
   }
 
   _setup_app() {

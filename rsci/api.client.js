@@ -22,13 +22,7 @@ class client {
   }
 
   _postEvent_emitNetworkData(resultData) {
-    const updateNetworkData = {
-      server: this.state.server,
-      me: this.state.me,
-      discoveryList: this.state.discoveryList,
-      clientList: this.state.clientList,
-    }
-    this.api.emit('server_network_event', updateNetworkData);
+    this.api.emit('server_network_event', this.api.getState());
   }
 }
 

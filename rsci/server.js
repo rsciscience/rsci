@@ -13,19 +13,8 @@ class server {
     this.experiments = new experiments(db)
     this.client = new client()
     // handlers
-    this.getNetworkData = this.getNetworkData.bind(this)
     this.register = this.register.bind(this)
-    this.sendDiscoveryListNewServer = this.sendDiscoveryListNewServer.bind(this)
     this.networkRescan = this.networkRescan.bind(this)
-  }
-
-  getNetworkData() {
-    return {
-      server: this.state.server,
-      me: this.state.me,
-      discoveryList: this.state.discoveryList,
-      clientList: this.state.clientList
-    }
   }
 
   async register() {
@@ -46,16 +35,7 @@ class server {
       clientId: this.state.server.clientId,
       initTimeStamp: this.state.server.initTimeStamp,
     }
-    this.sendDiscoveryListNewServer(payload)
-  }
-
-  async sendDiscoveryListNewServer(payload) {
-    debug('sendDiscoveryListNewServer')
-    const calledClients = await Promise.all(this.state.discoveryList.map(c => this._sendListNewServer(c, payload)))
-    return {
-      clientList: calledClients,
-      server: payload
-    }
+    Promise.all(this.state.discoveryList.map(c => this._sendListNewServer(c, payload)))
   }
 
   async _sendListNewServer(client, payload) {
@@ -83,6 +63,5 @@ class server {
     this.state.clientList = filteredClientList
   }
 }
-
 
 module.exports = server
