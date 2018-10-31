@@ -4,10 +4,10 @@ const state = require('./state')
 
 
 class heartbeat {
-  constructor(api, serverHeartbeatCommand) {
+  constructor(uiHeartbeatCommand, serverHeartbeatCommand) {
     this.state = state
-    this.api = api
     // actions
+    this.uiHeartbeatCommand = uiHeartbeatCommand
     this.serverHeartbeatCommand = serverHeartbeatCommand
     // handlers
     this.ui_response = this.ui_response.bind(this)
@@ -42,7 +42,7 @@ class heartbeat {
 
   _beat() {
     this._update()
-    this.api.emit('heartbeat_check')
+    this.uiHeartbeatCommand()
     setTimeout(() => this.serverHeartbeatCommand(
       this.state.server, this.state.me.clientId, 
       this.state.clientUIisAvailable, this.state.ts_ClientUIisAvailable), 1000)
