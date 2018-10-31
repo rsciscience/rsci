@@ -9,6 +9,7 @@ class client {
   constructor(api, client) {
     this.state = state
     this.api = api
+    // handlers
     this._postEvent_emitNetworkData = this._postEvent_emitNetworkData.bind(this)
 
     this.getState = wrapper.callback(client.getState)

@@ -13,8 +13,9 @@ const state = require('./state')
 
 
 class api {
-  constructor() {
+  constructor(port) {
     this.state = state
+    this.port = port
     this.listener_list = []
     // handlers
     this.getNetworkData = this.getNetworkData.bind(this)
@@ -23,12 +24,12 @@ class api {
     this._discovery_list = this._discovery_list.bind(this)
   }
 
-  init(port, client, server, exporter) {
+  init(client, server, exporter) {
     debug('init')
     this._setup_app()
     this._setup_socket()
     this._setup_routes(client, server, exporter)
-    this.http_server.listen(port, '0.0.0.0', function () {
+    this.http_server.listen(this.port, '0.0.0.0', function () {
       debug("... API up")
     })
   }
@@ -102,7 +103,7 @@ class api {
     this.app.post('/client/server/heartbeat', _api_client.server_heartbeat)
 
     this.app.post('/server/register', _api_server.register)
-    this.app.get('/server/network', _api_server.network)
+    this.app.get('/server/network', this.getNetworkData)
     this.app.post('/server/network/rescan', _api_server.network_rescan)
     this.app.post('/server/client/add', _api_server.client_add)
     this.app.post('/server/client/heartbeat', _api_server.client_heartbeat)

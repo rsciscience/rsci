@@ -9,7 +9,7 @@ class server {
   constructor(api, server) {
     this.state = state
     this.api = api
-    this.server = server
+    // handlers
     this._postEvent_emitSessionData = this._postEvent_emitSessionData.bind(this)
     this._postEvent_emitNetworkData = this._postEvent_emitNetworkData.bind(this)
 
@@ -34,7 +34,6 @@ class server {
     this.updateClientID = wrapper.async(server.client.updateID, getArgs_body, this._postEvent_emitNetworkData)
     
     this.network_rescan = wrapper.async(server.networkRescan, getArgs_body, this._postEvent_emitNetworkData)
-    this.network = wrapper.standard(server.getNetworkData)
     this.register = wrapper.async(server.register, getArgs_body, this._postEvent_emitNetworkData)
   }
 
