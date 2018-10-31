@@ -4,7 +4,7 @@ const arpScanner = require('arpscan/promise')
 
 class discovery {
   constructor(discoveryQuery) {
-    // queries
+    // actions
     this.discoveryQuery = discoveryQuery
   }
 

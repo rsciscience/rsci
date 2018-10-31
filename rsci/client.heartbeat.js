@@ -1,13 +1,15 @@
 "use strict"
 const debug = require('debug')('RSCI.client.heartbeat')
 const state = require('./state')
-const request = require('request-promise')
 
 
 class heartbeat {
-  constructor(api) {
+  constructor(api, serverHeartbeatCommand) {
     this.state = state
     this.api = api
+    // actions
+    this.serverHeartbeatCommand = serverHeartbeatCommand
+    // handlers
     this.ui_response = this.ui_response.bind(this)
     this.server_response = this.server_response.bind(this)
   }
@@ -26,15 +28,15 @@ class heartbeat {
     // client
     this.ui.response = new Date() - this.ui.ts <= this.state.heartbeat_interval
     if (this.state.clientUIisAvailable != this.ui.response) {
-        debug('clientUIisAvailable ', this.ui.response)
-        this.state.clientUIisAvailable = this.ui.response
+      debug('clientUIisAvailable ', this.ui.response)
+      this.state.clientUIisAvailable = this.ui.response
     }
     this.state.ts_ClientUIisAvailable = new Date()
     // server
     this.server.response = new Date() - this.server.ts <= this.state.heartbeat_interval
     if (this.state.serverisAvailable != this.server.response) {
-        debug('serverisAvailable ', this.server.response)
-        this.state.serverisAvailable = this.server.response
+      debug('serverisAvailable ', this.server.response)
+      this.state.serverisAvailable = this.server.response
     }
     this.state.ts_serverisAvailable = new Date()
   }
@@ -42,7 +44,9 @@ class heartbeat {
   _beat() {
     this._update()
     this._ui_beat()
-    setTimeout(this._server_beat.bind(this), 1000)
+    setTimeout(() => this.serverHeartbeatCommand(
+      this.state.server, this.state.me.clientId, 
+      this.state.clientUIisAvailable, this.state.ts_ClientUIisAvailable), 1000)
   }
 
   async _ui_beat() {
@@ -54,25 +58,6 @@ class heartbeat {
     debug('ui_response')
     this.ui.ts = new Date()
     this._update()
-  }
-
-  async _server_beat() {
-    debug('server_beat')
-    const options = {
-      uri: 'http://' + this.state.server.ip + ':' + this.state.server.port + '/server/client/heartbeat',
-      json: true,
-      method: 'POST',
-      body: {
-          clientId: this.state.me.clientId,
-          clientUIisAvailable: this.state.clientUIisAvailable,
-          ts_ClientUIisAvailable: this.state.ts_ClientUIisAvailable,
-      }
-    }
-    try {
-      await request(options)
-    } catch (e) {
-      // do nothing, we'll try again later
-    }
   }
 
   server_response(payload) {

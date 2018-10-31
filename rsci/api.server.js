@@ -9,6 +9,7 @@ class server {
   constructor(api, server) {
     this.state = state
     this.api = api
+    this.server = server
     // handlers
     this._postEvent_emitSessionData = this._postEvent_emitSessionData.bind(this)
     this._postEvent_emitNetworkData = this._postEvent_emitNetworkData.bind(this)
@@ -38,7 +39,7 @@ class server {
   }
 
   async _postEvent_emitSessionData(result) {
-    var data = await server.experiments.getSessionOverview(result.experimentSessionId)
+    var data = await this.server.experiments.getSessionOverview(result.experimentSessionId)
     this.api.emit('server_experimentsession_id_client_action', data)
   }
 

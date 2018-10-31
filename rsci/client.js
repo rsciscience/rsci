@@ -7,11 +7,11 @@ const experiments = require('./client.experiments')
 
 
 class client {
-  constructor(db, api, discovery) {
+  constructor(db, api, request, discovery) {
     this.state = state
     this.db = db
     this.discovery = discovery
-    this.heartbeat = new heartbeat(api)
+    this.heartbeat = new heartbeat(api, request.serverHeartbeatCommand)
     this.experiments = new experiments(db, api)
     // handlers
     this.registerWithServer = this.registerWithServer.bind(this)

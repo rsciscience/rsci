@@ -62,7 +62,7 @@ async function init() {
   const _api = new api(state.listeningPort)
   const _request = new request(state.listeningPort)
   const _discovery = new discovery(_request.discoveryQuery)
-  const _client = new client(_db, _api, _discovery)
+  const _client = new client(_db, _api, _request, _discovery)
   const _server = new server(_db, _discovery)
   const _export = new data_export(_db)
   state.experiments.configs = _server.experiments.load(state.experiments.configDir)

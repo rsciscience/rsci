@@ -23,7 +23,7 @@ class client {
   }
 
   _postEvent_emitNetworkData(resultData) {
-    this.api.emit('server_network_event', this.api.getState());
+    this.api.emit('server_network_event', this.api.getNetworkData());
   }
 }
 
