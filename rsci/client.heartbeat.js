@@ -19,7 +19,6 @@ class heartbeat {
     if (this.intervalHandle) clearInterval(this.intervalHandle)
     this.ui = { ts: new Date(1900, 1, 1), response: false }
     this.server = { ts: new Date(1900, 1, 1), response: false }
-    this.api.add_listener('heartbeat_response', this.ui_response)
     this.intervalHandle = setInterval(this._beat.bind(this), this.state.heartbeat_interval)
     this._beat()
   }
@@ -43,15 +42,10 @@ class heartbeat {
 
   _beat() {
     this._update()
-    this._ui_beat()
+    this.api.emit('heartbeat_check')
     setTimeout(() => this.serverHeartbeatCommand(
       this.state.server, this.state.me.clientId, 
       this.state.clientUIisAvailable, this.state.ts_ClientUIisAvailable), 1000)
-  }
-
-  async _ui_beat() {
-    debug('ui_beat')
-    this.api.emit('heartbeat_check')
   }
 
   ui_response() {

@@ -31,6 +31,7 @@ class client {
     }
     try {
       await request(options)
+      this.api.add_listener('heartbeat_response', this.heartbeat.ui_response)
       this.heartbeat.start()
     } catch (e) {
       debug('Error registering client:', e)
