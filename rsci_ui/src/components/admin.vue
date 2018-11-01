@@ -129,7 +129,7 @@ export default {
   },
   mounted () {
     function err (e) {
-      this.errors.push(e)
+      console.log(e)
     }
 
     function success (response) {

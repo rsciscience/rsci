@@ -34,6 +34,7 @@ class server {
     this.client_heartbeat = wrapper.standard(server.client.heartbeat, this._postEvent_emitNetworkData)
     this.updateClientID = wrapper.async(server.client.updateID, getArgs_body, this._postEvent_emitNetworkData)
     
+    this.network = wrapper.standard(this.api.getNetworkData)
     this.network_rescan = wrapper.async(server.networkRescan, getArgs_body, this._postEvent_emitNetworkData)
     this.register = wrapper.async(server.register, getArgs_body, this._postEvent_emitNetworkData)
   }

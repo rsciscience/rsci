@@ -50,6 +50,7 @@ class api {
   }
 
   getNetworkData() {
+    debug('getNetworkData')
     return {
       server: this.state.server,
       me: this.state.me,
@@ -103,7 +104,7 @@ class api {
     this.app.post('/client/server/heartbeat', _api_client.server_heartbeat)
 
     this.app.post('/server/register', _api_server.register)
-    this.app.get('/server/network', this.getNetworkData)
+    this.app.get('/server/network', _api_server.network)
     this.app.post('/server/network/rescan', _api_server.network_rescan)
     this.app.post('/server/client/add', _api_server.client_add)
     this.app.post('/server/client/heartbeat', _api_server.client_heartbeat)
