@@ -57,10 +57,16 @@ class server {
   async networkRescan() {
     debug('networkRescan')
     this.state.discoveryList = await this.discovery.search(this.state.cpuInterface)
-    debug('gotDiscoveryList')
-    const filteredClientList = this.state.clientList.filter((c) => this.state.discoveryList.find((d) => d.id === c.id))
-    debug('found ' + (this.state.clientList.length - filteredClientList.length) + ' missing clients')
-    this.state.clientList = filteredClientList
+    const filteredClientList = this.state.clientList.filter(c => this.state.discoveryList.find(d => d.ip === c.ip))
+    debug('removing ' + (this.state.clientList.length - filteredClientList.length) + ' missing clients')
+    const newClientList = this.state.discoveryList.filter(d => !filteredClientList.find(c => c.ip === d.ip))
+    newClientList.forEach(d => {
+      d.clientUIisAvailable = false
+      d.ts_ClientUIisAvailable = new Date(1900, 1, 1)
+      d.ts = new Date(1900, 1, 1)
+    })
+    debug('adding ' + newClientList.length + ' found clients')
+    this.state.clientList = filteredClientList.concat(newClientList)
   }
 }
 

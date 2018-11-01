@@ -23,7 +23,6 @@ class discovery {
     debug('  Trying Interface: ' + int)
     try {
       results = await arpScanner({ interface: int, sudo: true })
-      debug('arpscan result', results)
     } catch (e) {
       if (e == 127) {
         console.log('check arp scanner is installed  (sudo apt-get install arp-scan)')
