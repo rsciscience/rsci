@@ -31,24 +31,6 @@ class request {
     }
   }
 
-  async serverHeartbeatCommand(server, clientId, clientUIisAvailable, ts_ClientUIisAvailable) {
-    debug('serverHeartbeatCommand')
-    const options = {
-      uri: 'http://' + server.ip + ':' + server.port + '/server/client/heartbeat',
-      json: true,
-      method: 'POST',
-      body: {
-        clientId: clientId,
-        clientUIisAvailable: clientUIisAvailable,
-        ts_ClientUIisAvailable: ts_ClientUIisAvailable,
-      }
-    }
-    try {
-      await request_lib(options)
-    } catch (e) {
-      // do nothing, we'll try again later
-    }
-  }
 }
 
 module.exports = request

@@ -4,11 +4,9 @@ const state = require('./state')
 
 
 class heartbeat {
-  constructor(uiHeartbeatCommand, serverHeartbeatCommand) {
+  constructor(api) {
     this.state = state
-    // actions
-    this.uiHeartbeatCommand = uiHeartbeatCommand
-    this.serverHeartbeatCommand = serverHeartbeatCommand
+    this.api = api
     // handlers
     this.ui_response = this.ui_response.bind(this)
     this.server_response = this.server_response.bind(this)
@@ -42,10 +40,29 @@ class heartbeat {
 
   _beat() {
     this._update()
-    this.uiHeartbeatCommand()
+    this.api.emit('heartbeat_check')
     setTimeout(() => this.serverHeartbeatCommand(
       this.state.server, this.state.me.clientId, 
       this.state.clientUIisAvailable, this.state.ts_ClientUIisAvailable), 1000)
+  }
+
+  async serverHeartbeatCommand(server, clientId, clientUIisAvailable, ts_ClientUIisAvailable) {
+    debug('serverHeartbeatCommand')
+    const options = {
+      uri: 'http://' + server.ip + ':' + server.port + '/server/client/heartbeat',
+      json: true,
+      method: 'POST',
+      body: {
+        clientId: clientId,
+        clientUIisAvailable: clientUIisAvailable,
+        ts_ClientUIisAvailable: ts_ClientUIisAvailable,
+      }
+    }
+    try {
+      await request_lib(options)
+    } catch (e) {
+      // do nothing, we'll try again later
+    }
   }
 
   ui_response() {

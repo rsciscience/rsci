@@ -12,7 +12,7 @@ class client {
     this.db = db
     this.api = api
     this.discovery = discovery
-    this.heartbeat = new heartbeat(() => this.api.emit('heartbeat_check'), request.serverHeartbeatCommand)
+    this.heartbeat = new heartbeat(api)
     this.experiments = new experiments(db, api)
     // handlers
     this.registerWithServer = this.registerWithServer.bind(this)
