@@ -59,9 +59,8 @@ async function init() {
   await initSettings(_db)
 
   const _api = new api(state.listeningPort)
-  const _request = new request(state.listeningPort)
-  const _discovery = new discovery()
-  const _client = new client(_db, _api, _request, _discovery)
+  const _discovery = new discovery(state.listeningPort)
+  const _client = new client(_db, _api, _discovery)
   const _server = new server(_db, _discovery)
   const _export = new data_export(_db)
   state.experiments.configs = _server.experiments.load(state.experiments.configDir)

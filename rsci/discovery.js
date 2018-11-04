@@ -4,7 +4,8 @@ const request = require('request-promise')
 
 
 class discovery {
-  constructor() {
+  constructor(port) {
+    this.port = port
     // handlers
     this.discoveryQuery = this.discoveryQuery.bind(this)
   }

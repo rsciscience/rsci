@@ -7,7 +7,7 @@ const experiments = require('./client.experiments')
 
 
 class client {
-  constructor(db, api, request, discovery) {
+  constructor(db, api, discovery) {
     this.state = state
     this.db = db
     this.api = api
