@@ -6,7 +6,8 @@ const experimentSessionsServer = require('./db.experimentSessionsServer')
 
 class db {
     constructor() {
-        mongoose.connect('mongodb://127.0.0.1/rsci')
+        mongoose.Promise = global.Promise
+        mongoose.connect('mongodb://127.0.0.1/rsci', {useMongoClient:true})
         this.settings = new settings(mongoose)
         this.experimentSessionsLocal = new experimentSessionsLocal(mongoose)
         this.experimentSessionsServer = new experimentSessionsServer(mongoose)

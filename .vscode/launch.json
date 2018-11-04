@@ -11,7 +11,8 @@
             "program": "${workspaceFolder}/index.js",
             "env": {
                 "DEBUG": "RSCI*"
-            }
+            },
+            "outputCapture": "std"
         },
         {
             "type": "node",
