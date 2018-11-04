@@ -1,6 +1,7 @@
 "use strict"
 const debug = require('debug')('RSCI.client.heartbeat')
 const state = require('./state')
+const request = require('request-promise')
 
 
 class heartbeat {
@@ -59,7 +60,7 @@ class heartbeat {
       }
     }
     try {
-      await request_lib(options)
+      await request(options)
     } catch (e) {
       // do nothing, we'll try again later
     }

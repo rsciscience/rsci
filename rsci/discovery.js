@@ -1,11 +1,12 @@
 const debug = require('debug')('RSCI.discovery')
 const arpScanner = require('arpscan/promise')
+const request = require('request-promise')
 
 
 class discovery {
-  constructor(discoveryQuery) {
-    // actions
-    this.discoveryQuery = discoveryQuery
+  constructor() {
+    // handlers
+    this.discoveryQuery = this.discoveryQuery.bind(this)
   }
 
   async search(interfaces) {
@@ -30,6 +31,28 @@ class discovery {
       debug('Failed on interface: ' + int + ' err code:', e)
     }
     return results
+  }
+
+  async discoveryQuery(ip) {
+    const options = {
+      uri: 'http://' + ip + ':' + this.port + '/discovery',
+      json: true,
+      timeout: 5000
+    }
+    debug('Trying: ' + options.uri)
+    try {
+      const res = await request(options)
+      debug('   friend at ' + ip + ':' + this.port)
+      return {
+        ip: ip,
+        port: this.port,
+        clientId: res.clientId,
+        initTimeStamp: res.initTimeStamp
+      }
+    } catch (e) {
+      debug('no friend at ' + ip + ':' + this.port)
+      return null
+    }
   }
 
   findServer(networkDeviceList) {
