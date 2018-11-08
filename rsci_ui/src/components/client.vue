@@ -1,18 +1,18 @@
 <template>
   <div class="client">
-    <h1>Client : {{ me.clientId }}</h1>
-     <input v-model="me.clientId" placeholder="clientId">
+    <h1>Client : {{ client.me.clientId }}</h1>
+     <input v-model="client.me.clientId" placeholder="clientId">
      <button class = "btn" v-on:click="updateSettings()"> update </button>
     I'm here :)
-    <div> Client UI is on: {{ clientUIisAvailable }} </div>
-    <div> Client UI last updated at: {{ ts_ClientUIisAvailable }} </div>
+    <div> Client UI is on: {{ client.clientUIisAvailable }} </div>
+    <div> Client UI last updated at: {{ client.ts_ClientUIisAvailable }} </div>
       <div>
-        connected to server  <a target="" :href="'http://' + server.ip + ':8080/#admin'" >{{ server.id }}</a>
+        connected to server  <a target="" :href="'http://' + client.server.ip + ':8080/#admin'" >{{ client.server.id }}</a>
       </div>
 
    <h2>My Session Details</h2>
     <ul id="experimentSessions">
-      <li v-for="(sess, index) in experimentSessions" :key='index'>
+      <li v-for="(sess, index) in client.experimentSessions" :key='index'>
        <h3> {{ sess.experimentId }} : {{ sess.experimentSessionId }} ( {{ sess.sessionStartTime }} )</h3>
         <ul id="actions">
           <li v-for="(action, index) in sess.actions" :key='index'>
@@ -28,45 +28,19 @@
 
 
 <script>
-  import {HTTP} from '../http-common'
   export default {
     name: 'client',
-    data () {
-      return {
-        me: {},
-        server: {},
-        experimentSessions: [],
-        clientUIisAvailable: false,
-        ts_ClientUIisAvailable: new Date()
+    computed: {
+      client () {
+        return this.$store.state.client
       }
     },
     mounted () {
-      function err (e) {
-        this.errors.push(e)
-      }
-
-      function success (response) {
-        console.log(response)
-        this.me = response.data.me
-        this.server = response.data.server
-        this.experimentSessions = response.data.experimentSessionsLocal
-        this.clientUIisAvailable = response.data.clientUIisAvailable
-        this.ts_ClientUIisAvailable = response.data.ts_ClientUIisAvailable
-      }
-
-      HTTP.get('client/state').then(success.bind(this)).catch(err.bind(this))
+      this.$store.dispatch('client_state_get')
     },
     methods: {
       updateSettings: function () {
-        function err (e) {
-          this.errors.push(e)
-        }
-
-        function success (response) {
-          console.log('Updated!')
-        }
-
-        HTTP.post('client', {clientId: this.me.clientId}).then(success.bind(this)).catch(err.bind(this))
+        this.$store.dispatch('client_post')
       }
     }
   }
