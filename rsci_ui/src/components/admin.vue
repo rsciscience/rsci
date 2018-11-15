@@ -7,7 +7,7 @@
           <h1>Admin:</h1>
         </div>
         <div class="col-sm-3" style="margin-top:11px;">
-          <span class="clientId">{{ me.clientId }}</span>
+          <span class="clientId">{{ admin.me.clientId }}</span>
         </div>
         <div class="col-sm-5" style="margin-top:11px;text-align:right;padding-right:10px;">
           <a href="javascript:void(0)" v-on:click="becomeServer">Become Server</a>
@@ -27,11 +27,11 @@
 
     <div class="content">
       <div class="section config">
-        <experiments v-bind:experimentsList="experiments" v-bind:initialConfig="initialConfig" @selectExperiment="getExperimentInitialConfig"></experiments>
+        <experiments v-bind:experimentsList="admin.experiments" v-bind:initialConfig="admin.initialConfig" @selectExperiment="getExperimentInitialConfig"></experiments>
       </div>
 
       <div class="section actvity">
-        <experimentCurrent v-bind:experimentSession="experimentSessionCurrent" v-show="experimentSessionCurrent.running"></experimentCurrent>
+        <experimentCurrent v-bind:experimentSession="admin.experimentSessionCurrent" v-show="admin.experimentSessionCurrent.running"></experimentCurrent>
       </div>
     </div>
   <div class="section networkInfo">
@@ -41,7 +41,7 @@
 
       </div>
       <div class="col-sm-10">
-        <span>Server</span> {{ server.ip  }} (me:{{ server.me  }})
+        <span>Server</span> {{ admin.server.ip  }} (me:{{ admin.server.me  }})
       </div>
     </div>
 
@@ -53,7 +53,7 @@
       <div class="col-sm-5">
         <b>Clients</b>
         <ul id="clientlist" >
-          <li v-for="item in clientList" v-bind:key="item.clientId" >
+          <li v-for="item in admin.clientList" v-bind:key="item.clientId" >
             <a target="" :href="'http://' + item.ip + ':8080/#client'" >{{ item.clientId }}</a>
           </li>
         </ul>
@@ -62,7 +62,7 @@
       <div class="col-sm-5">
         <b>Discovery Results</b>
         <ul id="discoverylist">
-          <li v-for="item in discoveryList" v-bind:key="item.ip">
+          <li v-for="item in admin.discoveryList" v-bind:key="item.ip">
             {{ item.ip }}
             <span  v-if="item.me" >Me</span>
           </li>
@@ -77,10 +77,14 @@
 </template>
 
 <script>
-import {HTTP} from '../http-common'
 
 export default {
   name: 'Admin',
+  computed: {
+    admin () {
+      return this.$store.state.admin
+    }
+  },
   sockets: {
     connect: function () {
       console.log('socket connected')
@@ -91,13 +95,14 @@ export default {
     },
     server_network_event: function (val) {
       console.log('server_network_event', val)
-      this.me = val.me
-      this.server = val.server
-      this.discoveryList = val.discoveryList
-      this.clientList = val.clientList
+      const $admin = this.$store.state.admin
+      $admin.me = val.me
+      $admin.server = val.server
+      $admin.discoveryList = val.discoveryList
+      $admin.clientList = val.clientList
 
-      this.initialConfig.map((configClient) => {
-        const client = this.clientList.find((client) => {
+      $admin.initialConfig.map((configClient) => {
+        const client = $admin.clientList.find((client) => {
           return client.clientId === configClient.clientId
         })
 
@@ -111,104 +116,28 @@ export default {
       })
     }
   },
-  data () {
-    return {
-      me: '',
-      server: {},
-      discoveryList: [],
-      clientList: [],
-      experimentSessions: [],
-      experimentSessionCurrent: {
-        running: false,
-        experimentSessionId: '',
-        clients: []
-      },
-      experiments: [],
-      initialConfig: []
-    }
-  },
   mounted () {
-    function err (e) {
-      console.log(e)
-    }
-
-    function success (response) {
-      console.log(response)
-      this.me = response.data.me
-      this.server = response.data.server
-      this.discoveryList = response.data.discoveryList
-      this.clientList = response.data.clientList
-    }
-
-    HTTP.get('server/network').then(success.bind(this)).catch(err.bind(this))
-
-    function successExperimentsList (response) {
-      console.log(response)
-      this.experiments = response.data
-    }
-
-    HTTP.get('server/experiments/list').then(successExperimentsList.bind(this)).catch(err.bind(this))
-
-    function successExperimentsSessionsList (response) {
-      console.log(response)
-      this.experimentSessions = response.data
-    }
-
-    HTTP.get('server/experiments/sessions').then(successExperimentsSessionsList.bind(this)).catch(err.bind(this))
+    this.$store.dispatch('server_network_get')
+    this.$store.dispatch('server_experiment_list_get')
+    this.$store.dispatch('server_experiments_session_get')
   },
   methods: {
     becomeServer: function () {
-      function err (e) {
-        this.errors.push(e)
-      }
-
-      function success (response) {
-        console.log('Called Server Register!')
-      }
-
-      HTTP.post('server/register', {}).then(success.bind(this)).catch(err.bind(this))
+      this.$store.dispatch('server_register_post')
     },
-    experimentsRefresh: function () {
-      function err (e) {
-        this.errors.push(e)
-      }
+    experimentsRefresh: async function () {
+      await this.$store.dispatch('server_experiments_reload_post')
 
-      function success (response) {
-        console.log('Called server/experiments/reload')
-        function successExperimentsSessionsList (response) {
-          console.log(response)
-          this.experimentSessions = response.data
-        }
-        HTTP.get('server/experiments/list').then(successExperimentsSessionsList.bind(this)).catch(err.bind(this))
-      }
-
-      HTTP.post('server/experiments/reload', {}).then(success.bind(this)).catch(err.bind(this))
+      this.$store.dispatch('server_experiment_list_get')
     },
     networkRescan: function () {
-      function err (e) {
-        this.errors.push(e)
-      }
 
-      function success (response) {
-        console.log('Called Server Network Rescan!')
-      }
-
-      HTTP.post('server/network/rescan', {}).then(success.bind(this)).catch(err.bind(this))
     },
     isActiveRecient: function (client) {
       return true
     },
     getExperimentInitialConfig (id) {
-      function err (e) {
-        this.errors.push(e)
-      }
-      function success (response) {
-        this.initialConfig = response.data
-
-        console.log('Got Experiment Initial Config!')
-        console.log(response)
-      }
-      HTTP.get('server/experiment/' + id + '/initialConfig').then(success.bind(this)).catch(err.bind(this))
+      this.$store.dispatch('server_experiment')
     }
   }
 }
