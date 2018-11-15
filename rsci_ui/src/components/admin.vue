@@ -137,7 +137,7 @@ export default {
       return true
     },
     getExperimentInitialConfig (id) {
-      this.$store.dispatch('server_experiment')
+      this.$store.dispatch('server_experiment', id)
     }
   }
 }

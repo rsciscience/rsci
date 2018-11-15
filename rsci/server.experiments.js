@@ -324,7 +324,6 @@ async getSessionOverview (experimentSessionId){
 
   async initialConfigload(experimentId) {
     debug('initialConfigload');
-
     var output = [];
     var experimentConfig = null;
 

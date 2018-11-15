@@ -98,12 +98,12 @@ const initializeState = () => {
         }
         HTTP.post('server/network/rescan', {}).then(success.bind(this, context)).catch(err.bind(this))
       },
-      server_experiment (context) {
+      server_experiment (context, id) {
         function success (context, data) {
           console.log('Got Experiment Initial Config!')
           context.commit('updateAdmin_server_experiment', data)
         }
-        HTTP.get('server/experiment/' + context.id + '/initialConfig').then(success.bind(this, context)).catch(err.bind(this))
+        HTTP.get('server/experiment/' + id + '/initialConfig').then(success.bind(this, context)).catch(err.bind(this))
       },
       // Client
       client_state_get (context) {
