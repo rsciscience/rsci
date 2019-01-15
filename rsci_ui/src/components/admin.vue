@@ -91,7 +91,8 @@ export default {
     },
     server_experimentsession_id_client_action: function (val) {
       console.log('server_experimentsession_id_client_action', val)
-      this.experimentSessionCurrent = val
+      const $admin = this.$store.state.admin
+      $admin.experimentSessionCurrent = val
     },
     server_network_event: function (val) {
       console.log('server_network_event', val)
