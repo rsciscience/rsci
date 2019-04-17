@@ -11,29 +11,19 @@ module.exports = {
     }, 
     clientAssignments:[
         {
-            clientId: 'davidvm' ,
+            clientId: 'Box1' ,
             name: 'davidvm',
-            assignedRat:    'raty12'
+            assignedRat:    'rat_002'
         },{
-            clientId: 'majortom' ,
+            clientId: 'Box2' ,
             name: 'majortom',
-            assignedRat: 'raty03'
+            assignedRat: 'rat_003'
         }
         ,{
-            clientId: 'Box4' ,
-            name: 'Box4',
-            assignedRat: 'raty04'
-        }        
-        ,{
-            clientId: 'Box10' ,
-            name: 'Box10',
-            assignedRat: 'raty07'
-        },
-        {
-            clientId: 'box5-fvm',
-            name: 'box5-fvm',
-            assignedRat: 'raty07'
-        }
+            clientId: 'Box3' ,
+            name: 'Box3',
+            assignedRat: 'rat_001'
+        }    
     ]
 };
 

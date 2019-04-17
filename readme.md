@@ -3,7 +3,7 @@
   (__   
   _  )_ 
  (_)_(_)
-  (o o) 
+  (o o)
 ==\\o/==
 
 RSCI is a RaspberryPi-based operant box solution. The system can run mutiple behavioral paradigms using a touch screen interface. 
