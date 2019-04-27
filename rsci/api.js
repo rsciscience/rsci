@@ -8,6 +8,7 @@ const io = require('socket.io')
 const api_export = require('./api.export')
 const api_client = require('./api.client')
 const api_server = require('./api.server')
+const UI = require('./UI')
 
 const state = require('./state')
 
@@ -29,10 +30,13 @@ class api {
     this._setup_app()
     this._setup_socket()
     this._setup_routes(client, server, exporter)
+    this._setup_ui =  new UI(this.app);
     this.http_server.listen(this.port, '0.0.0.0', function () {
       debug("... API up")
     })
   }
+
+  
 
   add_listener(eventName, listener) {
     debug('add_listener', eventName)
@@ -63,9 +67,6 @@ class api {
     this.app = express()
     this.app.use(bodyParser.urlencoded({ extended: true }))
     this.app.use(bodyParser.json())
-    this.app.get('/', function (req, res) {
-      res.sendFile(path.join(__dirname + '/index.html'))
-    })
     this.app.use(function (req, res, next) {
       res.header("Access-Control-Allow-Origin", "*")
       res.header("Access-Control-Allow-Credentials", "true")
@@ -78,7 +79,7 @@ class api {
   }
 
   _setup_socket() {
-    this.io = io(this.http_server, { transports: ['polling', 'websocket'] })
+    this.io = io(this.http_server, { path:"/socket", transports: ['polling', 'websocket'] })
     this.io.on('connect', this._setup_socket_listeners)
   }
 

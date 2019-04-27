@@ -22,7 +22,7 @@ class discovery {
 
   async _arp_scan(int) {
     let results = []
-    debug('  Trying Interface: ' + int)
+    debug('Trying Interface: ' + int)
     try {
       results = await arpScanner({ interface: int, sudo: true })
     } catch (e) {
@@ -43,7 +43,7 @@ class discovery {
     debug('Trying: ' + options.uri)
     try {
       const res = await request(options)
-      debug('   friend at ' + ip + ':' + this.port)
+      debug('   Friend at ' + ip + ':' + this.port)
       return {
         ip: ip,
         port: this.port,
@@ -51,7 +51,7 @@ class discovery {
         initTimeStamp: res.initTimeStamp
       }
     } catch (e) {
-      debug('no friend at ' + ip + ':' + this.port)
+      debug('No Friend at ' + ip + ':' + this.port)
       return null
     }
   }

@@ -1,11 +1,12 @@
 {
   "name": "rsci",
   "version": "1.0.0",
-  "description": "Rat Server Client Interface",
+  "description": "Rat Server Client Interface: Open source operant box software",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"npm run service\" \"npm run ui\"",
-    "ui": "npm run start --prefix rsci_ui",
+    "start": "DEBUG=RSCI* npm run service" ,
+    "dev": "DEBUG=RSCI* concurrently \" npm run dev_ui\" \"npm run service\" ",
+    "dev_ui": "npm run dev --prefix rsci_ui",
     "service": "DEBUG=RSCI* node index.js",
     "unit": "jest --config jest.conf.js",
     "test": "npm run unit"
@@ -44,11 +45,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ivanthemonkey/rsci.git"
+    "url": "git+https://github.com/rsciscience/rsci.git"
   },
   "keywords": [],
   "bugs": {
-    "url": "https://github.com/ivanthemonkey/rsci/issues"
+    "url": "https://github.com/rsciscience/rsci/issues"
   },
-  "homepage": "https://github.com/ivanthemonkey/rsci#readme"
+  "homepage": "https://github.com/rsciscience/rsci#readme"
 }

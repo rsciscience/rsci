@@ -17,6 +17,8 @@ class server {
     this.networkRescan = this.networkRescan.bind(this)
   }
 
+
+
   async register() {
     debug('register')
     this.state.clientList = []
@@ -37,6 +39,7 @@ class server {
     }
     Promise.all(this.state.discoveryList.map(c => this._sendListNewServer(c, payload)))
   }
+
 
   async _sendListNewServer(client, payload) {
     debug('sendListNewServer')
