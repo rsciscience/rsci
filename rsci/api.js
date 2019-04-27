@@ -8,7 +8,7 @@ const io = require('socket.io')
 const api_export = require('./api.export')
 const api_client = require('./api.client')
 const api_server = require('./api.server')
-const UI = require('./UI')
+const UI = require('./ui')
 
 const state = require('./state')
 
