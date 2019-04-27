@@ -13,10 +13,11 @@ import url from 'url'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import store from './store/index'
+import SocketIO from 'socket.io-client'
 
-var location = url.parse(window.location.href)
-
-Vue.use(VueSocketio, 'http://' + location.hostname + ':3003')
+var location = 'http://' + url.parse(window.location.href).hostname + ':8080'
+console.log('Sockets Location : ' + location)
+Vue.use(new VueSocketio({connection: SocketIO(location, {path: '/socket'})}))
 Vue.use(BootstrapVue)
 Vue.use(Vuex)
 Vue.component('experiments', experiments)

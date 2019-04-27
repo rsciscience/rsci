@@ -4,6 +4,6 @@ const prodEnv = require('./prod.env')
 
 module.exports = merge(prodEnv, {
   NODE_ENV: '"development"',
-  host: '0.0.0.0'
-  
+  host: '0.0.0.0',
+  DEBUG:'"*"'
 })
