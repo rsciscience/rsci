@@ -1,19 +1,19 @@
 "use strict";
 
 module.exports = {
-    id:'expDD',
+    id:'expRGT',
     version: '1.0.0',
-    name:'Delayed Discounting',
-    type:"Delayed Dicounting",
+    name:'RGT',
+    type:"Rat Gambeling Task",
     sessionVariables:{
         duration:60000,
         timeOutDuration:3000,
         startTaskTimeOut:5000,
         maxTrials:10,
         payoutPecent1:90,
-        payoutPecent2:80,
-        payoutPecent3:50,
-        payoutPecent4:20,
+        payoutPecent2:40,
+        payoutPecent3:80,
+        payoutPecent4:50,
     }, 
     clientAssignments:[
         {
