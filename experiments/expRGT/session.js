@@ -53,18 +53,21 @@ class session extends base {
         nosePoke3_pressed
         nosePoke4_pressed
 
+        nosePoke1Premature_pressed
+        nosePoke2Premature_pressed
+        nosePoke3Premature_pressed
+        nosePoke4Premature_pressed
 
         **outgoing**
         ChangeToScene_start
         ChangeToScene_task
         ChangeToScene_win
         ChangeToScene_lose
-        NosePokeStimulus_1
-        NosePokeStimulus_2
-        NosePokeStimulus_3
-        NosePokeStimulus_4
+        NosePokeStimulus_on_x
+        NosePokeStimulus_off_x
+        PulseNosePoke_on_x
+        PulseNosePoke_off_x
         */
-
 
         addUIListner('startTrial_pressed', startTrial.bind(this));
         addUIListner('nosePoke1_pressed', callAWinner.bind(this, 1));
@@ -72,46 +75,63 @@ class session extends base {
         addUIListner('nosePoke3_pressed', callAWinner.bind(this, 3));
         addUIListner('nosePoke4_pressed', callAWinner.bind(this, 4));
 
+        addUIListner('nosePoke1Premature_pressed', callPremature.bind(this, 1));
+        addUIListner('nosePoke2Premature_pressed', callPremature.bind(this, 2));
+        addUIListner('nosePoke3Premature_pressed', callPremature.bind(this, 3));
+        addUIListner('nosePoke4Premature_pressed', callPremature.bind(this, 4));
 
-        function correctResponseTime(payout) {
+        function correctResponseTime(payout, poke) {
             changeSceneTo('win');
             for (var i = 0; i < payout; i++) {
-                dispenseFood();
-                record('dispenseFood')
+                this.state['payout'+poke+'win'] = this.state['payout'+poke+'win'] + 1; 
+                let pelletCount = this.config.payout['Hole'+poke+'PelletCount'];
+                for(var i = 0 ; i <=  pelletCount -1 ; i++){
+                    record('dispenseFood')
+                }
             }
             setTimeout(() => {
                 changeSceneTo('start');
-            }, 1000);
+            }, 10);
         }
 
         function incorrectResponseTime() {
+            this.state['payout'+poke+'lose'] = this.state['payout'+poke+'lose'] + 1; 
             changeSceneTo('lose');
             doEvent('beep');
-            setTimeout(() => {
+            this.doEvent('PulseNosePoke_on' + poke );
+            setTimeout(()=>{ 
+                this.doEvent('PulseNosePoke_off' + poke );
                 changeSceneTo('start');
-            }, 5000);
+            },this.config.lossPulseTimeOut);
+        }
+
+        function callPremature(poke){
+            record('Premature Response Poke '  + poke);
+            clearTimeout(this.state.interTrialIntervalTimeOut);
+            changeSceneTo('lose');
+            doEvent('beep');
+            this.doEvent('PulseNosePoke_on' + poke );
+            setTimeout(()=>{ 
+                this.doEvent('PulseNosePoke_off' + poke );
+                changeSceneTo('start');
+            },this.config.lossPulseTimeOut);
         }
 
         function callAWinner(poke) {
             var percent = 0;
-            var payout = 0;
             doEvent('NosePokeStimulus_' + poke);
             switch (poke) {
                 case 1:
                     percent = this.config.payoutPecent1;
-                    payout = 1;
                     break;
                 case 2:
                     percent = this.config.payoutPecent2;
-                    payout = 2; 
                     break;
                 case 3:
                     percent = this.config.payoutPecent3;
-                    payout = 3;
                     break;
                 case 4:
                     percent = this.config.payoutPecent4;
-                    payout = 4;
                     break;
             }
             
@@ -119,47 +139,43 @@ class session extends base {
             var tot = parseFloat(100.00000);
             var d = Math.random();
 
-            if(!this.state['payout'+poke+'total'] ){this.state['payout'+poke+'total']  = 0 }
-            if(!this.state['payout'+poke+'win'] ){this.state['payout'+poke+'win']  = 0 }
-            if(!this.state['payout'+poke+'lose'] ){this.state['payout'+poke+'lose']  = 0 }
-
-            this.state['payout'+poke+'total'] = this.state['payout'+poke+'total'] + 1;
-       
             if (d < (percentf/tot)){
-                correctResponseTime(payout);
-                this.state['payout'+poke+'win'] = this.state['payout'+poke+'win'] + 1; 
+                correctResponseTime(poke);
             } else {
-                incorrectResponseTime();
-                this.state['payout'+poke+'lose'] = this.state['payout'+poke+'lose'] + 1; 
+                incorrectResponseTime(poke);
             }
 
+            //Record Stats
+            this.state['payout'+poke+'total'] = this.state['payout'+poke+'total'] + 1;
             this.state['PayoutRates1'] = ( parseFloat(this.state['payout1win'] )/parseFloat(this.state['payout1total'] )) * 100 ; 
             this.state['PayoutRates2'] = ( parseFloat(this.state['payout2win'] )/parseFloat(this.state['payout2total'] )) * 100 ;
             this.state['PayoutRates3'] = ( parseFloat(this.state['payout3win'] )/parseFloat(this.state['payout3total'] )) * 100 ;
             this.state['PayoutRates4'] = ( parseFloat(this.state['payout4win'] )/parseFloat(this.state['payout4total'] )) * 100 ;
-            
         }
 
         function startTrial(poke) {
-            if(!this.state.trialCount){
-                this.state.trialCount = 0 ;
-            }
+            setInitalStatValues();
             this.state.trialCount ++;
 
             if(!this.state.trialCount >= this.config.maxTrials ){
                 record('MaxTrailsComplete')
-                this.stop()  ;
+                this.stop();
             }
-                changeSceneTo('taskWait');
+            
+            changeSceneTo('taskWait');
 
-            this.state.ignoreExtraneousInputs = true;
             this.state.interTrialIntervalTimeOut = setTimeout(() => {
-                this.state.ignoreExtraneousInputs = false;
                 this.state.interTrialInterval = new Date();
                 changeSceneTo('task');
             }, this.config.startTaskTimeOut);
         }
-    
+        
+        function setInitalStatValues(){
+            if(!this.state.trialCount){ this.state.trialCount = 0 ; }
+            if(!this.state['payout'+poke+'total']) {this.state['payout'+poke+'total']   = 0 }
+            if(!this.state['payout'+poke+'win'])   {this.state['payout'+poke+'win']     = 0 }
+            if(!this.state['payout'+poke+'lose'])  {this.state['payout'+poke+'lose']    = 0 }
+        }    
     }
 };
 

@@ -38,7 +38,7 @@ var base = class base {
       switch (incomingMessage.type.toUpperCase()) {
         case 'UI_onReady'.toUpperCase(): this.UI_onReady(); break;
       }
-      //try to respond tou user defined actions
+      //try to respond to user defined actions
       for (var i = 0; i < this.uiListens.length; i++) {
         if (incomingMessage.type.toUpperCase() === this.uiListens[i].name.toUpperCase()) {
           this.uiListens[i].fun();
@@ -96,7 +96,7 @@ var base = class base {
     this.uiCalls.start({ id: this.id });
     this.emit('Start', { actionTimeStamp: new Date(), actionType: 'Start' });
     this.changeSceneTo('start');
-    setTimeout(this.stop, this.config.duration);
+    setTimeout(this.stop, this.config.SessionLengthMS);
   } 
 
 

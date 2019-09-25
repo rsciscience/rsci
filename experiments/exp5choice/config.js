@@ -6,7 +6,7 @@ module.exports = {
     name:'5 choice',
     type:"5 choice",
     sessionVariables:{
-        duration:60000,
+        SessionLengthMS:60000,
         timeOutDuration:3000,
     }, 
     clientAssignments:[

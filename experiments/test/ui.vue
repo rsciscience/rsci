@@ -8,17 +8,7 @@
         <button v-on:click="startTrial_onclick" class= "nosepokeLarge"></button>
       </div>
       
-      <div id="scene_taskWait" class = "scene" v-bind:class="getCurrentScene('taskWait')" >
-        <div class = "sceneLabel"> trial wait </div>
-          <div class= "nosepokeholescontainer">
-            <button v-on:click="nosepoke1Premature_onclick" class="nose-poke nosepoke1" ></button>
-            <button v-on:click="nosepoke2Premature_onclick" class="nose-poke nosepoke2" ></button>
-            <button v-on:click="nosepoke3Premature_onclick" class="nose-poke nosepoke3" ></button>
-            <button v-on:click="nosepoke4Premature_onclick" class="nose-poke nosepoke4" ></button>
-          </div>
-      </div>
-      
-      <div id="scene_task"  class = "scene" v-bind:class="getCurrentScene('task')" >
+      <div id="scene_test"  class = "scene" v-bind:class="getCurrentScene('task')" >
           <div class = "sceneLabel"> stimulus presentation scene </div>
           <div class= "nosepokeholescontainer">
             <button v-on:click="nosepoke1_onclick" class="nose-poke nosepoke1 nose-poke-highlight" v-bind:class="isNosePokeActive('1')"  ></button>
@@ -26,14 +16,6 @@
             <button v-on:click="nosepoke3_onclick" class="nose-poke nosepoke3 nose-poke-highlight" v-bind:class="isNosePokeActive('3')"  ></button>
             <button v-on:click="nosepoke4_onclick" class="nose-poke nosepoke4 nose-poke-highlight" v-bind:class="isNosePokeActive('4')"  ></button>
           </div>
-      </div>
-
-      <div id="scene_win" class = "scene"  v-bind:class="getCurrentScene('win')" >
-          <div class = "sceneLabel"> win outcome scene</div>
-      </div>
-
-      <div id="scene_lose"  class = "scene" v-bind:class="getCurrentScene('lose')" > 
-          <div class = "sceneLabel"> lose outcome scene</div>
       </div>
   
     </div>
@@ -153,6 +135,7 @@ export default {
       }
     return output;
     },
+
     isNosePokeActive: function(nosePokeID) {
       var output = [];
       if (this.nosePokeStimulusValues['poke' + nosePokeID] === true) {
