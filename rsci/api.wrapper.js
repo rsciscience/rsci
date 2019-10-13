@@ -62,9 +62,9 @@ function standardWrapper(handlerFunction, postEvent) {
                 };
               
                 function cb(output) {
-                if (postEvent) {
-                    postEvent(output);
-                }
+                  if (postEvent) {
+                      postEvent(output);
+                  }
                   const clientResponse = JSON.stringify(output);
                   res.status(200).send(clientResponse);
                 }

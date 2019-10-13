@@ -36,8 +36,6 @@ class api {
     })
   }
 
-  
-
   add_listener(eventName, listener) {
     debug('add_listener', eventName)
     this.listener_list.push({

@@ -4,7 +4,7 @@
   "description": "Rat Server Client Interface: Open source operant box software",
   "main": "index.js",
   "scripts": {
-    "start": "DEBUG=RSCI* npm run service" ,
+    "start": "DEBUG=RSCI* npm run service",
     "dev": "DEBUG=RSCI* concurrently \" npm run dev_ui\" \"npm run service\" ",
     "dev_ui": "npm run dev --prefix rsci_ui",
     "service": "DEBUG=RSCI* node index.js",

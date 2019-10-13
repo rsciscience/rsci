@@ -1,23 +1,21 @@
 "use strict";
 
 const base = require.main.require('./rsci/experiment.base');
-const debug = require('debug')('RSCI.session.exp1979');
+const debug = require('debug')('RSCI.session.testSession');
 
 class session extends base {
     constructor(sessionId, experiment) {
         // things to ignore : wire up 
         super(sessionId, experiment);
-        var changeSceneTo = function (scene) { this.changeSceneTo(scene); }.bind(this);
-        var record = function (action) { this.record(action); }.bind(this);
-        var dispenseFood = function () { this.dispenseFood(); }.bind(this);
-        var addUIListner = function (name, fun) { this.addUIListner(name, fun); }.bind(this);
-        var doEvent = function (msg) { this.doEvent(msg); }.bind(this);
-        this.state = {};
+        var changeSceneTo   = function (scene)      { this.changeSceneTo(scene); }.bind(this);
+        var record          = function (action)     { this.record(action); }.bind(this);
+        var dispenseFood    = function ()           { this.dispenseFood(); }.bind(this);
+        var addUIListner    = function (name, fun)  { this.addUIListner(name, fun); }.bind(this);
+        var doEvent         = function (msg)        { this.doEvent(msg); }.bind(this);
+        this.state          = {};
         // things to ignore : done
 
-
         /*
-
             __QQ
            (_)_">  HELP
           _)    
@@ -70,9 +68,9 @@ class session extends base {
         */
 
         addUIListner('startTrial_pressed', startTrial.bind(this));
-        addUIListner('nosePoke1_pressed', (this)=>{  dispenseFood(); });
-        addUIListner('nosePoke2_pressed', (this) => { dispenseDrug(); } );
-        addUIListner('nosePoke3_pressed', (this) => { buzz(); } );
+        addUIListner('nosePoke1_pressed' , (this) => { dispenseFood(); });
+        addUIListner('nosePoke2_pressed' , (this) => { dispenseDrug(); });
+        addUIListner('nosePoke3_pressed' , (this) => { buzz();         });
 
         function startTrial(poke) {
             changeSceneTo('test');
@@ -84,8 +82,6 @@ class session extends base {
         
     }
 };
-
-
 
 module.exports = session;
 

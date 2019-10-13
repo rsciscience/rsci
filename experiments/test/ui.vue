@@ -4,17 +4,16 @@
     <div class= "scene-container"  >
       
       <div id="scene_start" class = "scene" v-bind:class="getCurrentScene('start')" >
-        <div class = "sceneLabel"> trial start scene </div>
+        <div class = "sceneLabel"> Start Scene </div>
         <button v-on:click="startTrial_onclick" class= "nosepokeLarge"></button>
       </div>
       
       <div id="scene_test"  class = "scene" v-bind:class="getCurrentScene('task')" >
-          <div class = "sceneLabel"> stimulus presentation scene </div>
+          <div class = "sceneLabel"> Test Scene </div>
           <div class= "nosepokeholescontainer">
-            <button v-on:click="nosepoke1_onclick" class="nose-poke nosepoke1 nose-poke-highlight" v-bind:class="isNosePokeActive('1')"  ></button>
-            <button v-on:click="nosepoke2_onclick" class="nose-poke nosepoke2 nose-poke-highlight" v-bind:class="isNosePokeActive('2')"  ></button>
-            <button v-on:click="nosepoke3_onclick" class="nose-poke nosepoke3 nose-poke-highlight" v-bind:class="isNosePokeActive('3')"  ></button>
-            <button v-on:click="nosepoke4_onclick" class="nose-poke nosepoke4 nose-poke-highlight" v-bind:class="isNosePokeActive('4')"  ></button>
+            <button v-on:click="nosepoke1_onclick" class="nose-poke nosepoke1 nose-poke-highlight" v-bind:class="isNosePokeActive('1')"  >Food</button>
+            <button v-on:click="nosepoke2_onclick" class="nose-poke nosepoke2 nose-poke-highlight" v-bind:class="isNosePokeActive('2')"  >Drug</button>
+            <button v-on:click="nosepoke3_onclick" class="nose-poke nosepoke3 nose-poke-highlight" v-bind:class="isNosePokeActive('3')"  >Buzz</button>
           </div>
       </div>
   
