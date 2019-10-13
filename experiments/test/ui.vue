@@ -5,11 +5,6 @@
       
       <div id="scene_start" class = "scene" v-bind:class="getCurrentScene('start')" >
         <div class = "sceneLabel"> Start Scene </div>
-        <button v-on:click="startTrial_onclick" class= "nosepokeLarge"></button>
-      </div>
-      
-      <div id="scene_test"  class = "scene" v-bind:class="getCurrentScene('task')" >
-          <div class = "sceneLabel"> Test Scene </div>
           <div class= "nosepokeholescontainer">
             <button v-on:click="nosepoke1_onclick" class="nose-poke nosepoke1 nose-poke-highlight" v-bind:class="isNosePokeActive('1')"  >Food</button>
             <button v-on:click="nosepoke2_onclick" class="nose-poke nosepoke2 nose-poke-highlight" v-bind:class="isNosePokeActive('2')"  >Drug</button>

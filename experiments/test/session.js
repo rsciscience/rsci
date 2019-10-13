@@ -1,18 +1,18 @@
 "use strict";
 
 const base = require.main.require('./rsci/experiment.base');
-const debug = require('debug')('RSCI.session.testSession');
+const debug = require('debug')('RSCI.session.expTest');
 
 class session extends base {
     constructor(sessionId, experiment) {
         // things to ignore : wire up 
         super(sessionId, experiment);
-        var changeSceneTo   = function (scene)      { this.changeSceneTo(scene); }.bind(this);
-        var record          = function (action)     { this.record(action); }.bind(this);
-        var dispenseFood    = function ()           { this.dispenseFood(); }.bind(this);
-        var addUIListner    = function (name, fun)  { this.addUIListner(name, fun); }.bind(this);
-        var doEvent         = function (msg)        { this.doEvent(msg); }.bind(this);
-        this.state          = {};
+        var changeSceneTo = function (scene) { this.changeSceneTo(scene); }.bind(this);
+        var record = function (action) { this.record(action); }.bind(this);
+        var dispenseFood = function () { this.dispenseFood(); }.bind(this);
+        var addUIListner = function (name, fun) { this.addUIListner(name, fun); }.bind(this);
+        var doEvent = function (msg) { this.doEvent(msg); }.bind(this);
+        this.state = {};
         // things to ignore : done
 
         /*
@@ -42,6 +42,7 @@ class session extends base {
             |___|   
 
         */
+        
         // You need to listen to for the messages from the client when the screen is pressed
         /* 
         **incomming**
@@ -67,18 +68,10 @@ class session extends base {
         PulseNosePoke_off_x
         */
 
-        addUIListner('startTrial_pressed', startTrial.bind(this));
         addUIListner('nosePoke1_pressed' , () => { dispenseFood(); });
         addUIListner('nosePoke2_pressed' , () => { dispenseDrug(); });
         addUIListner('nosePoke3_pressed' , () => { buzz();         });
-
-        function startTrial() {
-            changeSceneTo('test');
-            var fun = () => {
-                this.state.interTrialInterval = new Date();
-            };
-            this.state.interTrialIntervalTimeOut = setTimeout(fun, this.config.startTaskTimeOut);
-        }
+      
         
     }
 };

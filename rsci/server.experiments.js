@@ -276,18 +276,23 @@ async getSessionOverview (experimentSessionId){
         debug("complier result");
         content = mfs.readFileSync("//packed.js", "utf8");
         debug('Script len : ' + content.length);
+       
         var ui = {
           template: uiparsed.template.content,
           script: content,
           styles: uiparsed.styles[0].content
         };
+
         var exp = {
           config: eval(fs.readFileSync(path.join(dir, "config.js"), "utf8")),
           session: fs.readFileSync(path.join(dir, "session.js"), "utf8"),
           ui: ui
         };
-        cb(exp);
+       
+        //test exal the session
+        exp.err = this.testExpSession(exp.session) 
 
+        cb(exp);
 
       });
 
@@ -314,6 +319,52 @@ async getSessionOverview (experimentSessionId){
     debug('load complete ');
     return configs;
   };
+
+  testExpSession(str){
+    debug('Evaluate the experiment session ');
+    
+    try {
+
+      var obj = eval(str);
+
+      const sess = new obj('test', { sessionVariables: {} })
+
+      let funStub = (data)=>{}
+
+      sess.on('Init', funStub)
+      sess.on('Dispose', funStub)
+      sess.on('Start', funStub)
+      sess.on('Stop', funStub)
+      sess.on('Event', funStub)
+      sess.on('Action', funStub)
+
+      let funstubEmit = (data)=>{}
+
+      const comms = {
+        init: funstubEmit,
+        start: funstubEmit,
+        stop: funstubEmit,
+        dispose: funstubEmit,
+        emitAction: funstubEmit,
+      }
+
+      comms.init({
+        experimentId: 'TEST',
+        experimentSessionId: 'TESTSESSION',
+        ui: {}
+      })
+
+      sess.init(comms)
+
+    }catch(ex)
+    { 
+      debug(ex)
+      return ex
+    }
+    debug('Eval End');
+
+
+  }
 
   getDirectories(path) {
     return fs.readdirSync(path).filter(function (file) {
