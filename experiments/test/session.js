@@ -68,9 +68,7 @@ class session extends base {
         PulseNosePoke_off_x
         */
 
-        addUIListner('nosePoke1_pressed' , () => { dispenseFood(); });
-        addUIListner('nosePoke2_pressed' , () => { dispenseDrug(); });
-        addUIListner('nosePoke3_pressed' , () => { buzz();         });
+        
       
         
     }
