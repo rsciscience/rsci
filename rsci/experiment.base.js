@@ -85,10 +85,22 @@ var base = class base {
 
   dispenseFood() {
     debug('dispenseFood');
-    console.log(io);
-    console.log(io.dispenseFood);
+    this.record('dispenseFood');
     io.dispenseFood();
   }
+
+  dispenseDrug() {
+    debug('dispenseDrug');
+    this.record('dispenseDrug');
+    io.dispenseDrug();
+  }
+
+  buzz() {
+    debug('buzz');
+    this.record('buzz');
+    io.buzz();
+  }
+  
 
   UI_onReady() {
     debug('UI_onReady');

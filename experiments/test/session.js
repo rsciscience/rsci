@@ -68,11 +68,12 @@ class session extends base {
         PulseNosePoke_off_x
         */
 
-        
+        addUIListner('nosePoke1_pressed' , () => { this.dispenseFood(); });
+        addUIListner('nosePoke2_pressed' , () => { this.dispenseDrug(); });
+        addUIListner('nosePoke3_pressed' , () => { this.buzz();         });
       
         
     }
 };
 
 module.exports = session;
-

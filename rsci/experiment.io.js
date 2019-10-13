@@ -56,9 +56,10 @@ try {
 
 } catch (e) {
 
-      console.log('IO Error ');
+      console.log('RSCI IO Error ');
       console.log('Failed to create io ');
-      console.log(e);
+      console.log('Are you on a rspbery pi??????');
+      //console.log(e);
       console.log('IO not configured. Using test stubs');
 
     // test stub
