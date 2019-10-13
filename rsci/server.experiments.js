@@ -334,6 +334,7 @@ async getSessionOverview (experimentSessionId){
         break;
       }
     }
+
     // helpers.printObjetStructure(experimentConfig)
     for (var i = 0; i < experimentConfig.config.clientAssignments.length; i++) {
 
@@ -367,7 +368,7 @@ async getSessionOverview (experimentSessionId){
       if (found === false) {
         output.push({
           isOnline: true,
-          clientUIisAvailable: ca.clientUIisAvailable,
+          clientUIisAvailable: true,
           clientId: c.clientId,
           isConfigClientAssignment: false,
           assignedRat: c.assignedRat,
