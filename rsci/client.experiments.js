@@ -34,7 +34,8 @@ class experiments {
     }
     
     await this.db.experimentSessionsLocal.save(esl)
-debug (requestConfig)
+    debug (experimentRequest.experimentConfig.session)
+
     requestConfig.experimentConfig.session = eval(experimentRequest.experimentConfig.session)
 
     this.state.currentExperimentSession = requestConfig
