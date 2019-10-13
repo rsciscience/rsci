@@ -68,16 +68,16 @@ class session extends base {
         */
 
         addUIListner('startTrial_pressed', startTrial.bind(this));
-        addUIListner('nosePoke1_pressed' , (this) => { dispenseFood(); });
-        addUIListner('nosePoke2_pressed' , (this) => { dispenseDrug(); });
-        addUIListner('nosePoke3_pressed' , (this) => { buzz();         });
+        addUIListner('nosePoke1_pressed' , () => { dispenseFood(); });
+        addUIListner('nosePoke2_pressed' , () => { dispenseDrug(); });
+        addUIListner('nosePoke3_pressed' , () => { buzz();         });
 
-        function startTrial(poke) {
+        function startTrial() {
             changeSceneTo('test');
-
-            this.state.interTrialIntervalTimeOut = setTimeout(() => {
+            var fun = () => {
                 this.state.interTrialInterval = new Date();
-            }, this.config.startTaskTimeOut);
+            };
+            this.state.interTrialIntervalTimeOut = setTimeout(fun, this.config.startTaskTimeOut);
         }
         
     }
