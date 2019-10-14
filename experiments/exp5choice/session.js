@@ -46,38 +46,29 @@ class session extends base {
         */
         // You need to listen to for the messages from the client when the screen is pressed 
         addUIListner('pokestart', pokeStart.bind(this));
-        addUIListner('pokes1', callAWinner.bind(this,1));
-        addUIListner('pokes2', callAWinner.bind(this,2));
-        addUIListner('pokes3', callAWinner.bind(this,3));
-        addUIListner('pokes4', callAWinner.bind(this,4));
-        addUIListner('pokes5', callAWinner.bind(this,5));
+        addUIListner('poke1', callAWinner.bind(this,1));
+        addUIListner('poke2', callAWinner.bind(this,2));
+        addUIListner('poke3', callAWinner.bind(this,3));
+        addUIListner('poke4', callAWinner.bind(this,4));
+        addUIListner('poke5', callAWinner.bind(this,5));
         addUIListner('prematureResponse1', prematureResponse.bind(this,1));
         addUIListner('prematureResponse2', prematureResponse.bind(this,2));
         addUIListner('prematureResponse3', prematureResponse.bind(this,3));
         addUIListner('prematureResponse4', prematureResponse.bind(this,4));
         addUIListner('prematureResponse5', prematureResponse.bind(this,5));
 
-        /*
-        sessionLengthMS:60000, //Required
-        maxNumberOfTrials:100,
-        interTrialDelayMS:5000,
-        stimulusDuration:1000,
-        decisionDuration:10000,
-        incorrectResponseTimeout:3000,
-        omittedResponseTimeOut:3000,
-        */
-
         function omittedResponse(val) {
-            clearTimeout(this.state.interTrialIntervalTimeOut)
-            record('Omitted Response '  )
+            debugger;
+            record('Omitted Response')
             changeSceneTo('incorect')
             setTimeout(() => {
                 startTrial()
             }, this.config.incorrectResponseTimeout);
         }
+
         function prematureResponse(val) {
             clearTimeout(this.state.interTrialIntervalTimeOut)
-            record('Premature Response '  )
+            record('Premature Response ')
             changeSceneTo('incorect')
             setTimeout(() => {
                 startTrial()
@@ -86,14 +77,14 @@ class session extends base {
 
         function correctResponse() {
             debug('Winner Winner Chicken Dinner !!!!')
-            record('Correct Response '  )
+            record('Correct Response ')
             dispenseFood()
             record('dispenseFood')
             startTrial()
         }
 
         function incorrectResponse() {
-            record('Incorrect Response'  )
+            record('Incorrect Response')
             changeSceneTo('incorect')
             setTimeout(() => {
                 startTrial()
@@ -135,10 +126,10 @@ class session extends base {
                
                 setTimeout(() => {
                     doEvent('NosePokeStimulus_off_all');
-                    this.state.decisionTimeOut = setTimeout(() => {
-                        omittedResponse()
-                    },
-                    this.decisionDuration)
+                    this.state.decisionTimeOut = setTimeout( ()=>{
+                        debugger;
+                        omittedResponse.bind(this)()
+                    }, this.config.decisionDuration)
 
                 },this.config.stimulusDuration)
 

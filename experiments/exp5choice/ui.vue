@@ -2,19 +2,21 @@
   <div class="session">
     
     <div class= "scene-container"  >
+
       <div id="scene_start"  class = "scene" v-bind:class="getCurrentScene('start')">
-        <div class = "sceneLabel"> trial start scene </div>
+        <div class = "sceneLabel">trial start scene</div>
         <button v-on:click="scene_startokestart_onclick" class= "nosepokeLarge" ></button>
         <div class= "nosepokeholescontainer">
-          <button v-on:click="scene_startpoke1_onclick" class="nose-poke nosepoke1"></button>
-          <button v-on:click="scene_startpoke2_onclick" class="nose-poke nosepoke2"></button>
-          <button v-on:click="scene_startpoke3_onclick" class="nose-poke nosepoke3"></button>
-          <button v-on:click="scene_startpoke4_onclick" class="nose-poke nosepoke4"></button>
-          <button v-on:click="scene_startpoke5_onclick" class="nose-poke nosepoke5"></button>
+          <button class="nose-poke nosepoke1"></button>
+          <button class="nose-poke nosepoke2"></button>
+          <button class="nose-poke nosepoke3"></button>
+          <button class="nose-poke nosepoke4"></button>
+          <button class="nose-poke nosepoke5"></button>
         </div>
       </div>
 
-   <div id="scene_stimulas"  class = "scene" v-bind:class="getCurrentScene('stimulas')">
+      <div id="scene_stimulas"  class = "scene" v-bind:class="getCurrentScene('stimulas')">
+        <div class = "sceneLabel">decision scene</div>
           <button class= "nosepokeLarge nosepokeLargeOff "></button>
           <div class= "nosepokeholescontainer">
             <button v-on:click="scene_stimulas1_onclick" class="nose-poke nosepoke1" v-bind:class="isNosePokeActive('1')"  ></button>
@@ -26,7 +28,7 @@
       </div>
 
       <div id="scene_premature"   class = "scene" v-bind:class="getCurrentScene('premature')">
-          <div class = "sceneLabel">premature scene </div>
+          <div class = "sceneLabel">premature scene</div>
           <button class= "nosepokeLarge nosepokeLargeOff "></button>
           <div class= "nosepokeholescontainer">
             <button v-on:click="scene_premature1_onclick" class="nose-poke nosepoke1" v-bind:class="isNosePokeActive('1')"  ></button>
@@ -50,7 +52,7 @@
             <button class="nose-poke nosepoke5"></button>
           </div>
       </div>
-    
+    </div>
   </div>
 </template>
 
@@ -80,6 +82,7 @@ export default {
       if (action.type.startsWith(sceneActionMarker)) {
         var sceneName = action.type.substring(sceneActionMarker.length, action.type.length)
         this.currentScene = sceneName;
+        return;
       }
 
       if (action.type.startsWith("NosePokeStimulus_off_all")) {
@@ -88,7 +91,7 @@ export default {
           d[propertyName] = false;
         }
         this.nosePokeStimulusValues = d ;
-        return ;
+        return;
       }
 
       if (action.type.startsWith("NosePokeStimulus_")) {
@@ -96,11 +99,9 @@ export default {
         const d = Object.assign({}, this.nosePokeStimulusValues); 
         d['poke' + action.type.substring(action.type.length - 1, action.type.length)]= val ;
         this.nosePokeStimulusValues = d ;
+        return;
       } 
 
-      if (action.type === "ITIOn") {
-        this.ITIOn = true;
-      }
     }
   },
   data() {
@@ -125,7 +126,6 @@ export default {
     },
     getCurrentScene: function(scene) {
       var output = [];
-      debugger;
       if (this.currentScene.toLowerCase() === scene.toLowerCase()) {
         output.push('current-scene');
       }
@@ -148,7 +148,7 @@ export default {
       o.start()
       setInterval(function(){o.stop(),500})
     },
-    scene_startpokestart_onclick: function() { this.event("Pokestart"); },
+    scene_startokestart_onclick: function() { this.event("Pokestart"); },
     scene_premature1_onclick: function() { this.event("PrematureResponse1"); },
     scene_premature2_onclick: function() { this.event("PrematureResponse2"); },
     scene_premature3_onclick: function() { this.event("PrematureResponse3"); },

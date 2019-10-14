@@ -153,6 +153,7 @@ export default {
       }
     return output;
     },
+    
     isNosePokeActive: function(nosePokeID) {
       var output = [];
       if (this.nosePokeStimulusValues['poke' + nosePokeID] === true) {
