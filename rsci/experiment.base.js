@@ -113,7 +113,7 @@ var base = class base {
     this.uiCalls.start({ id: this.id });
     this.emit('Start', { actionTimeStamp: new Date(), actionType: 'Start' });
     this.changeSceneTo('start');
-    setTimeout(this.stop, this.config.SessionLengthMS);
+    setTimeout(this.stop, this.config.sessionLengthMS);
   } 
 
 

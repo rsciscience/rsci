@@ -6,7 +6,7 @@ module.exports = {
     name:'Test Exp',
     type:"Test",
     sessionVariables:{
-        SessionLengthMS:60000
+        sessionLengthMS:60000, //Required 
     }, 
     clientAssignments:[
     ]

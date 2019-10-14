@@ -1,43 +1,46 @@
 <template>
   <div class="session">
     
-    <div class= "scene-container"  v-bind:class="{flashing: isFlashing}">
+    <div class= "scene-container"  >
       <div id="scene_start"  class = "scene" v-bind:class="getCurrentScene('start')">
         <div class = "sceneLabel"> trial start scene </div>
-        <button v-on:click="Scene1TrialStartNosepoke_onclick" class= "nosepokeLarge" v-bind:class="{nosepokeLargeOff: ITIOn}"></button>
+        <button v-on:click="scene_startokestart_onclick" class= "nosepokeLarge" v-bind:class="{nosepokeLargeOff: ITIOn}"></button>
         <div class= "nosepokeholescontainer">
-          <button v-on:click="Scene1nosepokestim1_onclick" class="nose-poke nosepoke1"></button>
-          <button v-on:click="Scene1nosepokestim2_onclick" class="nose-poke nosepoke2"></button>
-          <button v-on:click="Scene1nosepokestim3_onclick" class="nose-poke nosepoke3"></button>
-          <button v-on:click="Scene1nosepokestim4_onclick" class="nose-poke nosepoke4"></button>
-          <button v-on:click="Scene1nosepokestim5_onclick" class="nose-poke nosepoke5"></button>
+          <button v-on:click="scene_startpoke1_onclick" class="nose-poke nosepoke1"></button>
+          <button v-on:click="scene_startpoke2_onclick" class="nose-poke nosepoke2"></button>
+          <button v-on:click="scene_startpoke3_onclick" class="nose-poke nosepoke3"></button>
+          <button v-on:click="scene_startpoke4_onclick" class="nose-poke nosepoke4"></button>
+          <button v-on:click="scene_startpoke5_onclick" class="nose-poke nosepoke5"></button>
         </div>
       </div>
-      <div id="scene_2"   class = "scene" v-bind:class="getCurrentScene('2')">
+
+   <div id="scene_stimulas"   class = "scene" v-bind:class="getCurrentScene('stimulas')">
           <div class = "sceneLabel"> stimulus presentation scene </div>
           <button class= "nosepokeLarge nosepokeLargeOff Scene2PerseverativeTrialStartNosepoke"></button>
           <div class= "nosepokeholescontainer">
-            <button v-on:click="Scene2nosepokestim1_onclick" class="nose-poke nosepoke1" v-bind:class="isNosePokeActive('1')"  ></button>
-            <button v-on:click="Scene2nosepokestim2_onclick" class="nose-poke nosepoke2" v-bind:class="isNosePokeActive('2')"  ></button>
-            <button v-on:click="Scene2nosepokestim3_onclick" class="nose-poke nosepoke3" v-bind:class="isNosePokeActive('3')"  ></button>
-            <button v-on:click="Scene2nosepokestim4_onclick" class="nose-poke nosepoke4" v-bind:class="isNosePokeActive('4')"  ></button>
-            <button v-on:click="Scene2nosepokestim5_onclick" class="nose-poke nosepoke5" v-bind:class="isNosePokeActive('5')"  ></button>
+            <button v-on:click="scene_stimulas1_onclick" class="nose-poke nosepoke1" v-bind:class="isNosePokeActive('1')"  ></button>
+            <button v-on:click="scene_stimulas2_onclick" class="nose-poke nosepoke2" v-bind:class="isNosePokeActive('2')"  ></button>
+            <button v-on:click="scene_stimulas3_onclick" class="nose-poke nosepoke3" v-bind:class="isNosePokeActive('3')"  ></button>
+            <button v-on:click="scene_stimulas4_onclick" class="nose-poke nosepoke4" v-bind:class="isNosePokeActive('4')"  ></button>
+            <button v-on:click="scene_stimulas5_onclick" class="nose-poke nosepoke5" v-bind:class="isNosePokeActive('5')"  ></button>
           </div>
       </div>
-      <div id="scene_3" class = "scene" v-bind:class="getCurrentScene('3')" >
-          <div class = "sceneLabel"> win outcome scene</div>
-          <button class= "nosepokeLarge nosepokeLargeOff Scene3PerseverativeTrialStartNosepoke"></button>
-          
+
+      <div id="scene_premature"   class = "scene" v-bind:class="getCurrentScene('stimulas')">
+          <div class = "sceneLabel">premature scene </div>
+          <button class= "nosepokeLarge nosepokeLargeOff Scene2PerseverativeTrialStartNosepoke"></button>
           <div class= "nosepokeholescontainer">
-            <button class="nose-poke nosepoke1"></button>
-            <button class="nose-poke nosepoke2"></button>
-            <button class="nose-poke nosepoke3"></button>
-            <button class="nose-poke nosepoke4"></button>
-            <button class="nose-poke nosepoke5"></button>
+            <button v-on:click="scene_premature1_onclick" class="nose-poke nosepoke1" v-bind:class="isNosePokeActive('1')"  ></button>
+            <button v-on:click="scene_premature2_onclick" class="nose-poke nosepoke2" v-bind:class="isNosePokeActive('2')"  ></button>
+            <button v-on:click="scene_premature3_onclick" class="nose-poke nosepoke3" v-bind:class="isNosePokeActive('3')"  ></button>
+            <button v-on:click="scene_premature4_onclick" class="nose-poke nosepoke4" v-bind:class="isNosePokeActive('4')"  ></button>
+            <button v-on:click="scene_premature5_onclick" class="nose-poke nosepoke5" v-bind:class="isNosePokeActive('5')"  ></button>
           </div>
       </div>
-      <div id="scene_4"  class = "scene" v-bind:class="getCurrentScene('4')" >
-          <div class = "aversiveLight"></div>
+      
+      <div id="scene_incorect"  class = "scene scene-incorrect" v-bind:class="getCurrentScene('incorect')" >
+          <div class = "sceneLabel"> incorrcet scene </div>
+          <div class = "aversiveLight" v-bind:class="{flashing: isFlashing}" ></div>
             <button class= "nosepokeLarge nosepokeLargeOff Scene4PerseverativeTrialStartNosepoke"></button>
         
           <div class= "nosepokeholescontainer">
@@ -48,9 +51,6 @@
             <button class="nose-poke nosepoke5"></button>
           </div>
       </div>
-
-      <div id="scene_5"  class = "scene" v-bind:class="getCurrentScene('5')" > </div>
-    </div>
     
   </div>
 </template>
@@ -148,17 +148,17 @@ export default {
       o.start()
       setInterval(function(){o.stop(),500})
     },
-    Scene1TrialStartNosepoke_onclick: function() { this.event("Scene1TrialStartNosepoke_onclick"); },
-    Scene1nosepokestim1_onclick: function() { this.event("PrematureResponse1"); },
-    Scene1nosepokestim2_onclick: function() { this.event("PrematureResponse2"); },
-    Scene1nosepokestim3_onclick: function() { this.event("PrematureResponse3"); },
-    Scene1nosepokestim4_onclick: function() { this.event("PrematureResponse4"); },
-    Scene1nosepokestim5_onclick: function() { this.event("PrematureResponse5"); },
-    Scene2nosepokestim1_onclick: function() { this.event("Scene2nosepokestim1_onclick"); },
-    Scene2nosepokestim2_onclick: function() { this.event("Scene2nosepokestim2_onclick"); },
-    Scene2nosepokestim3_onclick: function() { this.event("Scene2nosepokestim3_onclick"); },
-    Scene2nosepokestim4_onclick: function() { this.event("Scene2nosepokestim4_onclick"); },
-    Scene2nosepokestim5_onclick: function() { this.event("Scene2nosepokestim5_onclick"); }
+    scene_startpokestart_onclick: function() { this.event("Pokestart"); },
+    scene_premature1_onclick: function() { this.event("PrematureResponse1"); },
+    scene_premature2_onclick: function() { this.event("PrematureResponse2"); },
+    scene_premature3_onclick: function() { this.event("PrematureResponse3"); },
+    scene_premature4_onclick: function() { this.event("PrematureResponse4"); },
+    scene_premature5_onclick: function() { this.event("PrematureResponse5"); },
+    scene_stimulas1_onclick: function() { this.event("Poke1"); },
+    scene_stimulas2_onclick: function() { this.event("Poke2"); },
+    scene_stimulas3_onclick: function() { this.event("Poke3"); },
+    scene_stimulas4_onclick: function() { this.event("Poke4"); },
+    scene_stimulas5_onclick: function() { this.event("Poke5"); }
   }
 };
 </script>
@@ -197,6 +197,9 @@ a {
   overflow: hidden;
   display: none;
 }
+.scene-incorrect{
+  background-color: rgb(255, 255, 255);
+}
 .sceneLabel {
   position: relative;
   top: 0;
@@ -214,13 +217,13 @@ a {
   position: absolute;
   top: 50px;
   left: 50px;
-  background-color: white;
+  background-color: green; 
 }
 
 @keyframes color-me-in {
   0% { background: blue; }
-  100% { background: gree; }
-   }
+  100% { background: green; }
+ }
 
 .nose-poke {
   height: 100px;
@@ -244,7 +247,6 @@ a {
   width: 150px;
   margin-left: 325px;
   background-color: yellow;
-
   position: absolute;
   top: 90px;
 }

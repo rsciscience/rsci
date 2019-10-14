@@ -153,7 +153,7 @@ class session extends base {
             this.state['PayoutRates4'] = ( parseFloat(this.state['payout4win'] )/parseFloat(this.state['payout4total'] )) * 100 ;
         }
 
-        function startTrial(poke) {
+        function startTrial() {
             setInitalStatValues();
             this.state.trialCount ++;
 

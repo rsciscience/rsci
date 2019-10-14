@@ -63,7 +63,12 @@ async function init() {
   const _client = new client(_db, _api, _discovery)
   const _server = new server(_db, _discovery)
   const _export = new data_export(_db)
+
   state.experiments.configs = _server.experiments.load(state.experiments.configDir)
+  
+  // refresh the experimetnst fom disk every 5 seconds
+  setInterval(()=>{state.experiments.configs = _server.experiments.load(state.experiments.configDir)}, 50000)
+  
   _api.init(_client, _server, _export)
 
   if (state.isServer === true) {

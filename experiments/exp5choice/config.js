@@ -6,8 +6,13 @@ module.exports = {
     name:'5 choice',
     type:"5 choice",
     sessionVariables:{
-        SessionLengthMS:60000,
-        timeOutDuration:3000,
+        sessionLengthMS:60000, //Required
+        maxNumberOfTrials:100,
+        interTrialDelayMS:5000,
+        stimulusDuration:1000,
+        decisionDuration:10000,
+        incorrectResponseTimeout:3000,
+        omittedResponseTimeOut:3000,
     }, 
     clientAssignments:[
         {

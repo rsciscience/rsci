@@ -56,11 +56,11 @@ try {
 
 } catch (e) {
 
-      console.log('RSCI IO Error ');
-      console.log('Failed to create io ');
-      console.log('Are you on a rspbery pi??????');
-      //console.log(e);
-      console.log('IO not configured. Using test stubs');
+      debug('RSCI IO Error ');
+      debug('Failed to create io ');
+      debug('Are you on a raspberry pi??????');
+      //debug(e);
+      debug('IO not configured. Using test stubs');
 
     // test stub
   this.dispenseFood = function () {

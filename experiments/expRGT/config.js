@@ -6,7 +6,7 @@ module.exports = {
     name:'rGT',
     type:"Rat Gambling Task",
     sessionVariables:{
-        SessionLengthMS:60000,
+        sessionLengthMS:60000, //Required 
         timeOutDuration:3000,
         startTaskTimeOut:5000,
         lossPulseTimeOut:5000,

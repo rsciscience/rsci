@@ -12,9 +12,9 @@ class session extends base {
         var dispenseFood = function () { this.dispenseFood(); }.bind(this);
         var addUIListner = function (name, fun) { this.addUIListner(name, fun); }.bind(this);
         var doEvent = function (msg) { this.doEvent(msg); }.bind(this);
-        this.state = {};
+        this.state = {trialCount:0}
+      
         // things to ignore : done
-           
         
         /*
 
@@ -45,70 +45,108 @@ class session extends base {
 
         */
         // You need to listen to for the messages from the client when the screen is pressed 
-        addUIListner('scene1TrialStartNosepoke_onclick', scene1TrialStartNosepoke_onclick.bind(this));
-        addUIListner('scene2nosepokestim1_onclick', callAWinner.bind(this,1));
-        addUIListner('scene2nosepokestim2_onclick', callAWinner.bind(this,2));
-        addUIListner('scene2nosepokestim3_onclick', callAWinner.bind(this,3));
-        addUIListner('scene2nosepokestim4_onclick', callAWinner.bind(this,4));
-        addUIListner('scene2nosepokestim5_onclick', callAWinner.bind(this,5));
+        addUIListner('pokestart', pokeStart.bind(this));
+        addUIListner('pokes1', callAWinner.bind(this,1));
+        addUIListner('pokes2', callAWinner.bind(this,2));
+        addUIListner('pokes3', callAWinner.bind(this,3));
+        addUIListner('pokes4', callAWinner.bind(this,4));
+        addUIListner('pokes5', callAWinner.bind(this,5));
         addUIListner('prematureResponse1', prematureResponse.bind(this,1));
         addUIListner('prematureResponse2', prematureResponse.bind(this,2));
         addUIListner('prematureResponse3', prematureResponse.bind(this,3));
         addUIListner('prematureResponse4', prematureResponse.bind(this,4));
         addUIListner('prematureResponse5', prematureResponse.bind(this,5));
 
+        /*
+        sessionLengthMS:60000, //Required
+        maxNumberOfTrials:100,
+        interTrialDelayMS:5000,
+        stimulusDuration:1000,
+        decisionDuration:10000,
+        incorrectResponseTimeout:3000,
+        omittedResponseTimeOut:3000,
+        */
+
+        function omittedResponse(val) {
+            clearTimeout(this.state.interTrialIntervalTimeOut)
+            record('Omitted Response '  )
+            changeSceneTo('incorect')
+            setTimeout(() => {
+                startTrial()
+            }, this.config.incorrectResponseTimeout);
+        }
         function prematureResponse(val) {
-            clearTimeout(this.state.interTrialIntervalTimeOut);
-            record('prematureResponse' + val );
-            changeSceneTo(5);
+            clearTimeout(this.state.interTrialIntervalTimeOut)
+            record('Premature Response '  )
+            changeSceneTo('incorect')
             setTimeout(() => {
-                changeSceneTo('start');
-            }, 5000);
+                startTrial()
+            }, this.config.incorrectResponseTimeout);
         }
 
-        function correctResponseTime() {
-            debug('Winner Winner Chicken Dinner !!!!');
-            dispenseFood();
+        function correctResponse() {
+            debug('Winner Winner Chicken Dinner !!!!')
+            record('Correct Response '  )
+            dispenseFood()
             record('dispenseFood')
-            changeSceneTo(3);
-            setTimeout(() => {
-                changeSceneTo('start');
-            }, 1000);
+            startTrial()
         }
 
-        function incorrectResponseTime() {
-            changeSceneTo(4);
+        function incorrectResponse() {
+            record('Incorrect Response'  )
+            changeSceneTo('incorect')
             setTimeout(() => {
-                changeSceneTo('start');
-            }, 10000);
+                startTrial()
+            }, this.config.incorrectResponseTimeout);
         }
 
         function callAWinner(poke) {
+            clearTimeout(this.state.decisionTimeOut)
             if (this.state.winningPokeHole === poke) {
-                dispenseFood(); 
-                correctResponseTime();
+                correctResponse()
             } else {
-                incorrectResponseTime();
+                incorrectResponse()
             }
         }
 
-        function scene1TrialStartNosepoke_onclick(poke) {
+        function startTrial() {
+            changeSceneTo('start');
+        }
+
+        function pokeStart(poke) {
+
+            this.state.trialCount ++;
+
+            if(!this.state.trialCount >= this.config.maxNumberOfTrials ){
+                record('maxNumberOfTrials')
+                this.stop();
+            }
+
+            changeSceneTo('premature')
+            
             this.state.interTrialIntervalTimeOut = setTimeout(() => {
+                
+                changeSceneTo('stimulas');
                 this.state.interTrialInterval = new Date();
-                changeSceneTo(2);
                 this.state.winningPokeHole = Math.floor(Math.random() * 5) + 1;
                 debug('Next winner is poke ' + this.state.winningPokeHole);
                 doEvent('NosePokeStimulus_off_all');
                 doEvent('NosePokeStimulus_on_' + this.state.winningPokeHole);
-            }, 5000);
-            doEvent('ITIOn');
-        }
+               
+                setTimeout(() => {
+                    doEvent('NosePokeStimulus_off_all');
+                    this.state.decisionTimeOut = setTimeout(() => {
+                        omittedResponse()
+                    },
+                    this.decisionDuration)
 
-    
+                },this.config.stimulusDuration)
+
+            }, this.config.interTrialDelayMS);
+            
+        }
     }
 };
-
-
 
 module.exports = session;
 
