@@ -4,7 +4,7 @@
     <div class= "scene-container"  >
       <div id="scene_start"  class = "scene" v-bind:class="getCurrentScene('start')">
         <div class = "sceneLabel"> trial start scene </div>
-        <button v-on:click="scene_startokestart_onclick" class= "nosepokeLarge" v-bind:class="{nosepokeLargeOff: ITIOn}"></button>
+        <button v-on:click="scene_startokestart_onclick" class= "nosepokeLarge" ></button>
         <div class= "nosepokeholescontainer">
           <button v-on:click="scene_startpoke1_onclick" class="nose-poke nosepoke1"></button>
           <button v-on:click="scene_startpoke2_onclick" class="nose-poke nosepoke2"></button>
@@ -14,9 +14,8 @@
         </div>
       </div>
 
-   <div id="scene_stimulas"   class = "scene" v-bind:class="getCurrentScene('stimulas')">
-          <div class = "sceneLabel"> stimulus presentation scene </div>
-          <button class= "nosepokeLarge nosepokeLargeOff Scene2PerseverativeTrialStartNosepoke"></button>
+   <div id="scene_stimulas"  class = "scene" v-bind:class="getCurrentScene('stimulas')">
+          <button class= "nosepokeLarge nosepokeLargeOff "></button>
           <div class= "nosepokeholescontainer">
             <button v-on:click="scene_stimulas1_onclick" class="nose-poke nosepoke1" v-bind:class="isNosePokeActive('1')"  ></button>
             <button v-on:click="scene_stimulas2_onclick" class="nose-poke nosepoke2" v-bind:class="isNosePokeActive('2')"  ></button>
@@ -26,9 +25,9 @@
           </div>
       </div>
 
-      <div id="scene_premature"   class = "scene" v-bind:class="getCurrentScene('stimulas')">
+      <div id="scene_premature"   class = "scene" v-bind:class="getCurrentScene('premature')">
           <div class = "sceneLabel">premature scene </div>
-          <button class= "nosepokeLarge nosepokeLargeOff Scene2PerseverativeTrialStartNosepoke"></button>
+          <button class= "nosepokeLarge nosepokeLargeOff "></button>
           <div class= "nosepokeholescontainer">
             <button v-on:click="scene_premature1_onclick" class="nose-poke nosepoke1" v-bind:class="isNosePokeActive('1')"  ></button>
             <button v-on:click="scene_premature2_onclick" class="nose-poke nosepoke2" v-bind:class="isNosePokeActive('2')"  ></button>
@@ -41,7 +40,7 @@
       <div id="scene_incorect"  class = "scene scene-incorrect" v-bind:class="getCurrentScene('incorect')" >
           <div class = "sceneLabel"> incorrcet scene </div>
           <div class = "aversiveLight" v-bind:class="{flashing: isFlashing}" ></div>
-            <button class= "nosepokeLarge nosepokeLargeOff Scene4PerseverativeTrialStartNosepoke"></button>
+            <button class= "nosepokeLarge nosepokeLargeOff "></button>
         
           <div class= "nosepokeholescontainer">
             <button class="nose-poke nosepoke1"></button>
@@ -124,9 +123,10 @@ export default {
     event: function(actionType) {
       this.$socket.emit("client_experiment_onevent", { type: actionType });
     },
-     getCurrentScene: function(scene) {
+    getCurrentScene: function(scene) {
       var output = [];
-      if (this.currentScene === scene) {
+      debugger;
+      if (this.currentScene.toLowerCase() === scene.toLowerCase()) {
         output.push('current-scene');
       }
     return output;
