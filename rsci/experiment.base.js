@@ -41,8 +41,13 @@ var base = class base {
       //try to respond to user defined actions
       for (var i = 0; i < this.uiListens.length; i++) {
         if (incomingMessage.type.toUpperCase() === this.uiListens[i].name.toUpperCase()) {
-          this.uiListens[i].fun();
-          debug('Found user function');
+          try{
+           debug('Found user function');
+           this.uiListens[i].fun();
+          }catch(ex){
+           debug('ERROR in processing ' + incomingMessage.type);
+           debug(ex);
+          }
         }
       }
 

@@ -10,6 +10,8 @@ class session extends base {
         var changeSceneTo = function (scene) { this.changeSceneTo(scene); }.bind(this);
         var record = function (action) { this.record(action); }.bind(this);
         var dispenseFood = function () { this.dispenseFood(); }.bind(this);
+        var dispenseDrug = function () { this.dispenseDrug(); }.bind(this);
+        var buzz = function () { this.buzz(); }.bind(this);
         var addUIListner = function (name, fun) { this.addUIListner(name, fun); }.bind(this);
         var doEvent = function (msg) { this.doEvent(msg); }.bind(this);
         this.state = {};
