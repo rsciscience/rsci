@@ -69,22 +69,28 @@ class session extends base {
         PulseNosePoke_off_x
         */
 
-        addUIListner('startTrial_pressed', startTrial.bind(this));
-        addUIListner('nosePoke1_pressed', callAWinner.bind(this, 1));
-        addUIListner('nosePoke2_pressed', callAWinner.bind(this, 2));
-        addUIListner('nosePoke3_pressed', callAWinner.bind(this, 3));
-        addUIListner('nosePoke4_pressed', callAWinner.bind(this, 4));
+        addUIListner('startTrial_pressed', startTrial.bind(this))
+        addUIListner('nosePoke1_pressed', callAWinner.bind(this, 1))
+        addUIListner('nosePoke2_pressed', callAWinner.bind(this, 2))
+        addUIListner('nosePoke3_pressed', callAWinner.bind(this, 3))
+        addUIListner('nosePoke4_pressed', callAWinner.bind(this, 4))
 
-        addUIListner('nosePoke1Premature_pressed', callPremature.bind(this, 1));
-        addUIListner('nosePoke2Premature_pressed', callPremature.bind(this, 2));
-        addUIListner('nosePoke3Premature_pressed', callPremature.bind(this, 3));
-        addUIListner('nosePoke4Premature_pressed', callPremature.bind(this, 4));
+        addUIListner('nosePoke1Premature_pressed', callPremature.bind(this, 1))
+        addUIListner('nosePoke2Premature_pressed', callPremature.bind(this, 2))
+        addUIListner('nosePoke3Premature_pressed', callPremature.bind(this, 3))
+        addUIListner('nosePoke4Premature_pressed', callPremature.bind(this, 4))
 
-        function correctResponseTime(payout, poke) {
+        setInitalStatValues.bind(this)(1)
+        setInitalStatValues.bind(this)(2)
+        setInitalStatValues.bind(this)(3)
+        setInitalStatValues.bind(this)(4)
+
+        function correctResponseTime( poke, payout ){
             changeSceneTo('win');
             for (var i = 0; i < payout; i++) {
+                console.log(this.state['payout'+poke+'win'])
                 this.state['payout'+poke+'win'] = this.state['payout'+poke+'win'] + 1; 
-                let pelletCount = this.config.payout['Hole'+poke+'PelletCount'];
+                let pelletCount = this.config['Hole'+poke+'PelletCount'];
                 for(var i = 0 ; i <=  pelletCount -1 ; i++){
                     record('dispenseFood')
                 }
@@ -94,7 +100,7 @@ class session extends base {
             }, 10);
         }
 
-        function incorrectResponseTime() {
+        function incorrectResponseTime(poke) {
             this.state['payout'+poke+'lose'] = this.state['payout'+poke+'lose'] + 1; 
             changeSceneTo('lose');
             doEvent('beep');
@@ -120,29 +126,17 @@ class session extends base {
         function callAWinner(poke) {
             var percent = 0;
             doEvent('NosePokeStimulus_' + poke);
-            switch (poke) {
-                case 1:
-                    percent = this.config.payoutPecent1;
-                    break;
-                case 2:
-                    percent = this.config.payoutPecent2;
-                    break;
-                case 3:
-                    percent = this.config.payoutPecent3;
-                    break;
-                case 4:
-                    percent = this.config.payoutPecent4;
-                    break;
-            }
+            
+            percent = this.config['Hole'+poke+'PayoutPecent'];
             
             var percentf = parseFloat(percent);
             var tot = parseFloat(100.00000);
             var d = Math.random();
 
             if (d < (percentf/tot)){
-                correctResponseTime(poke);
+                correctResponseTime.bind(this)(poke, this.config['Hole'+poke+'PelletCount']);
             } else {
-                incorrectResponseTime(poke);
+                incorrectResponseTime.bind(this)(poke);
             }
 
             //Record Stats
@@ -154,23 +148,23 @@ class session extends base {
         }
 
         function startTrial() {
-            setInitalStatValues();
+            debugger;
             this.state.trialCount ++;
 
             if(!this.state.trialCount >= this.config.maxTrials ){
                 record('MaxTrailsComplete')
-                this.stop();
+                this.stop()
             }
             
             changeSceneTo('taskWait');
 
             this.state.interTrialIntervalTimeOut = setTimeout(() => {
-                this.state.interTrialInterval = new Date();
-                changeSceneTo('task');
-            }, this.config.startTaskTimeOut);
+                this.state.interTrialInterval = new Date()
+                changeSceneTo('task')
+            }, this.config.startTaskTimeOut)
         }
         
-        function setInitalStatValues(){
+        function setInitalStatValues(poke){
             if(!this.state.trialCount){ this.state.trialCount = 0 ; }
             if(!this.state['payout'+poke+'total']) {this.state['payout'+poke+'total']   = 0 }
             if(!this.state['payout'+poke+'win'])   {this.state['payout'+poke+'win']     = 0 }
@@ -178,7 +172,6 @@ class session extends base {
         }    
     }
 };
-
 
 
 module.exports = session;

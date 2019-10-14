@@ -94,7 +94,7 @@ export default {
       } 
       
       if (action.type.startsWith('beep')) {
-        this.beep();
+        setTimeout(this.beep());
       } 
     }
   },
@@ -138,12 +138,11 @@ export default {
     beep: function () {
       var context = new AudioContext()
       var o = null
-      var g = null
       o = context.createOscillator()
       o.type = "sine"
       o.connect(context.destination)
       o.start()
-      setInterval(function(){o.stop(),500})
+      setInterval(function(){o.stop()},2000)
     },
 
     getCurrentScene: function(scene) {
