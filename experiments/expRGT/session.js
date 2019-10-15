@@ -93,6 +93,7 @@ class session extends base {
                 let pelletCount = this.config['Hole'+poke+'PelletCount'];
                 for(var i = 0 ; i <=  pelletCount -1 ; i++){
                     record('dispenseFood')
+                    dispenseFood();
                 }
             }
             setTimeout(() => {
