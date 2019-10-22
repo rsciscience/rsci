@@ -16,6 +16,15 @@
 </template>
 
 <script>
+document.oncontextmenu=RightMouseDown;
+  document.onmousedown = mouseDown; 
+
+  function mouseDown(e) {
+      if (e.which==3) {//righClick
+      alert("Disabled - do whatever you like here..");
+   }
+}
+function RightMouseDown() { return false;}
 import Vue from 'vue'
 export default {
   name: 'Admin',
