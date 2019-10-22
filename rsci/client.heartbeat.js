@@ -74,8 +74,10 @@ class heartbeat {
 
   server_response(payload) {
     debug('server_response')
+    if(this.server){
     this.server.ts = new Date()
     this._update()
+    }
     debug('server', payload)
   }
 }
