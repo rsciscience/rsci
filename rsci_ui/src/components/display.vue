@@ -16,15 +16,13 @@
 </template>
 
 <script>
-document.oncontextmenu=RightMouseDown;
-  document.onmousedown = mouseDown; 
+//context menu blocking
+let blockContextMenu = function (evt) {
+  evt.preventDefault();
+};
+window.addEventListener('contextmenu', blockContextMenu);
 
-  function mouseDown(e) {
-      if (e.which==3) {//righClick
-      alert("Disabled - do whatever you like here..");
-   }
-}
-function RightMouseDown() { return false;}
+// init
 import Vue from 'vue'
 export default {
   name: 'Admin',
