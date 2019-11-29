@@ -21,6 +21,9 @@ let blockContextMenu = function (evt) {
   evt.preventDefault();
 };
 window.addEventListener('contextmenu', blockContextMenu);
+document.oncontextmenu = function() {
+  return false;
+}
 
 // init
 import Vue from 'vue'
