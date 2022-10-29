@@ -35,7 +35,7 @@
     "onoff": "^3.1.0",
     "request": "^2.85.0",
     "request-promise": "^4.2.2",
-    "socket.io": "^2.1.0",
+    "socket.io": "^2.5.0",
     "vue-loader": "^14.2.2",
     "vue-template-compiler": "^2.5.16",
     "webpack": "^3.11.0"
